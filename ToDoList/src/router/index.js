@@ -10,11 +10,20 @@ const routes = [{
         component: () => import("../components/main.vue")
     },
     {
-        path: "/RegisterAndLogin",
-        name: "RegisterAndLogin",
-        component: () => import("../components/RegisterAndLogin.vue")
+        path: "/logIn",
+        name: "logIn",
+        component: () => import("../components/logIn.vue")
     },
-    
+    {
+        path: "/signUp",
+        name: "signUp",
+        component: () => import("../components/signUp.vue")
+    },
+    {
+        path: "/toDoList",
+        name: "toDoList",
+        component: () => import("../components/toDoList.vue")
+    },
 ]
 const router = createRouter({
     history: createWebHistory(),

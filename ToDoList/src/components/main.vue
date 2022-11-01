@@ -1,6 +1,6 @@
 <template>
   <h1 class="list-name">清单</h1>
-  <router-link :to="{name : 'RegisterAndLogin'}" class="button">登录/注册</router-link>
+  <router-link :to="{name : 'logIn'}" class="button">登录/注册</router-link>
 </template>
 
 <script>
