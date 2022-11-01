@@ -7,14 +7,10 @@
 export default {
     name: 'MainProject',
     data() {
-        return {
-            x: 1
-        }
+
     },
     methods: {
-        changex() {
-            this.x = 0
-        }
+
     },
 }
 </script>

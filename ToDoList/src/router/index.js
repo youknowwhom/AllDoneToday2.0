@@ -10,19 +10,19 @@ const routes = [{
     component: () => import('../components/main.vue')
 },
 {
-    path: '/logIn',
-    name: 'logIn',
-    component: () => import('../components/logIn.vue')
+    path: '/signin',
+    name: 'signin',
+    component: () => import('../components/signin.vue')
 },
 {
-    path: '/signUp',
-    name: 'signUp',
-    component: () => import('../components/signUp.vue')
+    path: '/signup',
+    name: 'signup',
+    component: () => import('../components/signup.vue')
 },
 {
-    path: '/toDoList',
-    name: 'toDoList',
-    component: () => import('../components/toDoList.vue')
+    path: '/app',
+    name: 'app',
+    component: () => import('../components/app.vue')
 },
 ]
 const router = createRouter({
