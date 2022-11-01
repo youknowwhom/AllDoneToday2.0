@@ -3,10 +3,10 @@
         <div class="box">
             <img src="../assets/image/logo.png" class="logo" />
             <form action="demo_form.php">
-                <input type="text" placeholder="用户名" class="input" v-model="NameAndPassword.username" /><br />
-                <input type="password" placeholder="密码" class="input" v-model="NameAndPassword.password" /><br />
+                <input type="text" placeholder="用户名" class="input" v-model="LoginInfo.username" /><br />
+                <input type="password" placeholder="密码" class="input" v-model="LoginInfo.passwordHash" /><br />
                 <input type="password-again" placeholder="再次确认密码" class="input"
-                    v-model="NameAndPassword.password" /><br />
+                    v-model="LoginInfo.passwordHash" /><br />
                 <input type="submit" value="注册" class="signup-button" @click="Login" />
             </form>
         </div>
@@ -19,15 +19,15 @@ export default {
     name: 'logIn',
     data() {
         return {
-            NameAndPassword: {
+            LoginInfo: {
                 username: '',
-                password: '',
+                passwordHash: '',
             }
         }
     },
     methods: {
         Login() {
-            let url = 'http://127.0.0.1:8000/login'
+            let url = 'http://127.0.0.1:8000/api/login'
             let login = new XMLHttpRequest()
             let result
             login.open('POST', url)
@@ -35,11 +35,11 @@ export default {
                 result = res
                 alert(result)
             }
-            login.send(this.NameAndPassword)
+            login.send(this.LoginInfo)
         },
 
         toSignup() {
-            this.$router.push('/signUp')
+            this.$router.push('/signup')
         }
 
     },

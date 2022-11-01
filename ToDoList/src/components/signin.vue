@@ -2,8 +2,8 @@
     <div class="body">
         <div class="box">
             <img src="../assets/image/logo.png" class="logo" />
-            <input type="text" placeholder="用户名" class="input" v-model="NameAndPassword.username" /><br />
-            <input type="password" placeholder="密码" class="input" v-model="NameAndPassword.password" /><br />
+            <input type="text" placeholder="用户名" class="input" v-model="LoginInfo.username" /><br />
+            <input type="password" placeholder="密码" class="input" v-model="LoginInfo.passwordHash" /><br />
             <input type="submit" value="登录" class="login-button" @click="Login" />
             <input type="submit" value="忘记密码" class="forget-password" />
             <input type="submit" value="注册" class="register" @click="toSignup" />
@@ -17,9 +17,9 @@ export default {
     name: 'logIn',
     data() {
         return {
-            NameAndPassword: {
+            LoginInfo: {
                 username: '',
-                password: '',
+                passwordHash: '',
             }
         }
     },
@@ -27,12 +27,23 @@ export default {
 
     methods: {
         Login() {
-            console.log(this.NameAndPassword)
             let url = 'http://127.0.0.1:8000/api/login'
             let loginRequest = new XMLHttpRequest()
             loginRequest.open('POST', url)
             loginRequest.setRequestHeader('Content-Type', 'application/json')
-            loginRequest.send(JSON.stringify(this.NameAndPassword))
+            loginRequest.responseType = 'json'
+            loginRequest.onload = () => {
+                if (loginRequest.response.result == 'success') {
+                    alert('登录成功')
+                } else if (loginRequest.response.result == 'fail') {
+                    alert(loginRequest.response.msg)
+                } else if (loginRequest.response.result == 'invalid') {
+                    alert('登录请求有误')
+                } else {
+                    alert('服务端故障')
+                }
+            }
+            loginRequest.send(JSON.stringify(this.LoginInfo))
         }
 
     },
