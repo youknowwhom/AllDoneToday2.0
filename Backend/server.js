@@ -11,7 +11,7 @@ const pinoTransports = pino.transport({
         {
             target: 'pino/file',
             options: {
-                destination: `log/tmp.log`
+                destination: 'log/tmp.log'
             }
         },
         {
