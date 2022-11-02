@@ -10,7 +10,8 @@
         </div>
     </div>
 </template>
-  
+ 
+
 <script>
 
 export default {
@@ -44,7 +45,10 @@ export default {
                 }
             }
             loginRequest.send(JSON.stringify(this.LoginInfo))
-        }
+        },
+        toSignup() {
+            this.$router.push("/signup");
+        },
 
     },
 }
@@ -131,10 +135,10 @@ export default {
 }
 
 .input[type="password"]:focus {
-    background: url(../assets/image/password-focus.png) no-repeat 1% 47%;
+    background: url(../assets/image/password-focus.png) no-repeat 1% 47%;    
     background-size: 25px 25px;
-    border-bottom: #2e2ed9 solid;
-    animation: mymove 3s 1 linear;
+    border-bottom: #2e2ed9 solid;    
+    animation: mymove 2s 1 linear;
 }
 
 @keyframes mymove {
