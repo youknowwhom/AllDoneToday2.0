@@ -1,5 +1,5 @@
 <template>
-    <div class="body">
+    <div class="body" onselectstart="return false;">
         <div class="box">
             <img src="../assets/image/logo.png" class="logo" />
             <input type="text" placeholder="用户名" class="input" v-model="LoginInfo.username" /><br />

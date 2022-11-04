@@ -1,7 +1,7 @@
 <template>
-  <div class="body">
+  <div class="body" onselectstart="return false;">
     <div class="box">
-      <img src="../assets/image/logo.png" class="logo" />
+      <img src="../assets/image/logo.png" class="logo"/>
       <form action="demo_form.php">
         <input
           type="text"
