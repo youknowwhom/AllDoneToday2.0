@@ -5,7 +5,7 @@
             <input type="text" placeholder="用户名" class="input" v-model="LoginInfo.username" /><br />
             <input type="password" placeholder="密码" class="input" v-model="LoginInfo.passwordHash" /><br />
             <input type="submit" value="登录" class="login-button" @click="Login" />
-            <input type="submit" value="忘记密码" class="forget-password" />
+            <input type="submit" value="忘记密码" class="forget-password" @click="toForgetPassword" />
             <input type="submit" value="注册" class="register" @click="toSignup" />
         </div>
     </div>
@@ -15,7 +15,7 @@
 <script>
 
 export default {
-    name: 'logIn',
+    name: 'signIn',
     data() {
         return {
             LoginInfo: {
@@ -47,8 +47,11 @@ export default {
             loginRequest.send(JSON.stringify(this.LoginInfo))
         },
         toSignup() {
-            this.$router.push("/signup");
+            this.$router.push('/signup')
         },
+        toForgetPassword(){
+            this.$router.push('/forgetpassword')
+        }
 
     },
 }

@@ -55,9 +55,9 @@ await User.sync({
     match: /_dev$/
 })
 
-await User.create({
-    username: 'dev',
-    passwordHash: 'dev'
-})
+// await User.create({
+//     username: 'dev',
+//     passwordHash: 'dev'
+// })
 
 export { db as UserdataDB, User }

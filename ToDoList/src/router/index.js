@@ -24,6 +24,16 @@ const routes = [{
     name: 'app',
     component: () => import('../components/app.vue')
 },
+{
+    path: '/forgetpassword',
+    name: 'forgetPassword',
+    component: () => import('../components/forgetpassword.vue')
+},
+{
+    path: '/personalinfo',
+    name: 'personalInfo',
+    component: () => import('../components/personalinfo.vue')
+},
 ]
 const router = createRouter({
     history: createWebHistory(),
