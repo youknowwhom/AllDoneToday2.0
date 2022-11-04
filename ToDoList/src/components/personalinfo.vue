@@ -5,8 +5,15 @@
         </div>       
         <div class="box-left">
             <img src="../assets/image/photo.jpg" class="circle"/>
-            <button class="basic">基本信息</button>
-            <button class="safety">安全信息</button>
+            <div v-if="IsBasicInfo" class="rectangle-1"> </div>
+            <button v-if="IsBasicInfo" class="basic-click" @click="IsBasicInfo=true">基本信息</button>
+            <button v-else class="basic" @click="IsBasicInfo=true">基本信息</button>
+            <div v-if="!IsBasicInfo" class="rectangle-2"> </div>
+            <button v-if="!IsBasicInfo" class="safety-click" @click="IsBasicInfo=false">安全信息</button>
+            <button v-else class="safety" @click="IsBasicInfo=false">安全信息</button>
+        </div>
+        <div>
+            
         </div>     
         
             
@@ -21,6 +28,7 @@ export default {
     data() {
         return {
             IsBasicInfo: true,
+            IsEditEnabled: false,
         }
     },
     methods: {
@@ -75,17 +83,48 @@ export default {
   border-radius: 100%;
 }
 
+.rectangle-1{
+  position: relative;
+  top:12%;
+  left:-8%;
+  background:white;
+  width: 290px;
+  height: 40px;
+}
+
+.rectangle-2{
+  position: relative;
+  top:25%;
+  left:-8%;
+  background:white;
+  width: 290px;
+  height: 40px;
+}
+
 .basic{
-    background:url("../assets/image/basic.png") no-repeat 0% 30%;
-    background-size: 30px 30px;
-    color: #bfbfbf;
-    position: relative;
-    top: 10%;
-    left: 5%;
-    font-size:medium;
-    width: 180px;
-    height: 40px;
-    border: none;
+  background:url("../assets/image/basic.png") no-repeat 0% 30%;
+  background-size: 30px 30px;
+  color: #bfbfbf;
+  position: relative;
+  top: 12%;
+  left: 5%;
+  font-size:medium;
+  width: 180px;
+  height: 40px;
+  border: none;
+}
+
+.basic-click{
+  background:url("../assets/image/basic-click.png") no-repeat 0% 30%;
+  background-size: 30px 30px;
+  color: #7a7af9;
+  position: relative;
+  top: 3.3%;
+  left: 5%;
+  font-size:medium;
+  width: 180px;
+  height: 40px;
+  border: none;
 }
 
 .basic:hover{
@@ -99,7 +138,20 @@ export default {
     background-size: 30px 30px;
     color: #bfbfbf;
     position: relative;
-    top: 20%;
+    top: 17%;
+    left: 5%;
+    font-size:medium;
+    width: 180px;
+    height: 40px;
+    border: none;
+}
+
+.safety-click{
+    background:url("../assets/image/safety-click.png") no-repeat 0% 30%;
+    background-size: 30px 30px;
+    color: #7a7af9;
+    position: relative;
+    top: 17%;
     left: 5%;
     font-size:medium;
     width: 180px;
