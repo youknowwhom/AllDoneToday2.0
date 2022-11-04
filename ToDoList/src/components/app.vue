@@ -7,9 +7,14 @@
 
             <div class="content">
                 <div class="sidebar">
-                    <h1>清单</h1>
-                    <h1>日程</h1>
-                    <h1>专注</h1>
+                    <img v-if="ModeChosen != 'ToDoList'" src="../assets/image/app-leftbar-todolist.png" class="leftbar-icon" @click="ChangeMode('ToDoList')" />
+                    <img v-else src="../assets/image/app-leftbar-todolist-focus.png" class="leftbar-icon" />
+                    <br/>
+                    <img v-if="ModeChosen != 'TimeTable'" src="../assets/image/app-leftbar-timetable.png" class="leftbar-icon" @click="ChangeMode('TimeTable')" />
+                    <img v-else src="../assets/image/app-leftbar-timetable-focus.png" class="leftbar-icon" />
+                    <br/>
+                    <img v-if="ModeChosen != 'Concentration'"  src="../assets/image/app-leftbar-concentrate.png" class="leftbar-icon" @click="ChangeMode('Concentration')" />
+                    <img v-else src="../assets/image/app-leftbar-concentrate-focus.png" class="leftbar-icon" />
                 </div>
                 <div class="maincontent">
                     <h1>网页正文</h1>
@@ -30,14 +35,13 @@ export default {
     name: 'toDoList',
     data() {
         return {
-            NameAndPassword: {
-                username: '',
-                password: '',
-            }
+            ModeChosen: "ToDoList"
         }
     },
     methods: {
-
+        ChangeMode(modechosen){
+            this.ModeChosen = modechosen;
+        }
 
     },
 }
@@ -83,7 +87,10 @@ body {
     top: 0;
     position: relative;
     height: 100%;
-    background: #a4f;
+    padding-top: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    background: #e2e2fe;
     font-size: 20px;
 }
 
@@ -104,5 +111,14 @@ body {
     height: 100%;
     background-color: aqua;
 }
+
+
+.leftbar-icon {
+    margin-top: 20px;
+    height : 25px;
+    cursor: pointer;
+}
+
+
 </style>
   

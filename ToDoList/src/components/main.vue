@@ -7,7 +7,7 @@
 export default {
     name: 'MainProject',
     data() {
-
+        
     },
     methods: {
 
