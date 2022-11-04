@@ -5,6 +5,8 @@
         </div>       
         <div class="box-left">
             <img src="../assets/image/photo.jpg" class="circle"/>
+            <button class="basic">基本信息</button>
+            <button class="safety">安全信息</button>
         </div>     
         
             
@@ -18,7 +20,7 @@ export default {
     name: 'personalInfo',
     data() {
         return {
-            
+            IsBasicInfo: true,
         }
     },
     methods: {
@@ -71,6 +73,44 @@ export default {
   width: 80px;
   height: 80px;
   border-radius: 100%;
+}
+
+.basic{
+    background:url("../assets/image/basic.png") no-repeat 0% 30%;
+    background-size: 30px 30px;
+    color: #bfbfbf;
+    position: relative;
+    top: 10%;
+    left: 5%;
+    font-size:medium;
+    width: 180px;
+    height: 40px;
+    border: none;
+}
+
+.basic:hover{
+    background:url("../assets/image/basic-click.png") no-repeat 0% 30%;
+    background-size: 30px 30px;
+    color: #7a7af9;
+}
+
+.safety{
+    background:url("../assets/image/safety.png") no-repeat 0% 30%;
+    background-size: 30px 30px;
+    color: #bfbfbf;
+    position: relative;
+    top: 20%;
+    left: 5%;
+    font-size:medium;
+    width: 180px;
+    height: 40px;
+    border: none;
+}
+
+.safety:hover{
+    background:url("../assets/image/safety-click.png") no-repeat 0% 30%;
+    background-size: 30px 30px;
+    color: #7a7af9;
 }
 
 </style>

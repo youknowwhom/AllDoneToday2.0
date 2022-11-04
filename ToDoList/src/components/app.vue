@@ -35,12 +35,20 @@ export default {
     name: 'toDoList',
     data() {
         return {
+<<<<<<< HEAD
             ModeChosen: 'ToDoList'
+=======
+            ModeChosen: "ToDoList"
+>>>>>>> d8913007ef74100dd80768088a7505820815a02c
         }
     },
     methods: {
         ChangeMode(modechosen){
+<<<<<<< HEAD
             this.ModeChosen = modechosen
+=======
+            this.ModeChosen = modechosen;
+>>>>>>> d8913007ef74100dd80768088a7505820815a02c
         }
 
     },
