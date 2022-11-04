@@ -12,8 +12,14 @@
             <button v-if="!IsBasicInfo" class="safety-click" @click="IsBasicInfo=false">安全信息</button>
             <button v-else class="safety" @click="IsBasicInfo=false">安全信息</button>
         </div>
-        <div>
-            
+        <div class="box-right">hi
+            <div v-if="IsBasicInfo">
+                <div class="small-blank-1">hi</div>
+                
+            </div>
+            <div v-else>
+                hello
+            </div>
         </div>     
         
             
@@ -73,7 +79,7 @@ export default {
   box-shadow: 0px 0px 5px 5px #e9e9ff;
   padding: 20px;
   width: 240px;
-  height: 460px;
+  height: 550px;
   margin: 0 auto;
 }
 
@@ -85,8 +91,8 @@ export default {
 
 .rectangle-1{
   position: relative;
-  top:12%;
-  left:-8%;
+  top: 10.3%;
+  left: -8%;
   background:white;
   width: 290px;
   height: 40px;
@@ -94,7 +100,7 @@ export default {
 
 .rectangle-2{
   position: relative;
-  top:25%;
+  top:24.3%;
   left:-8%;
   background:white;
   width: 290px;
@@ -106,7 +112,7 @@ export default {
   background-size: 30px 30px;
   color: #bfbfbf;
   position: relative;
-  top: 12%;
+  top: 11%;
   left: 5%;
   font-size:medium;
   width: 180px;
@@ -119,7 +125,7 @@ export default {
   background-size: 30px 30px;
   color: #7a7af9;
   position: relative;
-  top: 3.3%;
+  top: 3.7%;
   left: 5%;
   font-size:medium;
   width: 180px;
@@ -163,6 +169,27 @@ export default {
     background:url("../assets/image/safety-click.png") no-repeat 0% 30%;
     background-size: 30px 30px;
     color: #7a7af9;
+}
+
+.box-right{
+  position: relative;
+  top: -66.8%;
+  left: 9.5%;
+  background: white;
+  box-shadow: 0px 0px 5px 5px #e9e9ff;
+  padding: 20px;
+  width: 800px;
+  height: 550px;
+  margin: 0 auto;
+}
+
+.small-blank-1{
+  width: 100px;
+  height: 40px;
+  background: #e9e9ff;
+  position: relative;
+  top: 100%;
+  left: -10%;
 }
 
 </style>
