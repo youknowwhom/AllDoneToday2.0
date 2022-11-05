@@ -23,7 +23,7 @@
                       <input :disabled="!IsEditEnabled" v-model="UserNameTemp" class="input-border"/>
                     </div>
                     <label for="sex" class="gender-input">性别:</label>
-                        <select id="sex" >
+                        <select id="sex" class="label-control" :disabled="!IsEditEnabled">
                             <option>男</option>
                             <option>女</option>
                         </select>
@@ -64,11 +64,11 @@ export default {
             UserGenderTemp: 'female',  //做成下拉式
             Signature: 'haojinhaojin',
             SignatureTemp: 'haojinhaojin',
-            Birthday: '2022-10-1',  //做成下拉式
+            Birthday: '2022-10-1',  
             BirthdayTemp:'2022-10-1',
             Major: 'Computer Science',
             MajorTemp: 'Computer Science',
-            Grade: '大二',   //做成下拉式
+            Grade: '大二',   
             GradeTemp: '大二',
             PhotoUrl: 'D:/ToDoList/ToDoList/src/assets/image/photo.jpg',
         }
@@ -284,12 +284,11 @@ export default {
 }
 .input-border{
   font-size:large;
-  border:none;
-  background: #e6e6e6;
 }
 
 .input-border:disabled{
   background: white;
+  border: none;
 }
 
 .username-input{
@@ -305,6 +304,11 @@ export default {
   left:720px;
 }
 
+.label-control{
+  position: fixed;
+  top: 385px;
+  left: 775px;
+}
 .signature-input{
   font-size:large;
   position: fixed;
