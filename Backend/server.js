@@ -37,10 +37,68 @@ try {
 
 /**
  * 注册 API
+ * - request
+ *  - username: 用户名
+ *  - passwordHash: 密码Hash
+ *  - EmailAddress: 邮箱地址
+ *  - SecurityCode: 验证码
+ * - response
+ *  - IsSecurityCodeTrue:验证码正确判断
+ *  - IsUsernameTrue：用户名是否合法
+ * --ToDo
+ *   由于无法写入数据库 先使用伪数据
  */
+
 app.post('/api/register', async (req, res) => {
-    logger.info(req.body)
-    res.json(req.body)
+    const username = req.body.UserName
+    const passwordHash = req.body.PasswordHash
+    const EmailAddress = req.body.EmailAddress
+    const SecurityCode = req.body.SecurityCode
+    if (!username || !passwordHash || !EmailAddress || 
+        !SecurityCode) {
+        res.status(400).send({
+            IsUsernameTrue:undefined,
+            IsSecurityCodeTrue:undefined,
+            msg: '注册请求格式错误'
+        })
+        return
+    }
+    const requestedUser = User.findOne({
+        where:{username:username}
+    })//查找是否同名
+    if(requestedUser.username){
+        res.status(200).send({
+            IsSecurityCodeTrue: undefined,
+            IsUsernameTrue: false,
+            msg:'用户名已经被占用'
+        })
+        return
+    }
+    if(SecurityCode!=='123456'){
+        res.status(200).send({
+            IsSecurityCodeTrue:false,
+            IsUsernameTrue:true,
+            msg:'验证码错误'
+        })
+    }
+
+    /**
+     * 暂时无法写入数据库
+     */
+
+    // const newUser = await User.create({
+    //     username: username,
+    //     passwordHash: passwordHash,
+    //     EmailAddress:EmailAddress
+    // })
+
+    // logger.info(newUser)
+
+    res.status(200).send({
+        IsSecurityCodeTrue:true,
+        IsUsernameTrue:true,
+        msg:'注册成功'
+    })// 注册成功
 })
 
 
@@ -56,6 +114,12 @@ app.post('/api/register', async (req, res) => {
  *     - 值只可能为 'success' / 'fail' / 'invalid' 之一
  *   - msg: 服务端返回的信息
  */
+/**
+ * 增加了写入token的内容
+ */
+
+import jwt from 'jsonwebtoken'
+
 app.post('/api/login', async (req, res) => {
     const username = req.body.username
     const passwordHash = req.body.passwordHash
@@ -83,12 +147,77 @@ app.post('/api/login', async (req, res) => {
         })
         return
     }
+    var jwtBody = {
+        username:requestedUser.username,
+    }
+    var jwtKey = 'whj'
+    let token = jwt.sign(jwtBody,jwtKey)
+    requestedUser.token = token
+    logger.info(token)
+    await requestedUser.save() //生成token 
     res.status(200).send({
         result: 'success',
         msg: '登录成功'
     })
 })
 
+
+/**
+ * 忘记密码
+ *  - request
+ *   - username: 用户名
+ *   - EmailAddress: 邮箱地址
+ *   - SecurityCode: 验证码
+ *   - PasswordHash: 修改好的密码
+ *  - respond:
+ *   - IsSecurityCodeTrue: 验证码是否正确
+ *   - IsUsernameTrue: 用户名是否正确(防止未注册使用)
+ *   - IsEmailAddressValid: 邮箱是否有效
+ */
+app.post('/api/forgetpassword',async (req,res)=>{
+    const username = req.body.username
+    const EmailAddress  =req.body.EmailAddress
+    const passwordHash = req.body.passwordHash
+    var requestedUser = User.findOne({
+        where:{
+            username:username
+        }
+    })
+    if(!requestedUser){
+        res.status(200).send({
+            IsUsernameTrue:false,
+            IsSecurityCodeTrue:undefined,
+            IsEmailAddressValid:undefined,
+            msg:'用户未注册'
+        })
+        return
+    }
+    if(requestedUser.EmailAddress!==EmailAddress){
+        res.status(200).send({
+            IsUsernameTrue:true,
+            IsSecurityCodeTrue:false,
+            IsEmailAddressValid:undefined,
+            msg:'邮箱输入有误'
+        })
+        return
+    }
+    /**
+     * 判断验证码
+     */
+
+    /**
+     * 用户密码更新
+     */
+    requestedUser.passwordHash = passwordHash
+    await requestedUser.save()
+
+    res.status(200).send({
+        IsUsernameTrue:true,
+        IsSecurityCodeTrue:true,
+        IsEmailAddressValid:true,
+        msg:'密码已更新'
+    })
+})
 
 /**
  * 运行服务器
