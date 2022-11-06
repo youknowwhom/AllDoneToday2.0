@@ -62,18 +62,19 @@ app.post('/api/register', async (req, res) => {
     const EmailAddress = req.body.EmailAddress
     const SecurityCode = req.body.SecurityCode
 
-    let IsUserNameEmpty = username?true:false
-    let IsPasswordEmpty = PasswordHash?true:false
-    let IsEmailAddressEmpty = EmailAddress?true:false
-    let IsSecurityCodeEmpty = SecurityCode?true:false
+    let IsUserNameEmpty = username?false:true
+    let IsPasswordEmpty = PasswordHash?false:true
+    let IsEmailAddressEmpty = EmailAddress?false:true
+    let IsSecurityCodeEmpty = SecurityCode?false:true
 
-    if(!IsUserNameEmpty||!IsPasswordEmpty||!IsEmailAddressEmpty||!IsSecurityCodeEmpty){
+    logger.info(SecurityCode)
+    if(IsUserNameEmpty||IsPasswordEmpty||IsEmailAddressEmpty||IsSecurityCodeEmpty){
         res.status(200).send({
             IsFormValid:false,
             IsUserNameEmpty:IsUserNameEmpty,
             IsPasswordEmpty:IsPasswordEmpty,
             IsEmailAddressEmpty:IsEmailAddressEmpty,
-            IsSecurityCodeEmpty:IsEmailAddressEmpty,
+            IsSecurityCodeEmpty:IsSecurityCodeEmpty,
             msg:'登录格式不正确'
         })
         return
