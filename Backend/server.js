@@ -56,65 +56,9 @@ try {
  * --ToDo
  *   由于无法写入数据库 先使用伪数据
  */
-
 app.post('/api/register', async (req, res) => {
-    const username = req.body.UserName
-    const passwordHash = req.body.PasswordHash
-    const EmailAddress = req.body.EmailAddress
-    const SecurityCode = req.body.SecurityCode
-
-    let usernameValid = username?true:false
-    let passwordHashValid = passwordHash?true:false
-    let EmailAddressValid = EmailAddress?true:false
-    let SecurityCodeValid = SecurityCode?true:false
-
-    if (!username || !passwordHash || !EmailAddress || 
-        !SecurityCode) {
-        res.status(400).send({
-            IsFormValid:false,
-            IsUserNameEmpty:usernameValid,
-            IsPasswordEmpty:passwordHashValid,
-            IsEmailAddressEmpty:EmailAddressValid,
-            IsSecurityCodeEmpty:SecurityCodeValid,
-            msg:'登录信息有误'
-        })
-        return
-    }
-    // const requestedUser = User.findOne({
-    //     where:{username:username}
-    // })//查找是否同名
-    
-    let IsUserNameTrue = (username==='dev')?false:true
-    let IsSecuritycodeTrue = (SecurityCode==='123456')
-
-    if(!IsUserNameTrue||!IsSecuritycodeTrue){
-        res.status(200).send({
-            IsFormValid:true,
-            IsSecurityCodeTrue:IsSecuritycodeTrue,
-            IsUsernameTrue:IsUserNameTrue,
-            msg:'用户验证信息不正确'
-        })
-        return
-    }
-
-    /**
-     * 暂时无法写入数据库
-     */
-
-    // const newUser = await User.create({
-    //     username: username,
-    //     passwordHash: passwordHash,
-    //     EmailAddress:EmailAddress
-    // })
-
-    // logger.info(newUser)
-
-    res.status(200).send({
-        IsFormValid:true,
-        IsSecurityCodeTrue:true,
-        IsUsernameTrue:true,
-        msg:'注册成功'
-    })// 注册成功
+    logger.info(req.body)
+    res.json(req.body)
 })
 
 
