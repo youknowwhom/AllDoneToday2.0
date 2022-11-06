@@ -44,7 +44,7 @@ try {
  *  - SecurityCode: 验证码
  * - response
  *  - IsFormValid: 判断post表单是否数据正确
- *    - 如果不正确返回四个boolean值
+ *    - 如果不正确返回四个boolean值(真值)
  *      - IsUserNameEmpty: 用户名是否为空
  *      - IsPasswordEmpty: 密码是否为空
  *      - IsEmailAddressEmpty: 邮箱地址是否为空
@@ -57,8 +57,53 @@ try {
  *   由于无法写入数据库 先使用伪数据
  */
 app.post('/api/register', async (req, res) => {
-    logger.info(req.body)
-    res.json(req.body)
+    const username = req.body.UserName
+    const PasswordHash = req.body.PasswordHash
+    const EmailAddress = req.body.EmailAddress
+    const SecurityCode = req.body.SecurityCode
+
+    let IsUserNameEmpty = username?true:false
+    let IsPasswordEmpty = PasswordHash?true:false
+    let IsEmailAddressEmpty = EmailAddress?true:false
+    let IsSecurityCodeEmpty = SecurityCode?true:false
+
+    if(!IsUserNameEmpty||!IsPasswordEmpty||!IsEmailAddressEmpty||!IsSecurityCodeEmpty){
+        res.status(200).send({
+            IsFormValid:false,
+            IsUserNameEmpty:IsUserNameEmpty,
+            IsPasswordEmpty:IsPasswordEmpty,
+            IsEmailAddressEmpty:IsEmailAddressEmpty,
+            IsSecurityCodeEmpty:IsEmailAddressEmpty,
+            msg:'登录格式不正确'
+        })
+        return
+    }
+
+    /**
+     * Todo：找数据库中有无用户名
+     * 验证码是否实现
+     * （未成功）
+     */
+
+    let IsUsernameTrue = username==='dev'?false:true
+    let IsSecurityCodeTrue = SecurityCode==='123456'?true:false
+
+    if(!IsUsernameTrue||!IsSecurityCodeTrue){
+        res.status(200).send({
+            IsFormValid:true,
+            IsSecurityCodeTrue:IsSecurityCodeTrue,
+            IsUsernameTrue:IsUsernameTrue,
+            msg:'用户输入信息不符合'
+        })
+        return
+    }
+
+    res.status(200).send({
+        IsFormValid:true,
+        IsSecurityCodeTrue:IsSecurityCodeTrue,
+        IsUsernameTrue:IsUsernameTrue,
+        msg:'注册成功'
+    })
 })
 
 
