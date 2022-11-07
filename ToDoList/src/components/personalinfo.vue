@@ -15,6 +15,10 @@
         <div class="box-right">
             <div class="right-top">            
               <img src="../assets/image/photo.jpg" class="photo"/>
+              <input type="file"  accept="image/png, image/jpg">
+                <div class="avator">
+                <img src="./avator.jpg" alt="">
+                </div>
               <div class="nameandsex">
                 <div class="username">{{UserName}}
                   <img v-if="UserGender=='女'" src="../assets/image/female.png" class="gender" />
@@ -69,7 +73,6 @@ export default {
     name: 'personalInfo',
     data() {
         return {
-            selected:'C',
             token: 'haojin',
             IsBasicInfo: true,
             IsBasicEditEnabled: false,
@@ -330,6 +333,7 @@ export default {
   top:200%;
   left:-18%;
   font-size:large; 
+  font-family:'Times New Roman', Times, serif;
 }
 
 .signature-input:disabled{
