@@ -15,24 +15,25 @@
         <div class="box-right">            
             <img src="../assets/image/photo.jpg" class="photo"/>
             <div v-text="UserName" class="username"></div>
-            <img src="../assets/image/female.png" class="gender" />
+            <img v-if="UserGender=='女'" src="../assets/image/female.png" class="gender" />
+            <img v-else src="../assets/image/male.png" class="gender"/>
             <div v-if="IsBasicInfo">
                 <button @click="IsEditEnabled=true" class="edit-button">编辑个人信息</button>
                 <div class="small-blank-1"></div>               
                     <div class="username-input">用户名:    
                       <input :disabled="!IsEditEnabled" v-model="UserNameTemp" class="input-border"/>
                     </div>
-                    <label for="sex" class="gender-input">性别:</label>
-                        <select id="sex" class="label-control" :disabled="!IsEditEnabled">
-                            <option>男</option>
-                            <option>女</option>
+                    <div class="gender-input">性别:
+                        <select v-model="UserGenderTemp" class="label-control" :disabled="!IsEditEnabled">
+                            <option selected>男</option>
+                            <option >女</option>
                         </select>
-
+                    </div>
                     <div class="signature-input">个性签名: 
-                        <input :disabled="!IsEditEnabled" v-model="SignatureTemp" class="input-border"/>
+                        <input type="gender" :disabled="!IsEditEnabled" v-model="SignatureTemp" class="input-border"/>
                     </div>
                     <div class="birthday-input">生日: 
-                        <input :disabled="!IsEditEnabled" v-model="BirthdayTemp" class="input-border"/>
+                        <input type="date" :disabled="!IsEditEnabled" v-model="BirthdayTemp" class="input-border"/>
                     </div>
                     <div class="major-input">专业: 
                         <input :disabled="!IsEditEnabled" v-model="MajorTemp" class="input-border"/>
@@ -56,16 +57,18 @@ export default {
     name: 'personalInfo',
     data() {
         return {
+            selected:'C',
+            token: 'haojin',
             IsBasicInfo: true,
             IsEditEnabled: false,
             UserName: 'haojin',
             UserNameTemp: 'haojin',
-            UserGender: 'female',  
-            UserGenderTemp: 'female',  //做成下拉式
+            UserGender: '女',  
+            UserGenderTemp: '女',  //做成下拉式
             Signature: 'haojinhaojin',
             SignatureTemp: 'haojinhaojin',
-            Birthday: '2022-10-1',  
-            BirthdayTemp:'2022-10-1',
+            Birthday: '2003-01-07',  
+            BirthdayTemp:'2003-01-07',
             Major: 'Computer Science',
             MajorTemp: 'Computer Science',
             Grade: '大二',   
@@ -77,14 +80,20 @@ export default {
         Ensure(){
             this.IsEditEnabled=false
             this.UserName = this.UserNameTemp
+            this.Birthday = this.BirthdayTemp
             this.UserGender = this.UserGenderTemp
             this.Signature = this.SignatureTemp
+            this.Major = this.MajorTemp
+            this.Grade = this.GradeTemp
         },
         Cancel(){
             this.IsEditEnabled=false
             this,this.UserNameTemp=this.UserName
+            this.BirthdayTemp=this.Birthday
             this.UserGenderTemp=this.UserGender
             this.SignatureTemp=this.Signature
+            this.MajorTemp = this.Major
+            this.GradeTemp = this.Grade
         }
 
     },

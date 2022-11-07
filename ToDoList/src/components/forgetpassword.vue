@@ -63,7 +63,7 @@ export default {
             IsPasswordTrue: false,
             IsPasswordAgainClear: true,
             IsSecurityCodeTrue: true,
-            IsUsernameTrue: true,
+            IsPasswordEmpty: false
         }
     },
     methods: {
@@ -92,10 +92,7 @@ export default {
         },
         Reset() {
             if (this.IsPasswordTrue) {
-                //发送用户名，密码，邮箱，验证码
-                //由后端返回两个布尔值，一个检测用户名是否正确（不重复），一个检测验证码是否正确
-                //如果全部正确就返回main页面
-                //错误就在该行下有红色的报错
+                
                 if (this.IsSecurityCodeTrue && this.IsUsernameTrue) {
                     alert('重置成功')
                     this.$router.push('/')

@@ -18,6 +18,9 @@
       />
       <button class="send-message" @click="SendEmail">发送验证码</button>
       <div v-if="IsEmailAddressEmpty" class="email-error">邮箱地址不能为空</div>
+      <div v-else>
+        <div v-if="!IsEmailTrue" class="email-error">该邮箱已被注册</div>
+      </div>
       <br />
       <input
         type="security-code"
@@ -72,6 +75,7 @@ export default {
             IsPasswordAgainClear: true,
             IsSecurityCodeTrue: true,
             IsUsernameTrue: true,
+            IsEmailTrue: true,
             IsFormValid: true,
             IsUsernameEmpty: false,
             IsEmailAddressEmpty: false,
@@ -122,7 +126,6 @@ export default {
                 signupRequest.setRequestHeader('Content-Type', 'application/json')
                 signupRequest.responseType = 'json'
                 signupRequest.onload = () => {
-                    alert(JSON.stringify(signupRequest.response))
                     this.IsFormValid = signupRequest.response.IsFormValid
                     if(!this.IsFormValid){
                         this.IsUsernameEmpty = signupRequest.response.IsUserNameEmpty
@@ -133,7 +136,8 @@ export default {
                     else{
                         this.IsSecurityCodeTrue = signupRequest.response.IsSecurityCodeTrue
                         this.IsUsernameTrue = signupRequest.response.IsUsernameTrue
-                        if(this.IsSecurityCodeTrue === true && this.IsUsernameTrue === true){
+                        //this.IsEmailTrue = signupRequest.response.IsEmailAddressTrue
+                        if(this.IsSecurityCodeTrue === true && this.IsUsernameTrue === true && this.IsEmailTrue === true){
                             this.$router.push('/')
                             //跳转主页面
                         }
@@ -405,7 +409,7 @@ export default {
 
 .securitycode-error{
   position: absolute;
-  top: 55%;
+  top: 54.1%;
   left: 8%;
   background: url(../assets/image/error.png) no-repeat 0% 53%;
   padding-left: 20px;
