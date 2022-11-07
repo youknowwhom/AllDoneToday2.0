@@ -18,34 +18,36 @@
             <img v-if="UserGender=='女'" src="../assets/image/female.png" class="gender" />
             <img v-else src="../assets/image/male.png" class="gender"/>
             <div v-if="IsBasicInfo">
-                <button @click="IsEditEnabled=true" class="edit-button">编辑个人信息</button>
+                <button @click="IsBasicEditEnabled=true" class="edit-button">编辑个人信息</button>
                 <div class="small-blank-1"></div>               
-                    <div class="username-input">用户名:    
-                      <input :disabled="!IsEditEnabled" v-model="UserNameTemp" class="input-border"/>
-                    </div>
-                    <div class="gender-input">性别:
-                        <select v-model="UserGenderTemp" class="label-control" :disabled="!IsEditEnabled">
-                            <option selected>男</option>
-                            <option >女</option>
-                        </select>
-                    </div>
-                    <div class="signature-input">个性签名: 
-                        <input type="gender" :disabled="!IsEditEnabled" v-model="SignatureTemp" class="input-border"/>
-                    </div>
-                    <div class="birthday-input">生日: 
-                        <input type="date" :disabled="!IsEditEnabled" v-model="BirthdayTemp" class="input-border"/>
-                    </div>
-                    <div class="major-input">专业: 
-                        <input :disabled="!IsEditEnabled" v-model="MajorTemp" class="input-border"/>
-                    </div>
-                    <div class="grade-input">年级: 
-                        <input :disabled="!IsEditEnabled" v-model="GradeTemp" class="input-border"/>
-                    </div>
-                    <button v-if="IsEditEnabled" @click="Ensure" class="ensure-button">确定</button>          
-                    <button v-if="IsEditEnabled" @click="Cancel" class="cancel-button">取消</button>        
+                <div class="username-input">用户名:    
+                  <input :disabled="!IsBasicEditEnabled" v-model="UserNameTemp" class="input-border"/>
+                </div>
+                <div class="gender-input">性别:
+                    <select v-model="UserGenderTemp" class="label-control" :disabled="!IsBasicEditEnabled">
+                        <option selected>男</option>
+                        <option >女</option>
+                    </select>
+                </div>
+                <div class="signature-input">个性签名: 
+                    <input :disabled="!IsBasicEditEnabled" v-model="SignatureTemp" class="input-border"/>
+                </div>
+                <div class="birthday-input">生日: 
+                    <input type="date" :disabled="!IsBasicEditEnabled" v-model="BirthdayTemp" class="input-border"/>
+                </div>
+                <div class="major-input">专业: 
+                    <input :disabled="!IsBasicEditEnabled" v-model="MajorTemp" class="input-border"/>
+                </div>
+                <div class="grade-input">年级: 
+                    <input :disabled="!IsBasicEditEnabled" v-model="GradeTemp" class="input-border"/>
+                </div>
+                <button v-if="IsBasicEditEnabled" @click="BasicEnsure" class="ensure-button">确定</button>          
+                <button v-if="IsBasicEditEnabled" @click="BasicCancel" class="cancel-button">取消</button>        
             </div>
             <div v-else>
                 <div class="small-blank-2"></div>
+                <button @click="IsSecureEditEnabled=true" class="edit-button">编辑安全信息</button>
+
             </div>
         </div>       
     </div>
@@ -60,7 +62,7 @@ export default {
             selected:'C',
             token: 'haojin',
             IsBasicInfo: true,
-            IsEditEnabled: false,
+            IsBasicEditEnabled: false,
             UserName: 'haojin',
             UserNameTemp: 'haojin',
             UserGender: '女',  
@@ -74,11 +76,17 @@ export default {
             Grade: '大二',   
             GradeTemp: '大二',
             PhotoUrl: 'D:/ToDoList/ToDoList/src/assets/image/photo.jpg',
+
+            IsSecureEditEnabled: false,
+            EmailAddress: 'haojin@00.com',
+            EmailAddressTemp: 'haojin@00.com',
+            Password: 'haojinis00',
+            PasswordTemp: 'haojinis00',
         }
     },
     methods: {
-        Ensure(){
-            this.IsEditEnabled=false
+        BasicEnsure(){
+            this.IsBasicEditEnabled=false
             this.UserName = this.UserNameTemp
             this.Birthday = this.BirthdayTemp
             this.UserGender = this.UserGenderTemp
@@ -86,8 +94,8 @@ export default {
             this.Major = this.MajorTemp
             this.Grade = this.GradeTemp
         },
-        Cancel(){
-            this.IsEditEnabled=false
+        BasicCancel(){
+            this.IsBasicEnabled=false
             this,this.UserNameTemp=this.UserName
             this.BirthdayTemp=this.Birthday
             this.UserGenderTemp=this.UserGender
