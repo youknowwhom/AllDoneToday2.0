@@ -12,26 +12,29 @@
             <button v-if="!IsBasicInfo" class="safety-click" @click="IsBasicInfo=false">安全信息</button>
             <button v-else class="safety" @click="IsBasicInfo=false">安全信息</button>
         </div>
-        <div class="box-right">            
-            <img src="../assets/image/photo.jpg" class="photo"/>
-            <div v-text="UserName" class="username"></div>
-            <img v-if="UserGender=='女'" src="../assets/image/female.png" class="gender" />
-            <img v-else src="../assets/image/male.png" class="gender"/>
-            <div v-if="IsBasicInfo">
-                <button @click="IsBasicEditEnabled=true" class="edit-button">编辑个人信息</button>
-                <div class="small-blank-1"></div>               
+        <div class="box-right">
+            <div class="right-top">            
+              <img src="../assets/image/photo.jpg" class="photo"/>
+              <div class="nameandsex">
+                <div class="username">{{UserName}}
+                  <img v-if="UserGender=='女'" src="../assets/image/female.png" class="gender" />
+                  <img v-else src="../assets/image/male.png" class="gender"/>
+                </div>
+              </div>               
+              <input :disabled="!IsBasicEditEnabled" v-model="SignatureTemp" class="signature-input"/>              
+            </div>
+            <div v-if="IsBasicInfo" class="right-bottom">                                        
                 <div class="username-input">用户名:    
                   <input :disabled="!IsBasicEditEnabled" v-model="UserNameTemp" class="input-border"/>
                 </div>
                 <div class="gender-input">性别:
-                    <select v-model="UserGenderTemp" class="label-control" :disabled="!IsBasicEditEnabled">
-                        <option selected>男</option>
-                        <option >女</option>
-                    </select>
-                </div>
-                <div class="signature-input">个性签名: 
-                    <input :disabled="!IsBasicEditEnabled" v-model="SignatureTemp" class="input-border"/>
-                </div>
+                  <div v-if="!IsBasicEditEnabled" class="input-border">{{UserGenderTemp}}</div>
+                  <select v-if="IsBasicEditEnabled" v-model="UserGenderTemp" class="input-border" :disabled="!IsBasicEditEnabled">
+                      <option selected>男</option>
+                      <option >女</option>
+                  </select>
+                    
+                </div>         
                 <div class="birthday-input">生日: 
                     <input type="date" :disabled="!IsBasicEditEnabled" v-model="BirthdayTemp" class="input-border"/>
                 </div>
@@ -41,13 +44,20 @@
                 <div class="grade-input">年级: 
                     <input :disabled="!IsBasicEditEnabled" v-model="GradeTemp" class="input-border"/>
                 </div>
+                <button @click="IsBasicEditEnabled=true" class="edit-button">编辑个人信息</button>    
                 <button v-if="IsBasicEditEnabled" @click="BasicEnsure" class="ensure-button">确定</button>          
                 <button v-if="IsBasicEditEnabled" @click="BasicCancel" class="cancel-button">取消</button>        
             </div>
-            <div v-else>
-                <div class="small-blank-2"></div>
+            <div v-else class="right-bottom">                
+                <div class="email-input">邮箱:    
+                  <input :disabled="!IsSecureEditEnabled" v-model="EmailAddressTemp" class="input-border"/>
+                </div>
+                <div class="password-input">用户名:    
+                  <input :disabled="!IsSecureEditEnabled" v-model="PasswordTemp" class="input-border"/>
+                </div>
                 <button @click="IsSecureEditEnabled=true" class="edit-button">编辑安全信息</button>
-
+                <button v-if="IsSecureEditEnabled" @click="SecureEnsure" class="ensure-button">确定</button>          
+                <button v-if="IsSecureEditEnabled" @click="SecureCancel" class="cancel-button">取消</button> 
             </div>
         </div>       
     </div>
@@ -84,6 +94,14 @@ export default {
             PasswordTemp: 'haojinis00',
         }
     },
+    created(){
+        let url = 'http://127.0.0.1:8000/api/personalinfo'
+        let infoRequest = new XMLHttpRequest
+        infoRequest.open('GET',url)
+        infoRequest.onload = () =>{
+            this.UserName = infoRequest.response
+        }
+    },
     methods: {
         BasicEnsure(){
             this.IsBasicEditEnabled=false
@@ -95,13 +113,23 @@ export default {
             this.Grade = this.GradeTemp
         },
         BasicCancel(){
-            this.IsBasicEnabled=false
+            this.IsBasicEditEnabled=false
             this,this.UserNameTemp=this.UserName
             this.BirthdayTemp=this.Birthday
             this.UserGenderTemp=this.UserGender
             this.SignatureTemp=this.Signature
             this.MajorTemp = this.Major
             this.GradeTemp = this.Grade
+        },
+        SecureEnsure(){
+            this.IsSecureEditEnabled=false
+            this.Password=this.PasswordTemp
+            this.EmailAddress=this.EmailAddressTemp
+        },
+        SecureCancel(){
+            this.IsSecureEditEnabled=false
+            this.PasswordTemp=this.Password
+            this.EmailAddressTemp=this.EmailAddress
         }
 
     },
@@ -266,41 +294,73 @@ export default {
   background: white;
 }
 
-.edit-button{
-  position: fixed;
-  top: 225px;
-  left: 1100px;
+.right-top{
+  position: relative;
+  top:0%;
+  left:5%;
+  width: 800px;
+  height:50px;
+}
+
+.edit-button{  
   background: white;
   border-radius: 5px;
   cursor: pointer;
   font-size: medium;
+  position: relative;
+  top: 70%;
+  left: 80%;
 }
 
 .photo{
+  float: left;
   width: 120px;
   height: 120px;
-  border-radius: 100%;
-  position: fixed;
-  top: 180px;
-  left:530px;
+  border-radius: 100%; 
 }
 
+.nameandsex{
+  position: relative;
+  top: 50%;
+  left: 5%;
+}
+
+.signature-input{
+  position: relative;
+  top:200%;
+  left:-18%;
+  font-size:large; 
+}
+
+.signature-input:disabled{
+  background: white;
+  border: none;
+}
 .username{
   position:fixed;
-  top: 220px;
-  left: 760px;
+  top: 200px;
+  left: 700px;
   font-size:xx-large;
 }
 
 .gender{
-  position:relative;
-  top: 10%;
-  left: -15%;
+  float:right;
   width:50px;
   height:50px;
 }
+
+.right-bottom{
+  text-align:left;
+  position: relative;
+  top:20%;
+  left:0%;
+  height: 300px;
+}
 .input-border{
   font-size:large;
+  width: 150px;
+  height: 25px;
+  font-family:'Times New Roman', Times, serif;
 }
 
 .input-border:disabled{
@@ -309,49 +369,42 @@ export default {
 }
 
 .username-input{
+  position: relative;
+  top: 10%;
+  left: 12%;
   font-size:large;
-  position: fixed;
-  top:330px;
-  left:720px;
+  
 }
 .gender-input{
+  position: relative;
+  top: 19%;
+  left: 12%;
   font-size:large;
-  position: fixed;
-  top:380px;
-  left:720px;
-}
-
-.label-control{
-  position: fixed;
-  top: 385px;
-  left: 775px;
-}
-.signature-input{
-  font-size:large;
-  position: fixed;
-  top:430px;
-  left:720px;
+ 
 }
 
 .birthday-input{
+  position: relative;
+  top: 30%;
+  left: 12%;
   font-size:large;
-  position: fixed;
-  top:480px;
-  left:720px;
+  
 }
 
 .major-input{
+  position: relative;
+  top: 40%;
+  left: 27%;
   font-size:large;
-  position: fixed;
-  top:530px;
-  left:720px;
+  
 }
 
 .grade-input{
+  position: relative;
+  top: 50%;
+  left: 27%;
   font-size:large;
-  position: fixed;
-  top:580px;
-  left:720px;
+ 
 }
 
 .ensure-button{
@@ -359,19 +412,34 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-size:medium;
-  position:fixed;
-  top: 650px;
-  left: 700px;
+  position: relative;
+  top: 70%;
+  left: 13%;
 }
 
 .cancel-button{
+  position: relative;
+  top: 70%;
+  left: 28%;
   background: white;
   border-radius: 5px;
   cursor: pointer;
   font-size:medium;
-  position:fixed;
-  top: 650px;
-  left:980px;
+  
+}
+
+.email-input{
+  font-size: large;
+  position: relative;
+  top: 20%;
+  left: 0%;
+}
+
+.password-input{
+  font-size: large;
+  position: relative;
+  top: 50%;
+  left: 0%;
 }
 </style>
   
