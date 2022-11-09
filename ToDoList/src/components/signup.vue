@@ -9,6 +9,7 @@
         v-model="UserName"
       /><br />
       <div v-if="!IsUsernameTrue" class="username-error">用户名重复</div>
+      <div v-if="IsUsernameEmpty" class="username-error">用户名不能为空</div>
       <input
         type="email"
         placeholder="邮箱"
@@ -16,6 +17,10 @@
         v-model="EmailAddress"
       />
       <button class="send-message" @click="SendEmail">发送验证码</button>
+      <div v-if="IsEmailAddressEmpty" class="email-error">邮箱地址不能为空</div>
+      <div v-else>
+        <div v-if="!IsEmailTrue" class="email-error">该邮箱已被注册</div>
+      </div>
       <br />
       <input
         type="security-code"
@@ -23,9 +28,12 @@
         class="input"
         v-model="SecurityCodeInput"
       />
-      <div v-if="!IsSecurityCodeTrue" class="securitycode-error">验证码错误</div>
+      <div v-if="IsSecurityCodeEmpty" class="securitycode-error">验证码不能为空</div>
+      <div v-else>
+        <div v-if="!IsSecurityCodeTrue" class="securitycode-error">验证码错误</div>
+      </div>      
       <div v-if="!IsPasswordAgainClear">
-        <div v-if="!IsPasswordTrue" class="password-error">密码不一致</div>
+        <div v-if="!IsPasswordTrue" class="password-again-error">密码不一致</div>
         <div v-else class="password-true">正确</div>
       </div>
       <input
@@ -34,7 +42,9 @@
         class="input"
         v-on:input="JudgeThePassword"
         v-model="PasswordHash"
-      /><br />
+      />
+      <div v-if="IsPasswordHashEmpty" class="password-error">密码不能为空</div>
+      <br />
       <input
         type="password"
         placeholder="确认密码"
@@ -43,7 +53,7 @@
         v-model="PasswordAgainHash"
       /><br />
       <div v-if="!IsPasswordAgainClear">
-        <div v-if="!IsPasswordTrue" class="password-error">密码不一致</div>
+        <div v-if="!IsPasswordTrue" class="password-again-error">密码不一致</div>
         <div v-else class="password-true">正确</div>
       </div>
       <input type="submit" value="注册" class="signup-button" @click="SignUp" />
@@ -65,11 +75,18 @@ export default {
             IsPasswordAgainClear: true,
             IsSecurityCodeTrue: true,
             IsUsernameTrue: true,
+            IsEmailTrue: true,
+            IsFormValid: true,
+            IsUsernameEmpty: false,
+            IsEmailAddressEmpty: false,
+            IsSecurityCodeEmpty: false,
+            IsPasswordHashEmpty: false,
         }
     },
     methods: {
         SendEmail() {
             alert('已发送')
+            
         //将邮箱地址发送给后端
         },    
         JudgeThePassword() {
@@ -97,11 +114,36 @@ export default {
                 //由后端返回两个布尔值，一个检测用户名是否正确（不重复），一个检测验证码是否正确
                 //如果全部正确就返回main页面
                 //错误就在该行下有红色的报错
-                if(this.IsSecurityCodeTrue && this.IsUsernameTrue){
-                    alert('注册成功')
-                    this.$router.push('/')
-                    //跳转主页面
+                let url = 'http://127.0.0.1:8000/api/register'
+                let signupRequest = new XMLHttpRequest()
+                let body = {
+                    UserName: this.UserName,
+                    EmailAddress: this.EmailAddress,
+                    PasswordHash: this.PasswordHash,
+                    SecurityCode: this.SecurityCodeInput
                 }
+                signupRequest.open('POST', url)
+                signupRequest.setRequestHeader('Content-Type', 'application/json')
+                signupRequest.responseType = 'json'
+                signupRequest.onload = () => {
+                    this.IsFormValid = signupRequest.response.IsFormValid
+                    if(!this.IsFormValid){
+                        this.IsUsernameEmpty = signupRequest.response.IsUserNameEmpty
+                        this.IsEmailAddressEmpty = signupRequest.response.IsEmailAddressEmpty
+                        this.IsPasswordHashEmpty = signupRequest.response.IsPasswordEmpty
+                        this.IsSecurityCodeEmpty = signupRequest.response.IsSecurityCodeEmpty
+                    }
+                    else{
+                        this.IsSecurityCodeTrue = signupRequest.response.IsSecurityCodeTrue
+                        this.IsUsernameTrue = signupRequest.response.IsUsernameTrue
+                        //this.IsEmailTrue = signupRequest.response.IsEmailAddressTrue
+                        if(this.IsSecurityCodeTrue === true && this.IsUsernameTrue === true && this.IsEmailTrue === true){
+                            this.$router.push('/')
+                            //跳转主页面
+                        }
+                    }                    
+                }
+                signupRequest.send(JSON.stringify(body))               
             }
 
         }
@@ -305,7 +347,7 @@ export default {
   }
 }
 
-.password-error {
+.password-again-error {
   position: absolute;
   top: 80%;
   left: 8%;
@@ -331,7 +373,31 @@ export default {
 
 .username-error{
   position: absolute;
-  top: 31.5%;
+  top: 30%;
+  left: 8%;
+  background: url(../assets/image/error.png) no-repeat 0% 53%;
+  padding-left: 20px;
+  background-size: 16px 16px;
+  background-position: left;
+  color: #d81e06;
+  font-size: small;
+}
+
+.email-error{
+  position: absolute;
+  top: 42%;
+  left: 8%;
+  background: url(../assets/image/error.png) no-repeat 0% 53%;
+  padding-left: 20px;
+  background-size: 16px 16px;
+  background-position: left;
+  color: #d81e06;
+  font-size: small;
+}
+
+.password-error{
+  position: absolute;
+  top: 66%;
   left: 8%;
   background: url(../assets/image/error.png) no-repeat 0% 53%;
   padding-left: 20px;
@@ -343,7 +409,7 @@ export default {
 
 .securitycode-error{
   position: absolute;
-  top: 55%;
+  top: 54.1%;
   left: 8%;
   background: url(../assets/image/error.png) no-repeat 0% 53%;
   padding-left: 20px;

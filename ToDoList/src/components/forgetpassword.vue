@@ -63,7 +63,7 @@ export default {
             IsPasswordTrue: false,
             IsPasswordAgainClear: true,
             IsSecurityCodeTrue: true,
-            IsUsernameTrue: true,
+            IsPasswordEmpty: false
         }
     },
     methods: {
