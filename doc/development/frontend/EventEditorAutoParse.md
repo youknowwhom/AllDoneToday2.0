@@ -12,7 +12,7 @@
 
 - 接口：`/api/ParseEventDescription`
 - 前端请求：
-  ```json
+  ```javascript
   {
     "id": String, // 本次请求的 id
     "content": String, // 编辑框中的内容
@@ -20,7 +20,7 @@
   ```
 - 后端回应：
   - 若后端能够正确处理请求，则返回如下数据：
-    ```json
+    ```javascript
     {
         "id": String, // 对应请求的 id
         "time": {
@@ -36,7 +36,7 @@
     ```
     - 返回状态码 `200` 。
   - 否则，返回状态码 `502` ，返回如下数据。
-    ```json
+    ```javascript
     {
         "id": String, // 对应请求的 id 
     }

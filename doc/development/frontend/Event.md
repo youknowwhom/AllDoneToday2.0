@@ -4,7 +4,7 @@
 
 ## 代办事项类
 
-```json
+```javascript
 {
     "brief": String, // 事件简介，若未提供则为「空」或「详细信息中的前若干个字」
     "description": String, // 事件详细内容
@@ -18,7 +18,7 @@
 
 - 按照「紧急」/「不紧急」，「重要」/「不重要」分为四类。
 - `Level` 定义如下：（前端）
-  ```json
+  ```javascript
   {
     "important": Boolean, // 是否重要
     "urgent": Boolean, // 是否紧急
@@ -31,7 +31,7 @@
   - 发生时间，或起始/结束时间
   - 是否重复，及重复的具体信息
 - `Time` 定义如下：（前端）
-  ```json
+  ```javascript
   {
     "beginTime": Date,
     "endTime": Date,
