@@ -1,4 +1,4 @@
-# EventAutoParse.md
+# EventEditorAutoParse.md
 
 清单应用中，添加新代办事项的输入框对于「时间词」和「重要程度」的「自动高亮」功能的实现说明。
 
@@ -30,7 +30,7 @@
         "importance": {
             "beginIndex": Number, // id 对应的 content 中，重要程度的起始下标
             "endIndex": Number, // id 对应的 content 中，重要程度的结尾下标
-            "level": Number, // id 对应的 content 中，重要程度的等级
+            "level": Level, // id 对应的 content 中，重要程度的等级，Level 类定义见 Event.md
         }
     }
     ```
