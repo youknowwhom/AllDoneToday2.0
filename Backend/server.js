@@ -1,4 +1,5 @@
 import express from 'express'
+import jwt from 'jsonwebtoken'
 const port = 8000
 const app = express()
 
@@ -56,26 +57,26 @@ try {
  * --ToDo
  *   由于无法写入数据库 先使用伪数据
  */
-app.post('/api/register', async (req, res) => {
+app.post('/api/SignUp', async (req, res) => {
     const username = req.body.UserName
     const PasswordHash = req.body.PasswordHash
     const EmailAddress = req.body.EmailAddress
     const SecurityCode = req.body.SecurityCode
 
-    let IsUserNameEmpty = username?false:true
-    let IsPasswordEmpty = PasswordHash?false:true
-    let IsEmailAddressEmpty = EmailAddress?false:true
-    let IsSecurityCodeEmpty = SecurityCode?false:true
+    let IsUserNameEmpty = username ? false : true
+    let IsPasswordEmpty = PasswordHash ? false : true
+    let IsEmailAddressEmpty = EmailAddress ? false : true
+    let IsSecurityCodeEmpty = SecurityCode ? false : true
 
     logger.info(SecurityCode)
-    if(IsUserNameEmpty||IsPasswordEmpty||IsEmailAddressEmpty||IsSecurityCodeEmpty){
+    if (IsUserNameEmpty || IsPasswordEmpty || IsEmailAddressEmpty || IsSecurityCodeEmpty) {
         res.status(200).send({
-            IsFormValid:false,
-            IsUserNameEmpty:IsUserNameEmpty,
-            IsPasswordEmpty:IsPasswordEmpty,
-            IsEmailAddressEmpty:IsEmailAddressEmpty,
-            IsSecurityCodeEmpty:IsSecurityCodeEmpty,
-            msg:'登录格式不正确'
+            IsFormValid: false,
+            IsUserNameEmpty: IsUserNameEmpty,
+            IsPasswordEmpty: IsPasswordEmpty,
+            IsEmailAddressEmpty: IsEmailAddressEmpty,
+            IsSecurityCodeEmpty: IsSecurityCodeEmpty,
+            msg: '登录格式不正确'
         })
         return
     }
@@ -86,24 +87,24 @@ app.post('/api/register', async (req, res) => {
      * （未成功）
      */
 
-    let IsUsernameTrue = username==='dev'?false:true
-    let IsSecurityCodeTrue = SecurityCode==='123456'?true:false
+    let IsUsernameTrue = username === 'dev' ? false : true
+    let IsSecurityCodeTrue = SecurityCode === '123456' ? true : false
 
-    if(!IsUsernameTrue||!IsSecurityCodeTrue){
+    if (!IsUsernameTrue || !IsSecurityCodeTrue) {
         res.status(200).send({
-            IsFormValid:true,
-            IsSecurityCodeTrue:IsSecurityCodeTrue,
-            IsUsernameTrue:IsUsernameTrue,
-            msg:'用户输入信息不符合'
+            IsFormValid: true,
+            IsSecurityCodeTrue: IsSecurityCodeTrue,
+            IsUsernameTrue: IsUsernameTrue,
+            msg: '用户输入信息不符合'
         })
         return
     }
 
     res.status(200).send({
-        IsFormValid:true,
-        IsSecurityCodeTrue:IsSecurityCodeTrue,
-        IsUsernameTrue:IsUsernameTrue,
-        msg:'注册成功'
+        IsFormValid: true,
+        IsSecurityCodeTrue: IsSecurityCodeTrue,
+        IsUsernameTrue: IsUsernameTrue,
+        msg: '注册成功'
     })
 })
 
@@ -120,13 +121,7 @@ app.post('/api/register', async (req, res) => {
  *     - 值只可能为 'success' / 'fail' / 'invalid' 之一
  *   - msg: 服务端返回的信息
  */
-/**
- * 增加了写入token的内容
- */
-
-import jwt from 'jsonwebtoken'
-
-app.post('/api/login', async (req, res) => {
+app.post('/api/SignIn', async (req, res) => {
     const username = req.body.username
     const passwordHash = req.body.passwordHash
     if (!username || !passwordHash) {
@@ -154,10 +149,10 @@ app.post('/api/login', async (req, res) => {
         return
     }
     var jwtBody = {
-        username:requestedUser.username,
+        username: requestedUser.username,
     }
     var jwtKey = 'whj'
-    let token = jwt.sign(jwtBody,jwtKey)
+    let token = jwt.sign(jwtBody, jwtKey)
     requestedUser.token = token
     logger.info(token)
     await requestedUser.save() //生成token 
@@ -179,8 +174,8 @@ app.post('/api/login', async (req, res) => {
  *   - IsUsernameTrue: 用户名是否正确(防止未注册使用)
  *   - IsEmailAddressValid: 邮箱是否有效
  */
-app.post('/api/forgetpassword',async (req,res)=>{
-    const EmailAddress  =req.body.EmailAddress
+app.post('/api/ForgetPassword', async (req, res) => {
+    const EmailAddress = req.body.EmailAddress
     const SecurityCode = req.body.SecurityCode
     const PasswordHash = req.body.PasswordHash
 
@@ -188,10 +183,10 @@ app.post('/api/forgetpassword',async (req,res)=>{
      * 请求格式判断
      */
 
-    if(!EmailAddress||!SecurityCode||!PasswordHash){
+    if (!EmailAddress || !SecurityCode || !PasswordHash) {
         res.status(200).send({
-            IsSecurityCodeTrue : undefined,
-            msg:'忘记密码请求格式出错'
+            IsSecurityCodeTrue: undefined,
+            msg: '忘记密码请求格式出错'
         })
         return
     }
@@ -212,17 +207,17 @@ app.post('/api/forgetpassword',async (req,res)=>{
      */
 
 
-    if(SecurityCode!=='123456'){
+    if (SecurityCode !== '123456') {
         res.status(200).send({
-            IsSecurityCodeTrue:false,
-            msg:'验证码不正确'
+            IsSecurityCodeTrue: false,
+            msg: '验证码不正确'
         })
         return
     }
 
     res.status(200).send({
-        IsSecurityCodeTrue:true,
-        msg:'重置密码成功'
+        IsSecurityCodeTrue: true,
+        msg: '重置密码成功'
     })
 })
 
@@ -241,17 +236,17 @@ app.post('/api/forgetpassword',async (req,res)=>{
  *      - Grade: 年级
  *      - PhotoUrl: 头像信息
  */
-app.get('/api/personalinfo',async(req,res)=>{
+app.get('/api/GetPersonalInfo', async (req, res) => {
     /**
      * 检查请求格式
      */
     const username = req.body.UserName
     const token = req.body.token
 
-    if(!username||!token){
+    if (!username || !token) {
         res.status(200).send({
-            IsThisJsonValid:false,
-            msg:'个人信息请求有误'
+            IsThisJsonValid: false,
+            msg: '个人信息请求有误'
         })
         return
     }
@@ -260,24 +255,24 @@ app.get('/api/personalinfo',async(req,res)=>{
      * 数据库中查找username，比较token
      */
 
-    if(token!=='123456'){
+    if (token !== '123456') {
         res.status(200).send({
-            IsThisJsonValid:false,
-            msg:'登录状态出错'
+            IsThisJsonValid: false,
+            msg: '登录状态出错'
         })
         return
     }
 
     res.status(200).send({
-        IsThisJsonValid:true,
-        UserName:'guoanqi',
+        IsThisJsonValid: true,
+        UserName: 'guoanqi',
         UserGender: 'male',
-        Signature:'wawa',
-        Birthday:'2022-11-06',
-        Major:'Computer Science',
-        Grade:'大二',
-        PhotoUrl:'./photo/temp1',
-        msg:'个人信息'
+        Signature: 'wawa',
+        Birthday: '2022-11-06',
+        Major: 'Computer Science',
+        Grade: '大二',
+        PhotoUrl: './photo/temp1',
+        msg: '个人信息'
     })
 
 })

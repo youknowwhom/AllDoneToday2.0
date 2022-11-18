@@ -114,7 +114,7 @@ export default {
                 //由后端返回两个布尔值，一个检测用户名是否正确（不重复），一个检测验证码是否正确
                 //如果全部正确就返回main页面
                 //错误就在该行下有红色的报错
-                let url = 'http://127.0.0.1:8000/api/register'
+                let url = 'http://127.0.0.1:8000/api/SignUp'
                 let signupRequest = new XMLHttpRequest()
                 let body = {
                     UserName: this.UserName,

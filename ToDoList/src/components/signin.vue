@@ -28,7 +28,7 @@ export default {
 
     methods: {
         Login() {
-            let url = 'http://127.0.0.1:8000/api/login'
+            let url = 'http://127.0.0.1:8000/api/SignIn'
             let loginRequest = new XMLHttpRequest()
             loginRequest.open('POST', url)
             loginRequest.setRequestHeader('Content-Type', 'application/json')
