@@ -10,6 +10,7 @@
 {
     "brief": String, // 事件简介，若未提供则为「空」或「详细信息中的前若干个字」
     "description": String, // 事件详细内容
+    "finished": Boolean,
     "importance": Level, // 事件的重要程度，Level 定义见后文。
     "time": Time, // 事件的时间，Time 定义见后文。
     // ...
