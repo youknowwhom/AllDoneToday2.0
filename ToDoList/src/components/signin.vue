@@ -14,6 +14,8 @@
 
 <script>
 
+import axios from 'axios'
+
 export default {
     name: 'signIn',
     data() {
@@ -27,30 +29,31 @@ export default {
 
 
     methods: {
-        Login() {
-            let url = 'http://127.0.0.1:8000/api/SignIn'
-            let loginRequest = new XMLHttpRequest()
-            loginRequest.open('POST', url)
-            loginRequest.setRequestHeader('Content-Type', 'application/json')
-            loginRequest.responseType = 'json'
-            loginRequest.onload = () => {
-                if (loginRequest.response.result == 'success') {
-                    alert('登录成功')
-                    localStorage.setItem('token', loginRequest.response.token)
-                } else if (loginRequest.response.result == 'fail') {
-                    alert(loginRequest.response.msg)
-                } else if (loginRequest.response.result == 'invalid') {
-                    alert('登录请求有误')
-                } else {
-                    alert('服务端故障')
-                }
+        async Login() {
+            let response = {}
+            try {
+                response = await axios.post('http://127.0.0.1:8000/api/SignIn', this.LoginInfo)
+            } catch (err) {
+                console.error(err)
+                return
             }
-            loginRequest.send(JSON.stringify(this.LoginInfo))
+            if (response.status != 200) {
+                alert('登录请求失败')
+            } else if (response.data.result == 'success') {
+                alert('登录成功')
+                localStorage.setItem('token', response.data.token)
+            } else if (response.data.result == 'fail') {
+                alert(response.data.msg)
+            } else if (response.data.result == 'invalid') {
+                alert('登录请求有误')
+            } else {
+                alert('服务端故障')
+            }
         },
         toSignup() {
             this.$router.push('/signup')
         },
-        toForgetPassword(){
+        toForgetPassword() {
             this.$router.push('/forgetpassword')
         }
 
@@ -139,9 +142,9 @@ export default {
 }
 
 .input[type="password"]:focus {
-    background: url(../assets/image/password-focus.png) no-repeat 1% 47%;    
+    background: url(../assets/image/password-focus.png) no-repeat 1% 47%;
     background-size: 25px 25px;
-    border-bottom: #2e2ed9 solid;    
+    border-bottom: #2e2ed9 solid;
     animation: mymove 2s 1 linear;
 }
 

@@ -70,6 +70,8 @@
   
 <script>
 
+import axios from 'axios'
+
 export default {
     name: 'personalInfo',
     data() {
@@ -98,21 +100,18 @@ export default {
             PasswordTemp: 'haojinis00',
         }
     },
-    created() {
+    async created() {
         let url = 'http://127.0.0.1:8000/api/GetPersonalInfo'
-        let infoRequest = new XMLHttpRequest()
-        infoRequest.open('POST', url)
-        infoRequest.setRequestHeader('Content-Type', 'application/json')
-        infoRequest.responseType = 'json'
-        infoRequest.onload = () => {
-            this.UserName = infoRequest.response
-            console.log('response = ', infoRequest.response)
+        let response = {}
+        try {
+            response = await axios.post(url, {
+                token: localStorage.getItem('token')
+            })
+        } catch (err) {
+            console.error(err)
+            return
         }
-        let body = {
-            token: localStorage.getItem('token')
-        }
-        console.log(body)
-        infoRequest.send(JSON.stringify(body))
+        console.log(response)
     },
     methods: {
         BasicEnsure() {
