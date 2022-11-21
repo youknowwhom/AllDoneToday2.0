@@ -24,11 +24,6 @@ const db = new sequelize.Sequelize('userdata_dev', null, null, {
  */
 class User extends sequelize.Model { }
 User.init({
-    id: {
-        type: sequelize.DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-    },
     /**
      * 用户名
      *   - TODO: 增加长度限制
@@ -46,23 +41,16 @@ User.init({
         allowNull: false
     },
     /**
-     * token
-     */
-    token: {
-        type: sequelize.DataTypes.STRING,
-        allowNull: true
-    },
-    /**
      * 邮箱地址
      */
-    EmailAddress:{
-        type:sequelize.DataTypes.STRING,
-        allowNull:true
+    EmailAddress: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: false
     }
 }, {
     sequelize: db,
     paranoid: false,
-    timestamps:false
+    timestamps: false
 })
 
 
@@ -71,13 +59,24 @@ User.init({
  * 如有必要，会对数据库作更改
  */
 await User.sync({
-    alter: false,
+    alter: true,
     match: /_dev$/
 })
 
-// await User.create({
-//     username: 'whj',
-//     passwordHash: '123456'
-// })
+/**
+ * 创建测试用户
+ */
+await (async () => {
+    await User.destroy({
+        where: {
+            username: 'test'
+        }
+    })
+    await User.create({
+        username: 'test',
+        passwordHash: 'test',
+        EmailAddress: 'test@test.test'
+    })
+})()
 
 export { db as UserdataDB, User }

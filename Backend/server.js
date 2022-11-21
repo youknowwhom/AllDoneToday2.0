@@ -1,5 +1,6 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
+let jwtKey = 'ToDoList_Backend_JSONWebToken_Key_JustForTesting_20221121'
 const port = 8000
 const app = express()
 
@@ -148,17 +149,17 @@ app.post('/api/SignIn', async (req, res) => {
         })
         return
     }
-    var jwtBody = {
+    let jwtBody = {
         username: requestedUser.username,
     }
-    var jwtKey = 'whj'
-    let token = jwt.sign(jwtBody, jwtKey)
-    requestedUser.token = token
+    let token = jwt.sign(jwtBody, jwtKey, {
+        expiresIn: '30d'
+    })
     logger.info(token)
-    await requestedUser.save() //生成token 
     res.status(200).send({
         result: 'success',
-        msg: '登录成功'
+        msg: '登录成功',
+        token: token
     })
 })
 
@@ -195,7 +196,7 @@ app.post('/api/ForgetPassword', async (req, res) => {
      * 无法写入数据库 
      */
 
-    // var requestedUser = User.findOne({
+    // let requestedUser = User.findOne({
     //     where:{
     //         EmailAddress:EmailAddress
     //     }
@@ -222,60 +223,66 @@ app.post('/api/ForgetPassword', async (req, res) => {
 })
 
 /**
- * personalinfo api:
- *   -request:
- *      - UserName:用户名
- *      - token : 检查登录状态
- *   - response:
- *      一个json对象返回这些信息
- *      - UserName:用户名
- *      - UserGender: 性别
- *      - Signature: 个性签名
- *      - BirthDay: 生日
- *      - Major: 专业
- *      - Grade: 年级
- *      - PhotoUrl: 头像信息
+ * 获取个人信息 api:
+ *   - request:
+ *     - token: token
+ *   - response(success):
+ *     - 用户的个人信息，具体内容见 UserInfo.md
+ *   - response(failure):
+ *     - msg: 后端返回给前端的错误信息，为 'invalid' / 'expired' 之一
  */
-app.get('/api/GetPersonalInfo', async (req, res) => {
-    /**
-     * 检查请求格式
-     */
-    const username = req.body.UserName
-    const token = req.body.token
-
-    if (!username || !token) {
-        res.status(200).send({
-            IsThisJsonValid: false,
-            msg: '个人信息请求有误'
+app.post('/api/GetPersonalInfo', async (req, res) => {
+    if (!req.body.token) {
+        res.status(400).send({
+            msg: 'invalid'
         })
         return
     }
 
-    /**
-     * 数据库中查找username，比较token
-     */
-
-    if (token !== '123456') {
-        res.status(200).send({
-            IsThisJsonValid: false,
-            msg: '登录状态出错'
-        })
+    let userName = ''
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({
+                msg: 'expired'
+            })
+        } else {
+            logger.info(err)
+            res.status(400).send({
+                msg: 'invalid'
+            })
+        }
         return
+    }
+
+    // 数据库中查找 username
+
+    const UserObj = await User.findOne({
+        where: {
+            username: userName
+        }
+    })
+
+    if (!UserObj) {
+        res.status(400).send({
+            msg: 'invalid'
+        })
     }
 
     res.status(200).send({
-        IsThisJsonValid: true,
-        UserName: 'guoanqi',
+        UserName: UserObj.username,
+        EmailAddress: UserObj.EmailAddress,
         UserGender: 'male',
         Signature: 'wawa',
         Birthday: '2022-11-06',
         Major: 'Computer Science',
         Grade: '大二',
-        PhotoUrl: './photo/temp1',
         msg: '个人信息'
     })
 
 })
+
 /**
  * 运行服务器
  */

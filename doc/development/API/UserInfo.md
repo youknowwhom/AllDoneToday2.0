@@ -9,15 +9,13 @@
 ```javascript
 {
     "username": String, // 用户名
-    "token": String, // 一个记录用户是否登录的请求头。每次登录更新
-    "UpdateAt": Date, // 最新登录时间，用于生成token
-    "EmailAddress": String,// 用户邮箱地址，用于实现发验证码和找回密码
+    "EmailAddress": String, // 用户邮箱地址，用于实现发验证码和找回密码
     "passwordHash":String, // 已经被定义好的密码哈希
-    "UserGender": String,// 用户性别
-    "Signature": String,// 个性签名
+    "UserGender": String, // 用户性别
+    "Signature": String, // 个性签名
     "BirthDay": String, // 用户生日
-    "Major": String,// 专业
-    "Grade": String,// 年级
+    "Major": String, // 专业
+    "Grade": String, // 年级
     "Photourl": String// 用于记录头像信息
 }
 ```
@@ -29,7 +27,7 @@
 {
     "username": String, // 用户名
      "UpdateAt": Date, // 最新登录时间，用于生成token
-    "EmailAddress": String,// 用户邮箱地址，用于实现发验证码和找回密码
+    "EmailAddress": String, // 用户邮箱地址，用于实现发验证码和找回密码
     "passwordHash":String// 已经被定义好的密码哈希
 }
 ```
