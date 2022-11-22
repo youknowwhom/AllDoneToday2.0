@@ -46,6 +46,34 @@ User.init({
     EmailAddress: {
         type: sequelize.DataTypes.STRING,
         allowNull: false
+    },
+    /**
+     * 性别
+     */
+    UserGender:{
+        type:sequelize.DataTypes.STRING,
+        allowNull: true
+    },
+    /**
+     *  个性签名
+     */
+    Signature:{
+        type:sequelize.DataTypes.STRING,
+        allowNull:true
+    },
+    /**
+     * 用户生日
+     */
+    BirthDay:{
+        type:sequelize.DataTypes.STRING,
+        allowNull: true
+    },
+    /**
+     * 头像url
+     */
+    Photourl:{
+        type:sequelize.DataTypes.STRING,
+        allowNull:true
     }
 }, {
     sequelize: db,
@@ -75,7 +103,10 @@ await (async () => {
     await User.create({
         username: 'test',
         passwordHash: 'test',
-        EmailAddress: 'test@test.test'
+        EmailAddress: 'test@test.test',
+        UserGender:'男',
+        Signature:'Wo shi wawa',
+        BirthDay:'2002-09-08'
     })
 })()
 
