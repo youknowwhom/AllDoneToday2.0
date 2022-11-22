@@ -273,11 +273,9 @@ app.post('/api/GetPersonalInfo', async (req, res) => {
     res.status(200).send({
         UserName: UserObj.username,
         EmailAddress: UserObj.EmailAddress,
-        UserGender: 'male',
-        Signature: 'wawa',
-        Birthday: '2022-11-06',
-        Major: 'Computer Science',
-        Grade: '大二',
+        UserGender: UserObj.UserGender,
+        Signature: UserObj.Signature,
+        Birthday: UserObj.Birthday,
         msg: '个人信息'
     })
 
