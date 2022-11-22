@@ -258,24 +258,24 @@ app.post('/api/GetPersonalInfo', async (req, res) => {
 
     // 数据库中查找 username
 
-    const UserObj = await User.findOne({
+    const userObj = await User.findOne({
         where: {
             username: userName
         }
     })
 
-    if (!UserObj) {
+    if (!userObj) {
         res.status(400).send({
             msg: 'invalid'
         })
     }
 
     res.status(200).send({
-        UserName: UserObj.username,
-        EmailAddress: UserObj.EmailAddress,
-        UserGender: UserObj.UserGender,
-        Signature: UserObj.Signature,
-        Birthday: UserObj.Birthday,
+        UserName: userObj.username,
+        EmailAddress: userObj.EmailAddress,
+        UserGender: userObj.UserGender,
+        Signature: userObj.Signature,
+        Birthday: userObj.Birthday,
         msg: '个人信息'
     })
 
