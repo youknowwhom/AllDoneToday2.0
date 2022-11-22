@@ -101,7 +101,7 @@ export default {
         }
     },
     async created() {
-        let url = 'http://127.0.0.1:8000/api/GetPersonalInfo'
+        let url = '/api/GetPersonalInfo'
         let response = {}
         try {
             response = await axios.post(url, {

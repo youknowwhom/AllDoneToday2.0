@@ -101,7 +101,7 @@ export default {
 
                 let response = {}
                 try {
-                    response = await axios.post('http://127.0.0.1:8000/api/SignUp', body)
+                    response = await axios.post('/api/SignUp', body)
                 } catch (err) {
                     console.error(err)
                 }
