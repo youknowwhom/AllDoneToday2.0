@@ -9,9 +9,9 @@ import logger from '../logger.js'
  *   - TODO: 增加 test 和 prod 数据库
  * - 使用 pino logger
  */
-const db = new sequelize.Sequelize('userdata_dev', null, null, {
+const db = new sequelize.Sequelize('userdata.dev', null, null, {
     dialect: 'sqlite',
-    storage: 'db/userdata_dev.db',
+    storage: 'db/userdata.dev.db',
     logging: msg => logger.debug(msg)
 })
 
