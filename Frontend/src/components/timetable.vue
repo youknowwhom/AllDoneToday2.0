@@ -5,7 +5,7 @@
         <p>{{this.timeTableLocationEncoded}}</p>
         <p>{{this.timeTableLocationEncoded}}</p>
         <p>{{this.timeTableLocationEncoded}}</p>
-        <iframe src="https://1.tongji.edu.cn/GraduateStudentTimeTable"></iframe>
+        <iframe :src="this.timeTableLocation"></iframe>
     </div>
 
 </template>
