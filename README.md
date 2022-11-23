@@ -62,7 +62,7 @@ code . # 运行 Visual Studio Code ，并打开当前文件夹
 ```sh
 cd Frontend
 npm install # 安装依赖
-npm run dev # 启动 Vite dev server
+npm start # 启动 Vite dev server
 ```
 
 ### 配置并启动后端
@@ -72,7 +72,7 @@ npm run dev # 启动 Vite dev server
 ```sh
 cd Backend
 npm install # 安装依赖
-npm run dev # 启动 Nodemon
+npm start # 启动 Nodemon
 ```
 
 ### 预览网页

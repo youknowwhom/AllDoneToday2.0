@@ -1,6 +1,7 @@
 <script>
 
 import ToDoList from './todolist.vue'
+import TimeTable from './timetable.vue'
 
 export default {
     name: 'app',
@@ -12,6 +13,7 @@ export default {
     },
     components: {
         ToDoList,
+        TimeTable,
     }
 }
 
@@ -25,7 +27,7 @@ export default {
                 <img src="../assets/image/logo.png" class="logo" />
             </div>
 
-            <div class="content">
+            <div class="app-content">
                 <div class="sidebar">
                     <img v-if="ModeChosen != 'ToDoList'" src="../assets/image/app-leftbar-todolist.png"
                         class="leftbar-icon" @click="ModeChosen = 'ToDoList'" />
@@ -39,7 +41,8 @@ export default {
                         class="leftbar-icon" @click="ModeChosen = 'Concentration'" />
                     <img v-else src="../assets/image/app-leftbar-concentrate-focus.png" class="leftbar-icon" />
                 </div>
-                <component :is="ModeChosen" />
+                <div class="component-content">
+                <component :is="ModeChosen" /></div>
             </div>
         </div>
     </body>
@@ -57,7 +60,6 @@ body {
     margin: 0;
     text-align: center;
     caret-color: transparent;
-
 }
 
 .logo {
@@ -69,9 +71,7 @@ body {
     width: 100%;
     height: 100%;
     background: rgb(255, 255, 255);
-    margin: 0 auto;
     text-align: left;
-    font-size: 0;
 }
 
 .header {
@@ -95,10 +95,10 @@ body {
     font-size: 20px;
 }
 
-.content {
-    margin: 0;
-    padding: 0;
-    top: 0;
+.app-content {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
     height: 100%;
     background-color: rgb(255, 255, 255);
 }
@@ -108,6 +108,12 @@ body {
     margin-top: 20px;
     height: 25px;
     cursor: pointer;
+}
+
+.component-content {
+    height: 100%;
+    width: 100%;
+    display: flex;
 }
 </style>
   

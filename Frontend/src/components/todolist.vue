@@ -1,7 +1,6 @@
 <template>
 
-    <!-- <body> -->
-    <div class="content">
+    <div class="ToDoList-container">
         <div class="todolist-filter">
             <p class="todolist-filter-index"> 时间 </p>
             <div :class="ToDoList.Filter == 'all' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
@@ -90,8 +89,6 @@
 
     </div>
 
-    <!-- </body> -->
-
 </template>
   
 <script>
@@ -159,14 +156,12 @@ export default {
   
 <style scoped>
 .todolist-main {
-    height: 100%;
     flex: 0 0 30%;
     padding-left: 20px;
     padding-right: 20px;
 }
 
 .todolist-detail-right {
-    height: 100%;
     flex: 1 1 auto;
     padding-top: 10px;
     padding-left: 13px;
@@ -175,8 +170,6 @@ export default {
 }
 
 .todolist-filter {
-    top: 0;
-    height: 100%;
     flex: 0 0 10%;
     padding-top: 10px;
     background: #fefeff;
@@ -303,7 +296,9 @@ export default {
     opacity: 20%;
 }
 
-.content {
+.ToDoList-container {
+    height: 100%;
+    width: 100%;
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
