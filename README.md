@@ -60,9 +60,9 @@ code . # 运行 Visual Studio Code ，并打开当前文件夹
 按下 `Ctrl` + <code>\`</code> 打开一个新的终端。
 
 ```sh
-cd ToDoList
+cd Frontend
 npm install # 安装依赖
-npm run dev # 启动 Vite
+npm run dev # 启动 Vite dev server
 ```
 
 ### 配置并启动后端
