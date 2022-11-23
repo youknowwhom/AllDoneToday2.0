@@ -1,93 +1,94 @@
 <template>
 
     <!-- <body> -->
-        <div class="content">
-            <div class="todolist-filter">
-                <p class="todolist-filter-index"> 时间 </p>
-                <div :class="ToDoList.Filter == 'all' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
-                    @click="ToDoList.Filter = 'all'">
-                    <img src="../assets/image/filter-all.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 全部 </p>
-                </div>
-                <div :class="ToDoList.Filter == 'past' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
-                    @click="ToDoList.Filter = 'past'">
-                    <img src="../assets/image/filter-past.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 往日 </p>
-                </div>
-                <div :class="ToDoList.Filter == 'today' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
-                    @click="ToDoList.Filter = 'today'">
-                    <img src="../assets/image/filter-today.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 今日 </p>
-                </div>
-                <div :class="ToDoList.Filter == 'recent7' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
-                    @click="ToDoList.Filter = 'recent7'">
-                    <img src="../assets/image/filter-recent7.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 最近七日 </p>
-                </div>
-                <hr class="todolist-filter-separater">
-                <p class="todolist-filter-index"> 四象限 </p>
-                <div :class="ToDoList.Filter == 'iu' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
-                    @click="ToDoList.Filter = 'iu'">
-                    <img src="../assets/image/filter-one.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 重要 & 紧急 </p>
-                </div>
-                <div :class="ToDoList.Filter == 'i!u' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
-                    @click="ToDoList.Filter = 'i!u'">
-                    <img src="../assets/image/filter-two.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 重要 & 不紧急 </p>
-                </div>
-                <div :class="ToDoList.Filter == 'u!i' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
-                    @click="ToDoList.Filter = 'u!i'">
-                    <img src="../assets/image/filter-three.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 紧急 & 不重要 </p>
-                </div>
-                <div :class="ToDoList.Filter == '!i!u' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
-                    @click="ToDoList.Filter = '!i!u'">
-                    <img src="../assets/image/filter-four.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 不重要 & 不紧急 </p>
-                </div>
+    <div class="content">
+        <div class="todolist-filter">
+            <p class="todolist-filter-index"> 时间 </p>
+            <div :class="ToDoList.Filter == 'all' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
+                @click="ToDoList.Filter = 'all'">
+                <img src="../assets/image/filter-all.png" class="todolist-filter-icon" />
+                <p class="todolist-filter-alternative-text"> 全部 </p>
+            </div>
+            <div :class="ToDoList.Filter == 'past' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
+                @click="ToDoList.Filter = 'past'">
+                <img src="../assets/image/filter-past.png" class="todolist-filter-icon" />
+                <p class="todolist-filter-alternative-text"> 往日 </p>
+            </div>
+            <div :class="ToDoList.Filter == 'today' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
+                @click="ToDoList.Filter = 'today'">
+                <img src="../assets/image/filter-today.png" class="todolist-filter-icon" />
+                <p class="todolist-filter-alternative-text"> 今日 </p>
+            </div>
+            <div :class="ToDoList.Filter == 'recent7' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
+                @click="ToDoList.Filter = 'recent7'">
+                <img src="../assets/image/filter-recent7.png" class="todolist-filter-icon" />
+                <p class="todolist-filter-alternative-text"> 最近七日 </p>
+            </div>
+            <hr class="todolist-filter-separater">
+            <p class="todolist-filter-index"> 四象限 </p>
+            <div :class="ToDoList.Filter == 'iu' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
+                @click="ToDoList.Filter = 'iu'">
+                <img src="../assets/image/filter-one.png" class="todolist-filter-icon" />
+                <p class="todolist-filter-alternative-text"> 重要 & 紧急 </p>
+            </div>
+            <div :class="ToDoList.Filter == 'i!u' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
+                @click="ToDoList.Filter = 'i!u'">
+                <img src="../assets/image/filter-two.png" class="todolist-filter-icon" />
+                <p class="todolist-filter-alternative-text"> 重要 & 不紧急 </p>
+            </div>
+            <div :class="ToDoList.Filter == 'u!i' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
+                @click="ToDoList.Filter = 'u!i'">
+                <img src="../assets/image/filter-three.png" class="todolist-filter-icon" />
+                <p class="todolist-filter-alternative-text"> 紧急 & 不重要 </p>
+            </div>
+            <div :class="ToDoList.Filter == '!i!u' ? 'todolist-filter-alternative-box-chosen' : 'todolist-filter-alternative-box'"
+                @click="ToDoList.Filter = '!i!u'">
+                <img src="../assets/image/filter-four.png" class="todolist-filter-icon" />
+                <p class="todolist-filter-alternative-text"> 不重要 & 不紧急 </p>
+            </div>
+        </div>
+
+
+        <div class="todolist-main">
+            <p class="todolist-top-headline">日毕清单</p>
+
+            <div class="todolist-top-itemadder">
+                <input type="text" placeholder="在此处添加新的待办事项" class="todolist-top-itemadder-input" />
             </div>
 
-
-            <div class="todolist-main">
-                <p class="todolist-top-headline">日毕清单</p>
-
-                <div class="todolist-top-itemadder">
-                    <input type="text" placeholder="在此处添加新的待办事项" class="todolist-top-itemadder-input" />
+            <div class="todolist-list">
+                <div class="todolist-main-menu">
+                    <p>未毕</p>
+                    <div v-for="item in UndoneInfoList" class="todolist-main-item" :key="item.name">
+                        <img src="../assets/image/item-unchosen.png" class="todolist-main-item-icon"
+                            @click="item.isDone = true" />
+                        {{ item.name }}
+                    </div>
                 </div>
-
-                <div class="todolist-list">
-                    <div class="todolist-main-menu">
-                        <p>未毕</p>
-                        <div v-for="item in UndoneInfoList" class="todolist-main-item">
-                            <img src="../assets/image/item-unchosen.png" class="todolist-main-item-icon"
-                                @click="item.isDone = true" />
-                            {{ item.name }}
-                        </div>
+                <div class="todolist-main-menu">
+                    <p>待毕</p>
+                    <div v-for="item in TobedoneInfoList" class="todolist-main-item" :key="item.name">
+                        <img src="../assets/image/item-unchosen.png" class="todolist-main-item-icon"
+                            @click="item.isDone = true" />
+                        {{ item.name }}
                     </div>
-                    <div class="todolist-main-menu">
-                        <p>待毕</p>
-                        <div v-for="item in TobedoneInfoList" class="todolist-main-item">
-                            <img src="../assets/image/item-unchosen.png" class="todolist-main-item-icon"
-                                @click="item.isDone = true" />
-                            {{ item.name }}
-                        </div>
-                    </div>
-                    <div class="todolist-main-menu">
-                        <p>已毕</p>
-                        <div v-for="item in DoneInfoList" class="todolist-main-item" style="color: gainsboro;">
-                            <img src="../assets/image/item-chosen.png" class="todolist-main-item-icon"
-                                @click="item.isDone = false" />
-                            {{ item.name }}
-                        </div>
+                </div>
+                <div class="todolist-main-menu">
+                    <p>已毕</p>
+                    <div v-for="item in DoneInfoList" class="todolist-main-item" style="color: gainsboro;"
+                        :key="item.name">
+                        <img src="../assets/image/item-chosen.png" class="todolist-main-item-icon"
+                            @click="item.isDone = false" />
+                        {{ item.name }}
                     </div>
                 </div>
             </div>
-            <div class="todolist-detail-right">
-
-            </div>
+        </div>
+        <div class="todolist-detail-right">
 
         </div>
+
+    </div>
 
     <!-- </body> -->
 
@@ -238,8 +239,6 @@ export default {
     background-color: #ffffff;
 }
 
-.todolist-list {}
-
 .todolist-filter-icon {
     height: 30px;
     margin-left: 8px;
@@ -281,7 +280,7 @@ export default {
 
 .todolist-filter-alternative-text {
     padding-left: 15px;
-    padding-right: 15px;    
+    padding-right: 15px;
     margin-top: 0;
     margin-bottom: 0;
     width: max-content;
