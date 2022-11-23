@@ -58,7 +58,8 @@
             <div class="todolist-list">
                 <div class="todolist-main-menu">
                     <p>未毕</p>
-                    <div v-for="item in UndoneInfoList" class="todolist-main-item" :key="item.name">
+                    <div v-for="item in UndoneInfoList" class="todolist-main-item" :key="item.name"
+                        @click="this.ToDoList.ItemDisplay = item">
                         <img src="../assets/image/item-unchosen.png" class="todolist-main-item-icon"
                             @click="item.isDone = true" />
                         {{ item.name }}
@@ -66,7 +67,8 @@
                 </div>
                 <div class="todolist-main-menu">
                     <p>待毕</p>
-                    <div v-for="item in TobedoneInfoList" class="todolist-main-item" :key="item.name">
+                    <div v-for="item in TobedoneInfoList" class="todolist-main-item" :key="item.name"
+                        @click="this.ToDoList.ItemDisplay = item">
                         <img src="../assets/image/item-unchosen.png" class="todolist-main-item-icon"
                             @click="item.isDone = true" />
                         {{ item.name }}
@@ -75,7 +77,7 @@
                 <div class="todolist-main-menu">
                     <p>已毕</p>
                     <div v-for="item in DoneInfoList" class="todolist-main-item" style="color: gainsboro;"
-                        :key="item.name">
+                    @click="this.ToDoList.ItemDisplay = item" :key="item.name">
                         <img src="../assets/image/item-chosen.png" class="todolist-main-item-icon"
                             @click="item.isDone = false" />
                         {{ item.name }}
@@ -84,6 +86,32 @@
             </div>
         </div>
         <div class="todolist-detail-right">
+            <div v-if="ToDoList.ItemDisplay != undefined">
+                <div class="todolist-detail-right-itemname">
+                    {{ ToDoList.ItemDisplay.name }}
+                </div>
+                <div v-if="GetDeltaDate(ToDoList.ItemDisplay) >= -2 && GetDeltaDate(ToDoList.ItemDisplay) <= 2"
+                    class="todolist-detail-right-time">
+                    {{ ADJACENT_DAY_NAME[GetDeltaDate(ToDoList.ItemDisplay)] }}
+                </div>
+                <div v-else-if="GetDeltaWeek(ToDoList.ItemDisplay) >= -1 && GetDeltaWeek(ToDoList.ItemDisplay) <= 1"
+                    class="todolist-detail-right-time">
+                    {{ WEEK_RELATION[GetDeltaWeek(ToDoList.ItemDisplay)] }}{{
+                            WEEK_DAY_NAME[ToDoList.ItemDisplay.time.getDay()]
+                    }}
+                </div>
+                <div v-else class="todolist-detail-right-time">
+                    {{ ToDoList.ItemDisplay.time.getMonth() + 1 }} 月 {{ ToDoList.ItemDisplay.time.getDate() }} 日
+                </div>
+
+                <div v-if="ToDoList.ItemDisplay.isDetailedTimeSet" class="todolist-detail-right-time">
+                    &nbsp;&nbsp;{{ GetTimeString(ToDoList.ItemDisplay) }}
+                </div>
+
+                <div class="todolist-detail-right-priority">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ PRIORITY[ToDoList.ItemDisplay.priority] }}
+                </div>
+            </div>
 
         </div>
 
@@ -92,6 +120,11 @@
 </template>
   
 <script>
+
+const AdjacentDayName = { '-2': '前日', '-1': '昨日', '0': '今日', '1': '明日', '2': '后日' }
+const WeekRelation = { '-1': '上周', '0': '周', '1': '下周' }
+const WeekDayName = ['日', '一', '二', '三', '四', '五', '六']
+const Priority = { 'iu': '重要&紧急', 'i!u': '重要&不紧急', 'u!i': '紧急&不重要', '!i!u': '不重要&不紧急' }
 
 export default {
     name: 'ToDoList',
@@ -105,6 +138,8 @@ export default {
                 */
                 Filter: 'all',
                 //当前展示的所有清单信息
+                NewItem: undefined,
+                ItemDisplay: undefined,
                 InfoList: [
                     //调试用
                     {
@@ -128,6 +163,60 @@ export default {
         }
     },
     methods: {
+        InputProcess: function () {
+            if (this.ToDoList.InputBox.indexOf('今天') != -1) {
+                this.ToDoList.InputBox = this.ToDoList.InputBox.replace('今天', '')
+            }
+            console.info(this.ToDoList.InputBox, this.ToDoList.InputBox.indexOf('今天'))
+        },
+        //判断是否符合过滤条件
+        IsInFilter: function (item) {
+            const per_day_sec = 86400000
+            var currentTime = new Date()
+            var currentDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate())
+            var setDate = new Date(item.time.getFullYear(), item.time.getMonth(), item.time.getDate())
+            var difDate = (setDate - currentDate) / per_day_sec
+            if (this.ToDoList.Filter == 'all')
+                return true
+            else if (this.ToDoList.Filter == 'past')
+                return difDate < 0
+            else if (this.ToDoList.Filter == 'today')
+                return difDate == 0
+            else if (this.ToDoList.Filter == 'recent7')
+                return difDate >= 0 && difDate < 7
+            else
+                return this.ToDoList.Filter == item.priority
+        },
+        //返回和当前系统日期差
+        GetDeltaDate: function (item) {
+            const per_day_sec = 86400000
+            var currentTime = new Date()
+            var currentDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate())
+            var setDate = new Date(item.time.getFullYear(), item.time.getMonth(), item.time.getDate())
+            var difDate = (setDate - currentDate) / per_day_sec
+            return difDate
+        },
+        //返回和当前系统星期差
+        GetDeltaWeek: function (item) {
+            const per_week_sec = 86400000 * 7
+            var currentTime = new Date()
+            //统一到周一来计算 二者差距几周
+            var currentDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate() - currentTime.getDay() + (currentTime.getDay() == 0 ? (-6) : (+1)))
+            var setDate = new Date(item.time.getFullYear(), item.time.getMonth(), item.time.getDate() - item.time.getDay() + (item.time.getDay() == 0 ? (-6) : (+1)))
+            var difWeek = (setDate - currentDate) / per_week_sec
+            console.info(item.name, difWeek)
+            return difWeek
+        },
+        //获取字符串的xx:xx时间
+        GetTimeString: function (item) {
+            var str = ''
+            str += item.time.getHours()
+            str += ' : '
+            if (item.time.getMinutes() < 10)
+                str += '0'
+            str += item.time.getMinutes()
+            return str
+        }
 
     },
     computed: {
@@ -150,7 +239,15 @@ export default {
                 return item.isDone
             })
         }
-    }
+    },
+
+    //设置常量
+    created() {
+        this.ADJACENT_DAY_NAME = AdjacentDayName
+        this.WEEK_RELATION = WeekRelation
+        this.WEEK_DAY_NAME = WeekDayName
+        this.PRIORITY = Priority
+    },
 }
 </script>
   
@@ -304,6 +401,28 @@ export default {
     justify-content: flex-start;
     background-color: rgb(255, 255, 255);
     font-size: medium;
+}
+
+.todolist-detail-right-itemname {
+    font-weight: bolder;
+}
+
+.todolist-detail-right-time {
+    padding-top: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+    white-space: nowrap;
+    color: #7a7af9;
+}
+
+.todolist-detail-right-priority {
+    padding-top: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+    white-space: nowrap;
+    color: #b8b8ff;
 }
 </style>
   
