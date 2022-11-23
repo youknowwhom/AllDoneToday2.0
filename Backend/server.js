@@ -345,22 +345,22 @@ app.post('/api/ChangePersonalInfo',async(req,res)=>{
         UserBirthdayChange:false,
     }
 
-    for(const [key,value] of req.body){
+    for(const key in req.body){
         if(key==='UserGender'){
             await UserObj.update({
-                UserGender:value
+                UserGender:req.body[key]
             })
             resData.UserGenderChange = true
         }
         if(key==='Signature'){
             await UserObj.update({
-                Signature:value
+                Signature:req.body[key]
             })
             resData.UserSignatureChange = true
         }
         if(key==='Birthday'){
             await UserObj.update({
-                Birthday:value
+                Birthday:req.body[key]
             })
             resData.UserBirthdayChange = true
         }
