@@ -56,34 +56,64 @@
                     </div>
 
                     <div class="todolist-detail-right">
+                        <div v-if="ToDoList.ItemDisplay != undefined">
+                            <div class ="todolist-detail-right-itemname">
+                                {{ToDoList.ItemDisplay.name}}
+                            </div>
+                            <div v-if="GetDeltaDate(ToDoList.ItemDisplay) >= -2 && GetDeltaDate(ToDoList.ItemDisplay) <= 2" class = "todolist-detail-right-time">
+                                {{ADJACENT_DAY_NAME[GetDeltaDate(ToDoList.ItemDisplay)]}} 
+                            </div>
+                            <div v-else-if="GetDeltaWeek(ToDoList.ItemDisplay) >= -1 && GetDeltaWeek(ToDoList.ItemDisplay) <= 1" class = "todolist-detail-right-time">
+                                {{WEEK_RELATION[GetDeltaWeek(ToDoList.ItemDisplay)]}}{{WEEK_DAY_NAME[ToDoList.ItemDisplay.time.getDay()]}} 
+                            </div>
+                            <div v-else class = "todolist-detail-right-time">
+                                {{ToDoList.ItemDisplay.time.getMonth() + 1}} 月 {{ToDoList.ItemDisplay.time.getDate()}} 日 
+                            </div>
 
+                            <div v-if="ToDoList.ItemDisplay.isDetailedTimeSet" class = "todolist-detail-right-time">
+                                &nbsp;&nbsp;{{GetTimeString(ToDoList.ItemDisplay)}}
+                            </div>
+                            
+                            <div class = "todolist-detail-right-priority">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{PRIORITY[ToDoList.ItemDisplay.priority]}}
+                            </div>
+                        </div>
                     </div>
 
                     <div class="todolist-top-itemadder">
                         <p class = "todolist-top-headline">日毕清单</p>
-                        <input type="text" placeholder="在此处添加新的待办事项" class="todolist-top-itemadder-input"  />
+                        <input type="text" placeholder="在此处添加新的待办事项" class="todolist-top-itemadder-input" v-model="ToDoList.InputBox" @input="InputProcess" />
                     </div>
 
                     <div class="todolist-main">
                         <div class="todolist-main-menu">
                             <p>未毕</p>
-                            <div v-for="item in UndoneInfoList" class = "todolist-main-item">
+                            <div v-for="item in UndoneInfoList" class = "todolist-main-item" @click = "ToDoList.ItemDisplay = item">
                                 <img src="../assets/image/item-unchosen.png" class = "todolist-main-item-icon" @click="item.isDone = true"/>
                                 {{item.name}}
+                            </div>
+                            <div v-if="UndoneInfoList.length == 0" class = "todolist-main-empty">
+                                日日事，日日毕
                             </div>
                         </div>
                         <div class="todolist-main-menu">
                             <p>待毕</p>
-                            <div v-for="item in TobedoneInfoList" class = "todolist-main-item">
+                            <div v-for="item in TobedoneInfoList" class = "todolist-main-item" @click = "ToDoList.ItemDisplay = item">
                                 <img src="../assets/image/item-unchosen.png" class = "todolist-main-item-icon" @click="item.isDone = true"/>
                                 {{item.name}}
+                            </div>
+                            <div v-if="TobedoneInfoList.length == 0" class = "todolist-main-empty">
+                                今日事，今日毕
                             </div>
                         </div>
                         <div class="todolist-main-menu">
                             <p>已毕</p>
-                            <div v-for="item in DoneInfoList" class = "todolist-main-item" style = "color: gainsboro;">
+                            <div v-for="item in DoneInfoList" class = "todolist-main-item" style = "color: gainsboro;"  @click = "ToDoList.ItemDisplay = item">
                                 <img src="../assets/image/item-chosen.png" class = "todolist-main-item-icon" @click="item.isDone = false"/>
                                 {{item.name}}
+                            </div>
+                            <div v-if="DoneInfoList.length == 0" class = "todolist-main-empty">
+                                今日首毕等待解锁
                             </div>
                         </div>
                     </div>
@@ -99,6 +129,11 @@
   
 <script>
 
+const AdjacentDayName = { '-2' : '前日', '-1' : '昨日', '0' : '今日', '1' : '明日', '2' : '后日'};
+const WeekRelation = { '-1' : '上周', '0' : '周', '1' : '下周' };
+const WeekDayName = ['日', '一', '二', '三', '四', '五', '六'];
+const Priority = {'iu' : '重要&紧急', 'i!u' : '重要&不紧急', 'u!i' : '紧急&不重要', '!i!u' : '不重要&不紧急'};
+
 export default {
     name: 'toDoList',
     data() {
@@ -107,6 +142,8 @@ export default {
             ModeChosen: "ToDoList",
             //ToDoList清单模式内的变量
             ToDoList: {
+                NewItem: undefined,
+                InputBox:"",
                 /* 左侧选择器选择的内容
                    时间 : ["all", "past", "today", "recent7"]
                    四象限 : ["iu", "i!u", "u!i", "!i!u"] (i = important, u = urgent)
@@ -117,47 +154,131 @@ export default {
                     //调试用
                     {
                         name : "记得过生日",
-                        time : new Date(2022, 5, 4),
-                        isDetailedTimeSet: false,
+                        time : new Date(2022, 5 - 1, 4),
+                        isDetailedTimeSet : false,
                         priority : '!i!u',
                         detail : "今天是我的生日",
                         isDone : false,
                     },
                     {
                         name : "计算机科学导论课后作业",
-                        time : new Date(2022, 11, 5, 12, 0, 0),
-                        isDetailedTimeSet: true,
+                        time : new Date(2022, 11 - 1, 9, 12, 0, 0),
+                        isDetailedTimeSet : true,
                         priority : 'iu',
                         detail : "第三章",
                         isDone : true,
+                    },
+                    {
+                        name : "吃个小蛋糕",
+                        time : new Date(2022, 10 - 1, 30),
+                        isDetailedTimeSet : false,
+                        priority : '!i!u',
+                        detail : "提拉米苏",
+                        isDone : false,
+                    },
+                    {
+                        name : "听 MIDNIGHTS 2147483647次",
+                        time : new Date(2022, 11 - 1, 6),
+                        isDetailedTimeSet : false,
+                        priority : 'i!u',
+                        detail : "米奈好听！",
+                        isDone : true,
                     }
                  ],
+                //当前正在展示的item
+                ItemDisplay: undefined, 
             }
         }
     },
-    methods: {
 
+    //设置常量
+    created: function(){
+        this.ADJACENT_DAY_NAME = AdjacentDayName;
+        this.WEEK_RELATION = WeekRelation;
+        this.WEEK_DAY_NAME = WeekDayName;
+        this.PRIORITY = Priority;
+    },
+
+    methods: {
+        InputProcess: function(){
+            if(this.ToDoList.InputBox.indexOf('今天') != -1){
+                this.ToDoList.InputBox = this.ToDoList.InputBox.replace('今天', '');
+            }
+            console.info(this.ToDoList.InputBox, this.ToDoList.InputBox.indexOf('今天'));
+        },
+        //判断是否符合过滤条件
+        IsInFilter: function(item){   
+            const per_day_sec = 86400000;
+            var currentTime = new Date();
+            var currentDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate());
+            var setDate = new Date(item.time.getFullYear(), item.time.getMonth(), item.time.getDate());
+            var difDate = (setDate - currentDate) / per_day_sec;
+            if(this.ToDoList.Filter == 'all')
+                return true;
+            else if(this.ToDoList.Filter == 'past')
+                return difDate < 0;
+            else if(this.ToDoList.Filter == 'today')
+                return difDate == 0;
+            else if(this.ToDoList.Filter == 'recent7')
+                return difDate >= 0 && difDate < 7;
+            else
+                return this.ToDoList.Filter == item.priority;
+        },
+        //返回和当前系统日期差
+        GetDeltaDate: function(item){
+            const per_day_sec = 86400000;
+            var currentTime = new Date();
+            var currentDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate());
+            var setDate = new Date(item.time.getFullYear(), item.time.getMonth(), item.time.getDate());
+            var difDate = (setDate - currentDate) / per_day_sec;
+            return difDate;
+        },
+        //返回和当前系统星期差
+        GetDeltaWeek: function(item){
+            const per_week_sec = 86400000 * 7;
+            var currentTime = new Date();
+            //统一到周一来计算 二者差距几周
+            var currentDate = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate() - currentTime.getDay() + (currentTime.getDay() == 0 ? (-6) : (+1)));
+            var setDate = new Date(item.time.getFullYear(), item.time.getMonth(), item.time.getDate() - item.time.getDay() + (item.time.getDay() == 0 ? (-6) : (+1)));
+            var difWeek = (setDate - currentDate) / per_week_sec;
+            console.info(item.name, difWeek);
+            return difWeek;
+        },
+        //获取字符串的xx:xx时间
+        GetTimeString: function(item){
+            var str = "";
+            str += item.time.getHours();
+            str += " : ";
+            if(item.time.getMinutes() < 10)
+                str += '0';
+            str += item.time.getMinutes();
+            return str;
+        }
     },
     computed: {
-	UndoneInfoList: function () {
-		return this.ToDoList.InfoList.filter(function (item) {
-            var currentTime = new Date();
-            return !item.isDone && (item.time < currentTime.getTime());
-		})
-	},
+        UndoneInfoList: function () {
+            var self = this;
+            return this.ToDoList.InfoList.filter(
+                function (item) {
+                var currentTime = new Date();
+                return !item.isDone && (item.time < currentTime.getTime()) && self.IsInFilter(item);
+            })
+        },
 
-    TobedoneInfoList: function () {
-		return this.ToDoList.InfoList.filter(function (item) {
-            var currentTime = new Date();
-            return !item.isDone && (item.time > currentTime.getTime());
-		})
-	},
+        TobedoneInfoList: function () {
+            var self = this;
+            return this.ToDoList.InfoList.filter(function (item) {
+                var currentTime = new Date();
+                return !item.isDone && (item.time > currentTime.getTime()) && self.IsInFilter(item);
+            })
+        },
 
-    DoneInfoList: function () {
-		return this.ToDoList.InfoList.filter(function (item) {
-            return item.isDone;
-		})
-	}
+        DoneInfoList: function (){
+            var self = this;
+            return this.ToDoList.InfoList.filter(function (item) {
+                return item.isDone && self.IsInFilter(item);
+            })
+        }
 }
 }
 </script>
@@ -211,6 +332,29 @@ body {
     font-size: 20px;
 }
 
+.todolist-detail-right-itemname{
+    font-weight: bolder;
+}
+
+.todolist-detail-right-time{
+    padding-top: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+    white-space: nowrap;
+    color: #7a7af9;
+}
+
+.todolist-detail-right-priority{
+    padding-top: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    display: inline-block;
+    white-space: nowrap;
+    color: #b8b8ff;
+}
+
+
 .todolist-main{
     padding: 0;
     padding-left: 5px;
@@ -234,8 +378,19 @@ body {
     padding-left: 290px;
 }
 
+.todolist-main-empty{
+    height: 40px;
+    line-height: 40px;
+    font-weight: 200;
+    font-size: 14px;
+    color:#7a7af942;
+    padding-left: 10px;
+    cursor:default;
+}
+
 .todolist-main-item{
     height: 40px;
+    width: 625px;
     line-height: 40px;
     font-weight: 200;
     font-size: 14px;
@@ -258,14 +413,14 @@ body {
 }
 .todolist-top-itemadder-input{
     height: 40px;
-    width: 633px;
+    width: 620px;
     font-size: 15px;
     border: none;
     outline: none;
     padding-left: 15px;
     border-radius: 5px;
     caret-color: #7a7af9;
-    background-color: #f6f6ff;
+    background-color: #f4f4f4dc;
 }
 
 .todolist-top-itemadder{
@@ -282,10 +437,10 @@ body {
     position: relative;
     height: 100%;
     width: 500px;
-    padding-top: 10px;
-    padding-left: 13px;
+    padding-top: 20px;
+    padding-left: 25px;
     padding-right: 13px;
-    background: #e2e2fe;
+    background: #f7f7ff;
     font-size: 20px;
 }
 
