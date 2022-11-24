@@ -1,7 +1,7 @@
 <script>
 
 import ToDoList from './todolist.vue'
-import TimeTable from './timetable.vue'
+// import TimeTable from './timetable.vue'
 
 export default {
     name: 'app',
@@ -13,7 +13,7 @@ export default {
     },
     components: {
         ToDoList,
-        TimeTable,
+        // TimeTable,
     }
 }
 
@@ -33,10 +33,10 @@ export default {
                         class="leftbar-icon" @click="ModeChosen = 'ToDoList'" />
                     <img v-else src="../assets/image/app-leftbar-todolist-focus.png" class="leftbar-icon" />
                     <br />
-                    <img v-if="ModeChosen != 'TimeTable'" src="../assets/image/app-leftbar-timetable.png"
+                    <!-- <img v-if="ModeChosen != 'TimeTable'" src="../assets/image/app-leftbar-timetable.png"
                         class="leftbar-icon" @click="ModeChosen = 'TimeTable'" />
                     <img v-else src="../assets/image/app-leftbar-timetable-focus.png" class="leftbar-icon" />
-                    <br />
+                    <br /> -->
                     <img v-if="ModeChosen != 'Concentration'" src="../assets/image/app-leftbar-concentrate.png"
                         class="leftbar-icon" @click="ModeChosen = 'Concentration'" />
                     <img v-else src="../assets/image/app-leftbar-concentrate-focus.png" class="leftbar-icon" />
@@ -114,6 +114,10 @@ body {
     height: 100%;
     width: 100%;
     display: flex;
+}
+
+:root {
+  --el-color-primary: #7a7af9;
 }
 </style>
   
