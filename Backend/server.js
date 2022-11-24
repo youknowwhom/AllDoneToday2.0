@@ -62,21 +62,22 @@ app.post('/api/SignUp', async (req, res) => {
     const username = req.body.UserName
     const PasswordHash = req.body.PasswordHash
     const EmailAddress = req.body.EmailAddress
-    const SecurityCode = req.body.SecurityCode
+    //const SecurityCode = req.body.SecurityCode
 
     let IsUserNameEmpty = username ? false : true
     let IsPasswordEmpty = PasswordHash ? false : true
     let IsEmailAddressEmpty = EmailAddress ? false : true
-    let IsSecurityCodeEmpty = SecurityCode ? false : true
+    //let IsSecurityCodeEmpty = SecurityCode ? false : true
 
-    logger.info(SecurityCode)
-    if (IsUserNameEmpty || IsPasswordEmpty || IsEmailAddressEmpty || IsSecurityCodeEmpty) {
+    //logger.info(SecurityCode)
+    //if (IsUserNameEmpty || IsPasswordEmpty || IsEmailAddressEmpty || IsSecurityCodeEmpty) {
+    if (IsUserNameEmpty || IsPasswordEmpty || IsEmailAddressEmpty) {
         res.status(200).send({
             IsFormValid: false,
             IsUserNameEmpty: IsUserNameEmpty,
             IsPasswordEmpty: IsPasswordEmpty,
             IsEmailAddressEmpty: IsEmailAddressEmpty,
-            IsSecurityCodeEmpty: IsSecurityCodeEmpty,
+            //IsSecurityCodeEmpty: IsSecurityCodeEmpty,
             msg: '登录格式不正确'
         })
         return
@@ -87,26 +88,37 @@ app.post('/api/SignUp', async (req, res) => {
      * 验证码是否实现
      * （未成功）
      */
+    // 数据库中查找 username
 
-    let IsUsernameTrue = username === 'dev' ? false : true
-    let IsSecurityCodeTrue = SecurityCode === '123456' ? true : false
+    const UserObj = await User.findOne({
+        where: {
+            username: username
+        }
+    })
 
-    if (!IsUsernameTrue || !IsSecurityCodeTrue) {
-        res.status(200).send({
+    if(UserObj){
+        res.status(400).send({
             IsFormValid: true,
-            IsSecurityCodeTrue: IsSecurityCodeTrue,
-            IsUsernameTrue: IsUsernameTrue,
+            //IsSecurityCodeTrue: IsSecurityCodeTrue,
+            IsUsernameTrue: false,
             msg: '用户输入信息不符合'
         })
         return
     }
-
-    res.status(200).send({
-        IsFormValid: true,
-        IsSecurityCodeTrue: IsSecurityCodeTrue,
-        IsUsernameTrue: IsUsernameTrue,
-        msg: '注册成功'
-    })
+    else{
+        let newUser = User.build({
+            username:username,
+            passwordHash:PasswordHash,
+            EmailAddress:EmailAddress
+        })
+        await newUser.save()
+        res.status(200).send({
+            IsFormValid: true,
+            //IsSecurityCodeTrue: true,
+            IsUsernameTrue: true,
+            msg: '注册成功'
+        })
+    }
 })
 
 
@@ -191,11 +203,7 @@ app.post('/api/ForgetPassword', async (req, res) => {
         })
         return
     }
-
-    /**
-     * 无法写入数据库 
-     */
-
+    
     // let requestedUser = User.findOne({
     //     where:{
     //         EmailAddress:EmailAddress
@@ -258,27 +266,111 @@ app.post('/api/GetPersonalInfo', async (req, res) => {
 
     // 数据库中查找 username
 
-    const userObj = await User.findOne({
+    const UserObj = await User.findOne({
         where: {
             username: userName
         }
     })
 
-    if (!userObj) {
+    if (!UserObj) {
         res.status(400).send({
             msg: 'invalid'
         })
     }
 
     res.status(200).send({
-        UserName: userObj.username,
-        EmailAddress: userObj.EmailAddress,
-        UserGender: userObj.UserGender,
-        Signature: userObj.Signature,
-        Birthday: userObj.Birthday,
+        UserName: UserObj.username,
+        EmailAddress: UserObj.EmailAddress,
+        UserGender: UserObj.UserGender,
+        Signature: UserObj.Signature,
+        Birthday: UserObj.Birthday,
         msg: '个人信息'
     })
 
+})
+
+/**
+ * 修改个人信息的api
+ *  - request
+ *    - token : token
+ *    - 修改的数据包
+ *  - response
+ *    - 修改的数据是否成功
+ *      - bool 变量解决对应的问题：
+ *      - UserChangeGender,UserChangeSignature,UserChangeBirthday
+ *      - UserChangePhoto(没写)
+ */
+
+app.post('/api/ChangePersonalInfo',async(req,res)=>{
+    if (!req.body.token) {
+        res.status(400).send({
+            msg: 'invalid'
+        })
+        return
+    }
+
+    let userName = ''
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({
+                msg: 'expired'
+            })
+        } else {
+            logger.info(err)
+            res.status(400).send({
+                msg: 'invalid'
+            })
+        }
+        return
+    }
+
+    const UserObj = await User.findOne({
+        where: {
+            username: userName
+        }
+    })
+
+    if (!UserObj) {
+        res.status(400).send({
+            msg: 'invalid'
+        })
+        return
+    }
+
+    let resData = {
+        UserGenderChange:false,
+        UserSignatureChange:false,
+        UserBirthdayChange:false,
+    }
+
+    for(const key in req.body){
+        if(key==='UserGender'){
+            await UserObj.update({
+                UserGender:req.body[key]
+            })
+            resData.UserGenderChange = true
+        }
+        if(key==='Signature'){
+            await UserObj.update({
+                Signature:req.body[key]
+            })
+            resData.UserSignatureChange = true
+        }
+        if(key==='Birthday'){
+            await UserObj.update({
+                Birthday:req.body[key]
+            })
+            resData.UserBirthdayChange = true
+        }
+        UserObj.save()
+    }
+
+    res.status(200).send({
+        resData,
+        msg:'修改成功'
+    })
 })
 
 /**
