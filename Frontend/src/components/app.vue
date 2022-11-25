@@ -22,13 +22,13 @@ export default {
 <template>
 
     <body>
-        <div class="container">
-            <div class="header">
+        <el-container class="container">
+            <el-header class="header">
                 <img src="../assets/image/logo.png" class="logo" />
-            </div>
+            </el-header>
 
-            <div class="app-content">
-                <div class="sidebar">
+            <el-container class="app-content">
+                <el-aside class="sidebar" width="auto">
                     <img v-if="ModeChosen != 'ToDoList'" src="../assets/image/app-leftbar-todolist.png"
                         class="leftbar-icon" @click="ModeChosen = 'ToDoList'" />
                     <img v-else src="../assets/image/app-leftbar-todolist-focus.png" class="leftbar-icon" />
@@ -40,11 +40,12 @@ export default {
                     <img v-if="ModeChosen != 'Concentration'" src="../assets/image/app-leftbar-concentrate.png"
                         class="leftbar-icon" @click="ModeChosen = 'Concentration'" />
                     <img v-else src="../assets/image/app-leftbar-concentrate-focus.png" class="leftbar-icon" />
-                </div>
-                <div class="component-content">
-                <component :is="ModeChosen" /></div>
-            </div>
-        </div>
+                </el-aside>
+                <el-main class="component-content">
+                    <component :is="ModeChosen" />
+                </el-main>
+            </el-container>
+        </el-container>
     </body>
 </template>
 
@@ -56,14 +57,12 @@ body {
     height: 100%;
     left: 0px;
     top: 0px;
-    padding: 0;
     margin: 0;
     text-align: center;
     caret-color: transparent;
 }
 
 .logo {
-    margin-left: 20px;
     height: 50px;
 }
 
@@ -75,20 +74,12 @@ body {
 }
 
 .header {
-    width: 100%;
-    margin: 0;
-    padding: 10px 0;
     background: #f5f5f584;
     box-shadow: 0px 0px 5px 5px #e9e9ff;
     border-bottom: #e1e1e14d solid 1px;
 }
 
 .sidebar {
-    float: left;
-    top: 0;
-    position: relative;
-    height: 100%;
-    padding-top: 10px;
     padding-left: 13px;
     padding-right: 13px;
     background: #ebebef;
@@ -113,11 +104,8 @@ body {
 .component-content {
     height: 100%;
     width: 100%;
+    padding: 0;
     display: flex;
-}
-
-:root {
-  --el-color-primary: #7a7af9;
 }
 </style>
   
