@@ -52,10 +52,11 @@
                 <el-collapse v-model="this.openedGroups">
                     <template v-for="group in eventGrouped" :key="group.groupName">
                         <el-collapse-item :title="group.groupName" :name="group.groupName">
-                            <el-space direction="vertical" alignment="flex-start" :fill="true" class="todolist-item-group">
-                                <template v-for="ev in group.events" :key="ev.brief">
+                            <el-space direction="vertical" alignment="flex-start" :fill="true"
+                                class="todolist-item-group">
+                                <template v-for="ev in group.events" :key="ev.id">
                                     <el-card class="todolist-item" shadow="hover" body-style="padding: 8px;">
-                                        <el-checkbox class="todolist-item-checkbox"></el-checkbox>
+                                        <el-checkbox class="todolist-item-checkbox" v-model="ev.finished"></el-checkbox>
                                         {{ ev.brief }}
                                     </el-card>
                                 </template>
@@ -75,69 +76,7 @@
   
 <script>
 
-let EventList = [
-    {
-        brief: '测试事项 1 普通',
-        finished: false,
-        description: '第一个测试事件',
-        importance: {
-            important: false,
-            urgent: false,
-        },
-        time: {
-            beginTime: new Date(2023, 1, 1),
-        }
-    },
-    {
-        brief: '测试事项 2 近期',
-        finished: false,
-        description: '第二个测试事件',
-        importance: {
-            important: true,
-            urgent: false,
-        },
-        time: {
-            beginTime: new Date() + 60 * 60 * 24,
-        }
-    },
-    {
-        brief: '测试事项 3 过期未完成',
-        finished: false,
-        description: '第三个测试事件',
-        importance: {
-            important: true,
-            urgent: true,
-        },
-        time: {
-            beginTime: new Date() - 60 * 60 * 24,
-        }
-    },
-    {
-        brief: '测试事项 4 已完成',
-        finished: true,
-        description: '第四个测试事件',
-        importance: {
-            important: false,
-            urgent: true,
-        },
-        time: {
-            beginTime: new Date() + 60 * 60 * 24,
-        }
-    },
-    {
-        brief: '测试事项 5 进行中',
-        finished: false,
-        description: '第五个测试事件',
-        importance: {
-            important: true,
-            urgent: false,
-        },
-        time: {
-            beginTime: new Date() + 60 * 60 * 24,
-            endTime: new Date() + 60 * 60 * 24,
-        }
-    },
-]
+// import { v4 as uuid } from 'uuid'
 
 let GroupFilters = [
     {
@@ -155,15 +94,83 @@ export default {
     name: 'ToDoList',
     data() {
         return {
-            openedGroups: []
+            openedGroups: [],
+            EventList: [
+                {
+                    id: '0f819113-1b91-48cf-bddc-9179c35689f6',
+                    brief: '测试事项 1 普通',
+                    finished: false,
+                    description: '第一个测试事件',
+                    importance: {
+                        important: false,
+                        urgent: false,
+                    },
+                    time: {
+                        beginTime: new Date(2023, 1, 1),
+                    }
+                },
+                {
+                    id: 'cdd8af25-899a-44fb-b0d1-204c239df3fe',
+                    brief: '测试事项 2 近期',
+                    finished: false,
+                    description: '第二个测试事件',
+                    importance: {
+                        important: true,
+                        urgent: false,
+                    },
+                    time: {
+                        beginTime: new Date() + 60 * 60 * 24,
+                    }
+                },
+                {
+                    id: 'f1cfa4f3-f164-46f8-b5fb-33e61f457a0e',
+                    brief: '测试事项 3 过期未完成',
+                    finished: false,
+                    description: '第三个测试事件',
+                    importance: {
+                        important: true,
+                        urgent: true,
+                    },
+                    time: {
+                        beginTime: new Date() - 60 * 60 * 24,
+                    }
+                },
+                {
+                    id: 'cc5856a2-1c84-41ca-a11c-2d18517e03b1',
+                    brief: '测试事项 4 已完成',
+                    finished: true,
+                    description: '第四个测试事件',
+                    importance: {
+                        important: false,
+                        urgent: true,
+                    },
+                    time: {
+                        beginTime: new Date() + 60 * 60 * 24,
+                    }
+                },
+                {
+                    id: '1c142254-3e58-4ef9-9af8-02116b4d57af',
+                    brief: '测试事项 5 进行中',
+                    finished: false,
+                    description: '第五个测试事件',
+                    importance: {
+                        important: true,
+                        urgent: false,
+                    },
+                    time: {
+                        beginTime: new Date() + 60 * 60 * 24,
+                        endTime: new Date() + 60 * 60 * 24,
+                    }
+                },
+            ]
         }
     },
     methods: {
-
+        
     },
     computed: {
         eventGrouped() {
-            let ungrouped = EventList
+            let ungrouped = this.EventList
             for (let filter of DisplayFilters) {
                 ungrouped = ungrouped.filter(filter.filterFunction)
             }
@@ -193,7 +200,6 @@ export default {
 </script>
   
 <style scoped>
-
 .todolsit-main-additem {
     padding: auto;
 }
@@ -361,7 +367,6 @@ export default {
     width: 100%
 }
 
-.todolist-item-checkbox {
-}
+.todolist-item-checkbox {}
 </style>
   
