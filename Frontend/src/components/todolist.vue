@@ -42,8 +42,13 @@
 
         <el-container class="todolist-main" direction="vertical">
 
-            <el-container class="todolist-top-itemadder" direction="vertical">
-                <el-input type="text" placeholder="在此处添加新的待办事项" class="todolist-top-itemadder-input" />
+            <el-container class="todolist-top-itemadder" direction="horizontal">
+                    <el-input type="text" placeholder="在此处添加新的待办事项" id="todolist-top-itemadder-input" />
+                    <el-button type="primary" class="todolist-button" color="#7a7af9">
+                        <el-icon color="#FFFFFF">
+                            <Plus />
+                        </el-icon>
+                    </el-button>
             </el-container>
             <el-divider content-position="left">
                 <h4 class="todolist-top-headline">待办清单</h4>
@@ -82,8 +87,45 @@ let GroupFilters = [
     {
         groupName: '已完成',
         reversePosition: true,
-        filterFunction: ev => {
+        filterFunction(ev) {
             return ev.finished == true
+        }
+    },
+    {
+        groupName: '已过期',
+        filterFunction(ev) {
+            if (ev.time.endTime) {
+                return ev.time.endTime < new Date()
+            } else if (ev.time.beginTime) {
+                return ev.time.beginTime < new Date()
+            } else {
+                return false
+            }
+        }
+    },
+    {
+        groupName: '进行中',
+        filterFunction(ev) {
+            let currentTime = new Date()
+            return ev.time.beginTime <= currentTime && currentTime <= ev.time.endTime
+        }
+    },
+    {
+        groupName: '今天',
+        filterFunction(ev) {
+            let evTime = new Date(ev.time.beginTime), currentTime = new Date()
+            if (evTime.getFullYear() != currentTime.getFullYear()) return false
+            if (evTime.getMonth() != currentTime.getMonth()) return false
+            return (new Date(ev.time.beginTime)).getDate() == (new Date()).getDate()
+        }
+    },
+    {
+        groupName: '近期',
+        filterFunction(ev) {
+            let evTime = new Date(ev.time.beginTime), currentTime = new Date()
+            if (evTime.getFullYear() != currentTime.getFullYear()) return false
+            if (evTime.getMonth() != currentTime.getMonth()) return false
+            return (new Date(ev.time.beginTime)).getDate() <= (new Date()).getDate() + 7
         }
     }
 ]
@@ -106,7 +148,7 @@ export default {
                         urgent: false,
                     },
                     time: {
-                        beginTime: new Date(2023, 1, 1),
+                        beginTime: new Date(2077, 1, 1),
                     }
                 },
                 {
@@ -119,7 +161,7 @@ export default {
                         urgent: false,
                     },
                     time: {
-                        beginTime: new Date() + 60 * 60 * 24,
+                        beginTime: (new Date).setDate((new Date()).getDate() + 1),
                     }
                 },
                 {
@@ -132,7 +174,7 @@ export default {
                         urgent: true,
                     },
                     time: {
-                        beginTime: new Date() - 60 * 60 * 24,
+                        beginTime: new Date(1926, 8, 17),
                     }
                 },
                 {
@@ -145,7 +187,7 @@ export default {
                         urgent: true,
                     },
                     time: {
-                        beginTime: new Date() + 60 * 60 * 24,
+                        beginTime: new Date(2077, 1, 1),
                     }
                 },
                 {
@@ -158,15 +200,15 @@ export default {
                         urgent: false,
                     },
                     time: {
-                        beginTime: new Date() + 60 * 60 * 24,
-                        endTime: new Date() + 60 * 60 * 24,
+                        beginTime: new Date(1926, 8, 17),
+                        endTime: new Date(2077, 1, 1),
                     }
                 },
             ]
         }
     },
     methods: {
-        
+
     },
     computed: {
         eventGrouped() {
@@ -205,7 +247,7 @@ export default {
 }
 
 .todolist-main {
-    flex: 0 0 30%;
+    flex: 0 0 35%;
     padding: 20px;
 }
 
@@ -218,7 +260,7 @@ export default {
 }
 
 .todolist-filter {
-    flex: 0 0 10%;
+    flex: 0 0 20%;
     padding: 0;
     background: #fefeff;
     border-right: #7a7afa4d solid 1px;
@@ -261,9 +303,8 @@ export default {
     margin: 0;
 }
 
-.todolist-top-itemadder-input {
+#todolist-top-itemadder-input {
     height: fit-content;
-    width: 100%;
     caret-color: #7a7af9;
     background-color: #f6f6ff;
 }
@@ -368,5 +409,6 @@ export default {
 }
 
 .todolist-item-checkbox {}
+
 </style>
   

@@ -8,6 +8,7 @@
 
 ```javascript
 {
+    "id": String, // 事件的 uuid
     "brief": String, // 事件简介，若未提供则为「空」或「详细信息中的前若干个字」
     "description": String, // 事件详细内容
     "finished": Boolean, // 事件是否已经完成
@@ -36,8 +37,8 @@
 - `Time` 定义如下：（前端）
   ```javascript
   {
-    "beginTime": Date,
-    "endTime": Date,
+    "beginTime": Date, // 必需
+    "endTime": Date, // 非必需
     "repetition": {
         "enabled": Boolean, // 是否重复
         "deltaBase": String, // 「间隔」的时间单位
