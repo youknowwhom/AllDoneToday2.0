@@ -38,17 +38,18 @@
                 <p class="todolist-filter-alternative-text"> 不重要 & 不紧急 </p>
             </div>
         </div>
-
+        <el-divider direction="vertical" style="height: 100%" />
 
         <el-container class="todolist-main" direction="vertical">
 
             <el-container class="todolist-top-itemadder" direction="horizontal">
-                    <el-input type="text" placeholder="在此处添加新的待办事项" id="todolist-top-itemadder-input" />
-                    <el-button type="primary" class="todolist-button" color="#7a7af9">
-                        <el-icon color="#FFFFFF">
-                            <Plus />
-                        </el-icon>
-                    </el-button>
+                <el-input type="text" placeholder="在此处添加新的待办事项" id="todolist-top-itemadder-input" />
+                <el-divider direction="vertical" style="height: 100%" />
+                <el-button type="primary" class="todolist-button" color="#7a7af9">
+                    <el-icon color="#FFFFFF">
+                        <Plus />
+                    </el-icon>
+                </el-button>
             </el-container>
             <el-divider content-position="left">
                 <h4 class="todolist-top-headline">待办清单</h4>
@@ -60,7 +61,9 @@
                             <el-space direction="vertical" alignment="flex-start" :fill="true"
                                 class="todolist-item-group">
                                 <template v-for="ev in group.events" :key="ev.id">
-                                    <el-card class="todolist-item" shadow="hover" body-style="padding: 8px;">
+                                    <el-card class="todolist-item" :class="{ chosen: this.chosenEventID == ev.id }"
+                                        :shadow="this.chosenEventID == ev.id ? 'always' : 'hover'"
+                                        :body-style="{ padding: '8px' }" @click="this.chosenEventID = ev.id">
                                         <el-checkbox class="todolist-item-checkbox" v-model="ev.finished"></el-checkbox>
                                         {{ ev.brief }}
                                     </el-card>
@@ -71,8 +74,12 @@
                 </el-collapse>
             </el-container>
         </el-container>
-        <div class="todolist-detail-right">
-
+        <el-divider direction="vertical" style="height: 100%" />
+        <div class="todolist-detail-right-background">
+            <el-container class="todolist-detail" v-if="this.chosenEventID">
+                <!-- <el-input v-model="chosenEvent.brief" /> -->
+                {{chosenEvent.brief}}
+            </el-container>
         </div>
 
     </el-container>
@@ -137,6 +144,7 @@ export default {
     data() {
         return {
             openedGroups: [],
+            chosenEventID: undefined,
             EventList: [
                 {
                     id: '0f819113-1b91-48cf-bddc-9179c35689f6',
@@ -228,15 +236,21 @@ export default {
                     })
                 }
             }
-            grouped.push({
-                groupName: '未分组',
-                events: ungrouped
-            })
+            if (ungrouped.length > 0) {
+                grouped.push({
+                    groupName: '未分组',
+                    events: ungrouped
+                })
+            }
             return grouped.concat(grouped_reverse.reverse())
+        },
+        chosenEvent() {
+            if (!this.chosenEventID) return undefined
+            return this.EventList.find(ev => ev.id === this.chosenEventID)
         }
     },
     created() {
-        this.openedGroups = this.eventGrouped.map(group => group.groupName)
+        this.openedGroups = this.eventGrouped.map(group => group.groupName) // 默认展开所有事件组
     }
 }
 </script>
@@ -251,54 +265,16 @@ export default {
     padding: 20px;
 }
 
-.todolist-detail-right {
+.todolist-detail-right-background {
     flex: 1 1 auto;
-    padding-top: 10px;
-    padding-left: 13px;
-    padding-right: 13px;
-    background: #e2e2fe;
 }
 
 .todolist-filter {
     flex: 0 0 20%;
     padding: 0;
-    background: #fefeff;
-    border-right: #7a7afa4d solid 1px;
-}
-
-.todolist-main-item-icon {
-    margin-top: 13.5px;
-    margin-right: 10px;
-    float: left;
-    margin-bottom: 0;
-    height: 15px;
-    cursor: pointer;
-}
-
-.todolist-main-menu {
-    font-weight: bold;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.todolist-main-item {
-    height: 40px;
-    line-height: 40px;
-    font-weight: 200;
-    text-align: left;
-    padding-left: 10px;
-    border-bottom: #7a7af922 1px solid;
-    cursor: default;
-}
-
-.todolist-main-item:hover {
-    background-color: #efeffb6e;
 }
 
 .todolist-top-headline {
-    padding-top: 3px;
-    padding-bottom: 15px;
-    padding-bottom: 12px;
     font-weight: bold;
     margin: 0;
 }
@@ -410,5 +386,14 @@ export default {
 
 .todolist-item-checkbox {}
 
+.todolist-detail {
+    background: white;
+    width: 100%;
+    height: 100%;
+}
+
+.todolist-item.chosen {
+    background-color: #ebebefaa;
+}
 </style>
   
