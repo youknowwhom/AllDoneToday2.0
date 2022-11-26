@@ -37,7 +37,7 @@
 - `Time` 定义如下：（前端）
   ```javascript
   {
-    "beginTime": Date, // 必需
+    "beginTime": Date, // 非必需
     "endTime": Date, // 非必需
     "repetition": {
         "enabled": Boolean, // 是否重复

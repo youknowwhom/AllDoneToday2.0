@@ -59,7 +59,6 @@ body {
     top: 0px;
     margin: 0;
     text-align: center;
-    caret-color: transparent;
 }
 
 .logo {

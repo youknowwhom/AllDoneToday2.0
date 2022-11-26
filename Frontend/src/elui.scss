@@ -1,0 +1,63 @@
+$font-size-base: 16px;
+@use 'element-plus/theme-chalk/src/mixins/function.scss' as *;
+
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+    $colors: (
+        'primary': (
+            'base': #7a7af9,
+        ),
+    ),
+    $font-size: (
+        'extra-large': $font-size-base + 6px,
+        'large': $font-size-base + 4px,
+        'medium': $font-size-base + 2px,
+        'base': $font-size-base,
+        'small': 1$font-size-base - 2px,
+        'extra-small': $font-size-base - 4px,
+    ),
+    $collapse: (
+        'content-font-size': $font-size-base,
+        'header-font-size': $font-size-base,
+    ),
+);
+
+@use "element-plus/theme-chalk/src/index.scss" as *;
+
+// 对 Element Plus 按钮的 focus, hover, active 样式进行重写
+// 将 focus (原本与 hover 相同) 用普通状态的样式覆盖
+
+.el-button:focus {
+    background-color: var(--el-button-bg-color);
+    color: var(--el-button-text-color);
+    border-color: var(--el-button-border-color);
+}
+
+.el-button:hover {
+    background-color: var(--el-button-hover-bg-color);
+    color: var(--el-button-hover-text-color);
+    border-color: var(--el-button-hover-border-color);
+}
+
+.el-button:active {
+    background-color: var(--el-button-active-bg-color);
+    color: var(--el-button-active-text-color);
+    border-color: var(--el-button-active-border-color);
+}
+
+.el-button.active {
+    background-color: var(--el-button-hover-bg-color);
+    color: var(--el-button-hover-text-color);
+    border-color: var(--el-button-hover-border-color);
+}
+
+.el-button.active:hover {
+    background-color: var(--el-button-hover-bg-color);
+    color: var(--el-button-hover-text-color);
+    border-color: var(--el-button-hover-border-color);
+}
+
+.el-button.active:active {
+    background-color: var(--el-button-active-bg-color);
+    color: var(--el-button-active-text-color);
+    border-color: var(--el-button-active-border-color);
+}

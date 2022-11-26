@@ -45,7 +45,7 @@
             <el-container class="todolist-top-itemadder" direction="horizontal">
                 <el-input type="text" placeholder="在此处添加新的待办事项" id="todolist-top-itemadder-input" />
                 <el-divider direction="vertical" style="height: 100%" />
-                <el-button type="primary" class="todolist-button" color="#7a7af9">
+                <el-button type="primary">
                     <el-icon color="#FFFFFF">
                         <Plus />
                     </el-icon>
@@ -63,9 +63,15 @@
                                 <template v-for="ev in group.events" :key="ev.id">
                                     <el-card class="todolist-item" :class="{ chosen: this.chosenEventID == ev.id }"
                                         :shadow="this.chosenEventID == ev.id ? 'always' : 'hover'"
-                                        :body-style="{ padding: '8px' }" @click="this.chosenEventID = ev.id">
-                                        <el-checkbox class="todolist-item-checkbox" v-model="ev.finished"></el-checkbox>
-                                        {{ ev.brief }}
+                                        :body-style="{ padding: '10px' }"
+                                        @click="this.chosenEventID = ev.id">
+                                        <el-space style="display: flex; flex-flow: row nowrap; align-items: center">
+                                            <el-checkbox class="todolist-item-checkbox" v-model="ev.finished">
+                                            </el-checkbox>
+                                            <p style="flex: 1 0 auto; margin: 0px;">{{ ev.brief }}</p>
+                                            <el-tag v-if="ev.importance.important">重要</el-tag>
+                                            <el-tag v-if="ev.importance.urgent">紧急</el-tag>
+                                        </el-space>
                                     </el-card>
                                 </template>
                             </el-space>
@@ -75,10 +81,23 @@
             </el-container>
         </el-container>
         <el-divider direction="vertical" style="height: 100%" />
-        <div class="todolist-detail-right-background">
-            <el-container class="todolist-detail" v-if="this.chosenEventID">
-                <!-- <el-input v-model="chosenEvent.brief" /> -->
-                {{chosenEvent.brief}}
+        <div id="todolist-detail-right-background">
+            <el-container id="todolist-detail" v-if="this.chosenEventID" direction="vertical">
+                <el-space id="todolist-detail-brief-container" direction="vertical" :fill="true">
+                    <input v-model="chosenEvent.brief" id="todolist-detail-brief" />
+                    <el-space id="importance-container" direction="horizontal">
+                        <el-button plain type="primary" :class="{ active: this.chosenEvent.importance.important }"
+                            @click="this.chosenEvent.importance.important = !this.chosenEvent.importance.important">{{
+                                    this.chosenEvent.importance.important ? '重要' : '不重要'
+                            }}
+                        </el-button>
+                        <el-button plain type="primary" :class="{ active: this.chosenEvent.importance.urgent }"
+                            @click="this.chosenEvent.importance.urgent = !this.chosenEvent.importance.urgent">{{
+        this.chosenEvent.importance.urgent ? '紧急' : '不紧急'
+                            }}
+                        </el-button>
+                    </el-space>
+                </el-space>
             </el-container>
         </div>
 
@@ -113,6 +132,7 @@ let GroupFilters = [
     {
         groupName: '进行中',
         filterFunction(ev) {
+            if (!ev.time.beginTime || !ev.time.endTime) return false
             let currentTime = new Date()
             return ev.time.beginTime <= currentTime && currentTime <= ev.time.endTime
         }
@@ -120,6 +140,7 @@ let GroupFilters = [
     {
         groupName: '今天',
         filterFunction(ev) {
+            if (!ev.time.beginTime) return false
             let evTime = new Date(ev.time.beginTime), currentTime = new Date()
             if (evTime.getFullYear() != currentTime.getFullYear()) return false
             if (evTime.getMonth() != currentTime.getMonth()) return false
@@ -129,6 +150,7 @@ let GroupFilters = [
     {
         groupName: '近期',
         filterFunction(ev) {
+            if (!ev.time.beginTime) return false
             let evTime = new Date(ev.time.beginTime), currentTime = new Date()
             if (evTime.getFullYear() != currentTime.getFullYear()) return false
             if (evTime.getMonth() != currentTime.getMonth()) return false
@@ -156,7 +178,6 @@ export default {
                         urgent: false,
                     },
                     time: {
-                        beginTime: new Date(2077, 1, 1),
                     }
                 },
                 {
@@ -212,7 +233,14 @@ export default {
                         endTime: new Date(2077, 1, 1),
                     }
                 },
-            ]
+            ],
+            chosenEvent: undefined
+        }
+    },
+    watch: {
+        chosenEventID() {
+            if (!this.chosenEventID) return undefined
+            this.chosenEvent = this.EventList.find(ev => ev.id === this.chosenEventID)
         }
     },
     methods: {
@@ -244,10 +272,6 @@ export default {
             }
             return grouped.concat(grouped_reverse.reverse())
         },
-        chosenEvent() {
-            if (!this.chosenEventID) return undefined
-            return this.EventList.find(ev => ev.id === this.chosenEventID)
-        }
     },
     created() {
         this.openedGroups = this.eventGrouped.map(group => group.groupName) // 默认展开所有事件组
@@ -265,7 +289,7 @@ export default {
     padding: 20px;
 }
 
-.todolist-detail-right-background {
+#todolist-detail-right-background {
     flex: 1 1 auto;
 }
 
@@ -281,7 +305,7 @@ export default {
 
 #todolist-top-itemadder-input {
     height: fit-content;
-    caret-color: #7a7af9;
+    /* caret-color: #7a7af9; */
     background-color: #f6f6ff;
 }
 
@@ -355,14 +379,13 @@ export default {
     flex-flow: row nowrap;
     justify-content: flex-start;
     background-color: rgb(255, 255, 255);
-    font-size: medium;
 }
 
-.todolist-detail-right-itemname {
+#todolist-detail-right-itemname {
     font-weight: bolder;
 }
 
-.todolist-detail-right-time {
+#todolist-detail-right-time {
     padding-top: 10px;
     font-size: 13px;
     font-weight: bold;
@@ -371,7 +394,7 @@ export default {
     color: #7a7af9;
 }
 
-.todolist-detail-right-priority {
+#todolist-detail-right-priority {
     padding-top: 5px;
     font-size: 13px;
     font-weight: bold;
@@ -386,14 +409,39 @@ export default {
 
 .todolist-item-checkbox {}
 
-.todolist-detail {
+#todolist-detail {
     background: white;
     width: 100%;
     height: 100%;
 }
 
 .todolist-item.chosen {
-    background-color: #ebebefaa;
+    background-color: #f5f5f5;
+}
+
+#todolist-detail-brief-container {
+    padding: 20px;
+}
+
+#todolist-detail-brief {
+    border-top-width: 0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 2px;
+    border-color: var(--el-color-info-light-7);
+    outline: none;
+    font-size: xx-large;
+    font-weight: bold;
+    padding: 5px;
+    box-sizing: border-box;
+    color: var(--el-text-color-regular)
+}
+
+#todolist-detail-brief:focus {
+    border-bottom-width: 3px;
+    padding-bottom: 4px;
+    border-color: var(--el-color-info);
+    color: var(--el-text-color-primary)
 }
 </style>
   
