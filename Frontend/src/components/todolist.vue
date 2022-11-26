@@ -2,41 +2,43 @@
 
     <el-container class="ToDoList-container">
         <div class="todolist-filter">
-            <p class="todolist-filter-index"> 时间 </p>
-            <div class="todolist-filter-alternative-box">
-                <img src="../assets/image/filter-all.png" class="todolist-filter-icon" />
-                <p class="todolist-filter-alternative-text"> 全部 </p>
-            </div>
-            <div class="todolist-filter-alternative-box">
-                <img src="../assets/image/filter-past.png" class="todolist-filter-icon" />
-                <p class="todolist-filter-alternative-text"> 往日 </p>
-            </div>
-            <div class="todolist-filter-alternative-box">
-                <img src="../assets/image/filter-today.png" class="todolist-filter-icon" />
-                <p class="todolist-filter-alternative-text"> 今日 </p>
-            </div>
-            <div class="todolist-filter-alternative-box">
-                <img src="../assets/image/filter-recent7.png" class="todolist-filter-icon" />
-                <p class="todolist-filter-alternative-text"> 最近七日 </p>
-            </div>
-            <hr class="todolist-filter-separater">
-            <p class="todolist-filter-index"> 四象限 </p>
-            <div class="todolist-filter-alternative-box">
-                <img src="../assets/image/filter-one.png" class="todolist-filter-icon" />
-                <p class="todolist-filter-alternative-text"> 重要 & 紧急 </p>
-            </div>
-            <div class="todolist-filter-alternative-box">
-                <img src="../assets/image/filter-two.png" class="todolist-filter-icon" />
-                <p class="todolist-filter-alternative-text"> 重要 & 不紧急 </p>
-            </div>
-            <div class="todolist-filter-alternative-box">
-                <img src="../assets/image/filter-three.png" class="todolist-filter-icon" />
-                <p class="todolist-filter-alternative-text"> 紧急 & 不重要 </p>
-            </div>
-            <div class="todolist-filter-alternative-box">
-                <img src="../assets/image/filter-four.png" class="todolist-filter-icon" />
-                <p class="todolist-filter-alternative-text"> 不重要 & 不紧急 </p>
-            </div>
+            <el-scrollbar>
+                <p class="todolist-filter-index"> 时间 </p>
+                <div class="todolist-filter-alternative-box">
+                    <img src="../assets/image/filter-all.png" class="todolist-filter-icon" />
+                    <p class="todolist-filter-alternative-text"> 全部 </p>
+                </div>
+                <div class="todolist-filter-alternative-box">
+                    <img src="../assets/image/filter-past.png" class="todolist-filter-icon" />
+                    <p class="todolist-filter-alternative-text"> 往日 </p>
+                </div>
+                <div class="todolist-filter-alternative-box">
+                    <img src="../assets/image/filter-today.png" class="todolist-filter-icon" />
+                    <p class="todolist-filter-alternative-text"> 今日 </p>
+                </div>
+                <div class="todolist-filter-alternative-box">
+                    <img src="../assets/image/filter-recent7.png" class="todolist-filter-icon" />
+                    <p class="todolist-filter-alternative-text"> 最近七日 </p>
+                </div>
+                <hr class="todolist-filter-separater">
+                <p class="todolist-filter-index"> 四象限 </p>
+                <div class="todolist-filter-alternative-box">
+                    <img src="../assets/image/filter-one.png" class="todolist-filter-icon" />
+                    <p class="todolist-filter-alternative-text"> 重要 & 紧急 </p>
+                </div>
+                <div class="todolist-filter-alternative-box">
+                    <img src="../assets/image/filter-two.png" class="todolist-filter-icon" />
+                    <p class="todolist-filter-alternative-text"> 重要 & 不紧急 </p>
+                </div>
+                <div class="todolist-filter-alternative-box">
+                    <img src="../assets/image/filter-three.png" class="todolist-filter-icon" />
+                    <p class="todolist-filter-alternative-text"> 紧急 & 不重要 </p>
+                </div>
+                <div class="todolist-filter-alternative-box">
+                    <img src="../assets/image/filter-four.png" class="todolist-filter-icon" />
+                    <p class="todolist-filter-alternative-text"> 不重要 & 不紧急 </p>
+                </div>
+            </el-scrollbar>
         </div>
         <el-divider direction="vertical" style="height: 100%" />
 
@@ -44,7 +46,7 @@
 
             <el-container class="todolist-top-itemadder" direction="horizontal">
                 <el-input type="text" placeholder="在此处添加新的待办事项" id="todolist-top-itemadder-input" />
-                <el-divider direction="vertical" style="height: 100%" />
+                <el-divider direction="vertical" style="height: 100%; border: none;" />
                 <el-button type="primary">
                     <el-icon color="#FFFFFF">
                         <Plus />
@@ -55,48 +57,58 @@
                 <h4 class="todolist-top-headline">待办清单</h4>
             </el-divider>
             <el-container class="todolist-list" direction="vertical">
-                <el-collapse v-model="this.openedGroups">
-                    <template v-for="group in eventGrouped" :key="group.groupName">
-                        <el-collapse-item :title="group.groupName" :name="group.groupName">
-                            <el-space direction="vertical" alignment="flex-start" :fill="true"
-                                class="todolist-item-group">
-                                <template v-for="ev in group.events" :key="ev.id">
-                                    <el-card class="todolist-item" :class="{ chosen: this.chosenEventID == ev.id }"
-                                        :shadow="this.chosenEventID == ev.id ? 'always' : 'hover'"
-                                        :body-style="{ padding: '10px' }"
-                                        @click="this.chosenEventID = ev.id">
-                                        <el-space style="display: flex; flex-flow: row nowrap; align-items: center">
-                                            <el-checkbox class="todolist-item-checkbox" v-model="ev.finished">
-                                            </el-checkbox>
-                                            <p style="flex: 1 0 auto; margin: 0px;">{{ ev.brief }}</p>
-                                            <el-tag v-if="ev.importance.important">重要</el-tag>
-                                            <el-tag v-if="ev.importance.urgent">紧急</el-tag>
-                                        </el-space>
-                                    </el-card>
-                                </template>
-                            </el-space>
-                        </el-collapse-item>
-                    </template>
-                </el-collapse>
+                <el-scrollbar>
+                    <el-collapse v-model="this.openedGroups">
+                        <template v-for="group in eventGrouped" :key="group.groupName">
+                            <el-collapse-item :title="group.groupName" :name="group.groupName">
+                                <el-space direction="vertical" alignment="flex-start" :fill="true"
+                                    class="todolist-item-group">
+                                    <template v-for="ev in group.events" :key="ev.id">
+                                        <el-card class="todolist-item" :class="{ chosen: this.chosenEventID == ev.id }"
+                                            :shadow="this.chosenEventID == ev.id ? 'always' : 'hover'"
+                                            :body-style="{ padding: '10px' }" @click="this.chosenEventID = ev.id">
+                                            <el-space style="display: flex; flex-flow: row nowrap; align-items: center">
+                                                <el-checkbox class="todolist-item-checkbox" v-model="ev.finished">
+                                                </el-checkbox>
+                                                <p style="flex: 1 0 auto; margin: 0px;">{{ ev.brief }}</p>
+                                                <el-tag v-if="ev.importance.important">重要</el-tag>
+                                                <el-tag v-if="ev.importance.urgent">紧急</el-tag>
+                                            </el-space>
+                                        </el-card>
+                                    </template>
+                                </el-space>
+                            </el-collapse-item>
+                        </template>
+                    </el-collapse>
+                </el-scrollbar>
             </el-container>
         </el-container>
         <el-divider direction="vertical" style="height: 100%" />
-        <div id="todolist-detail-right-background">
-            <el-container id="todolist-detail" v-if="this.chosenEventID" direction="vertical">
-                <el-space id="todolist-detail-brief-container" direction="vertical" :fill="true">
+        <div class="todolist-detail-right-background">
+            <el-container class="todolist-detail" v-if="this.chosenEventID" direction="vertical">
+                <el-space class="todolist-detail-container" direction="vertical" :fill="true">
                     <input v-model="chosenEvent.brief" id="todolist-detail-brief" />
-                    <el-space id="importance-container" direction="horizontal">
-                        <el-button plain type="primary" :class="{ active: this.chosenEvent.importance.important }"
-                            @click="this.chosenEvent.importance.important = !this.chosenEvent.importance.important">{{
-                                    this.chosenEvent.importance.important ? '重要' : '不重要'
-                            }}
-                        </el-button>
-                        <el-button plain type="primary" :class="{ active: this.chosenEvent.importance.urgent }"
-                            @click="this.chosenEvent.importance.urgent = !this.chosenEvent.importance.urgent">{{
+                </el-space>
+                <el-space class="todolist-detail-container" direction="horizontal">
+                    <p style="font-weight: bold; margin: 0; width: 100px;">重要程度：</p>
+                    <el-button plain :type="this.chosenEvent.importance.important ? 'primary' : ''"
+                        :class="{ active: this.chosenEvent.importance.important }" style="width:100px;"
+                        @click="this.chosenEvent.importance.important = !this.chosenEvent.importance.important">{{
+                                this.chosenEvent.importance.important ? '重要' : '不重要'
+                        }}
+                    </el-button>
+                    <el-button plain :type="this.chosenEvent.importance.urgent ? 'primary' : ''"
+                        :class="{ active: this.chosenEvent.importance.urgent }" style="width:100px;"
+                        @click="this.chosenEvent.importance.urgent = !this.chosenEvent.importance.urgent">{{
         this.chosenEvent.importance.urgent ? '紧急' : '不紧急'
-                            }}
-                        </el-button>
-                    </el-space>
+                        }}
+                    </el-button>
+                </el-space>
+                <el-space class="todolist-detail-container" direction="horizontal">
+                    <p style="font-weight: bold; margin: 0; width: 100px;">开始时间：</p>
+                </el-space>
+                <el-space class="todolist-detail-container" direction="horizontal">
+                    <p style="font-weight: bold; margin: 0; width: 100px;">结束时间：</p>
                 </el-space>
             </el-container>
         </div>
@@ -241,6 +253,9 @@ export default {
         chosenEventID() {
             if (!this.chosenEventID) return undefined
             this.chosenEvent = this.EventList.find(ev => ev.id === this.chosenEventID)
+        },
+        testTime() {
+            console.log(this.testTime)
         }
     },
     methods: {
@@ -285,17 +300,18 @@ export default {
 }
 
 .todolist-main {
-    flex: 0 0 35%;
+    flex: 1 0 35%;
     padding: 20px;
 }
 
-#todolist-detail-right-background {
-    flex: 1 1 auto;
+.todolist-detail-right-background {
+    flex: 1 0 35%;
 }
 
 .todolist-filter {
-    flex: 0 0 20%;
+    flex: 1 0 10%;
     padding: 0;
+    overflow-y: hidden;
 }
 
 .todolist-top-headline {
@@ -381,6 +397,10 @@ export default {
     background-color: rgb(255, 255, 255);
 }
 
+.todolist-list {
+    overflow-y: hidden;
+}
+
 #todolist-detail-right-itemname {
     font-weight: bolder;
 }
@@ -409,18 +429,19 @@ export default {
 
 .todolist-item-checkbox {}
 
-#todolist-detail {
+.todolist-detail {
     background: white;
     width: 100%;
     height: 100%;
+    padding: 0;
 }
 
 .todolist-item.chosen {
     background-color: #f5f5f5;
 }
 
-#todolist-detail-brief-container {
-    padding: 20px;
+.todolist-detail-container {
+    padding: 15px;
 }
 
 #todolist-detail-brief {
