@@ -162,7 +162,7 @@ export default {
         }, 1000)
 
         screenfull.on('change', ()=>{
-            if(!screenfull.isFullscreen && this.isFullScreen){
+            if(!screenfull.isFullscreen && this.isFullScreen && this.curState == 'growing'){
                 this.curState = 'dead';
                 this.isFullScreen = false;
                 this.$message.error('由于您退出了全屏专注，薰衣草已经死亡');
