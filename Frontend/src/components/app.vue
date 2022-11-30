@@ -1,6 +1,7 @@
 <script>
 
 import ToDoList from './todolist.vue'
+import Concentration from './concentration.vue'
 // import TimeTable from './timetable.vue'
 
 export default {
@@ -13,6 +14,7 @@ export default {
     },
     components: {
         ToDoList,
+        Concentration,
         // TimeTable,
     }
 }
