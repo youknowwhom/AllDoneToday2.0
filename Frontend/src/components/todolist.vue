@@ -167,7 +167,7 @@
                 </el-space>
                 <el-divider style="margin: 0;" />
                 <el-space class="todolist-detail-container" direction="horizontal" style="flex-direction: row-reverse;">
-                    <el-button style="width: 100px;" type="danger">
+                    <el-button style="width: 100px;" type="danger" @click="this.deleteEvent(this.chosenEvent)">
                         <el-space direction="horizontal">
                             <el-icon>
                                 <Delete />
@@ -196,6 +196,7 @@
 import { v4 as uuid } from 'uuid'
 
 import { ElMessage } from 'element-plus'
+import axios from 'axios'
 
 function compareDate(a, b) {
     a = new Date(a), b = new Date(b)
@@ -299,88 +300,7 @@ export default {
             newEventBriefInput: '',
             openedGroups: [],
             chosenEventID: undefined,
-            EventList: [
-                {
-                    id: '0f819113-1b91-48cf-bddc-9179c35689f6',
-                    brief: '测试事项 1 今天整天',
-                    finished: false,
-                    description: '第一个测试事件',
-                    importance: {
-                        important: false,
-                        urgent: false,
-                    },
-                    time: {
-                        beginTime: {
-                            date: new Date(),
-                        },
-                    }
-                },
-                {
-                    id: 'cdd8af25-899a-44fb-b0d1-204c239df3fe',
-                    brief: '测试事项 2 近期',
-                    finished: false,
-                    description: '第二个测试事件',
-                    importance: {
-                        important: true,
-                        urgent: false,
-                    },
-                    time: {
-                        beginTime: {
-                            date: (new Date()).setDate((new Date()).getDate() + 1),
-                        },
-                    }
-                },
-                {
-                    id: 'f1cfa4f3-f164-46f8-b5fb-33e61f457a0e',
-                    brief: '测试事项 3 今天过期',
-                    finished: false,
-                    description: '第三个测试事件',
-                    importance: {
-                        important: true,
-                        urgent: true,
-                    },
-                    time: {
-                        beginTime: {
-                            date: new Date(),
-                            time: new Date((new Date()).setHours((new Date()).getHours() - 1))
-                        },
-                    }
-                },
-                {
-                    id: 'cc5856a2-1c84-41ca-a11c-2d18517e03b1',
-                    brief: '测试事项 4 今天将来',
-                    finished: false,
-                    description: '第四个测试事件',
-                    importance: {
-                        important: false,
-                        urgent: true,
-                    },
-                    time: {
-                        beginTime: {
-                            date: new Date(),
-                            time: new Date((new Date()).setHours((new Date()).getHours() + 1))
-                        },
-                    }
-                },
-                {
-                    id: '1c142254-3e58-4ef9-9af8-02116b4d57af',
-                    brief: '测试事项 5 进行中',
-                    finished: false,
-                    description: '第五个测试事件',
-                    importance: {
-                        important: true,
-                        urgent: false,
-                    },
-                    time: {
-                        beginTime: {
-                            date: new Date(1926, 8, 17),
-                        },
-                        endTime: {
-                            date: new Date(2077, 1, 1),
-                        },
-                    }
-                },
-            ],
+            EventList: [],
             chosenEvent: undefined
         }
     },
@@ -417,7 +337,7 @@ export default {
             this.openedGroups = this.openedGroups.concat(groupsWithNewEvent)
         },
         openedGroups(current, former) {
-            let closedGroups = former.filter(group => !current.map(cg => cg).includes(group))
+            let closedGroups = former.filter(group => !current.includes(group))
             if (this.eventGrouped
                 .filter(group => closedGroups.includes(group.groupName))
                 .find(group => group.events.find(ev => ev.id === this.chosenEventID))) {
@@ -455,9 +375,16 @@ export default {
         },
     },
     methods: {
-        CreateEventFromBrief() {
+        async CreateEventFromBrief() {
+            let GetUniqueUUID = () => {
+                let id = uuid()
+                while (this.EventList.map(event => event.id).includes(id)) {
+                    id = uuid()
+                }
+                return id
+            }
             let newEvent = {
-                id: uuid(),
+                id: GetUniqueUUID(),
                 brief: this.newEventBriefInput ?? '',
                 description: '',
                 finished: false,
@@ -467,11 +394,36 @@ export default {
                 },
                 time: undefined
             }
+            this.newEventBriefInput = ''
+
+            // 先同步到后端
+
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+                try {
+                    console.log('try create event: ', newEvent)
+                    await axios.post('/api/event/create', {
+                        token: localStorage.getItem('token'),
+                        event: newEvent,
+                    })
+                    break
+                } catch (err) {
+                    if (err.response.data.msg == 'duplicate_id') {
+                        newEvent.id = GetUniqueUUID()
+                        continue
+                    }
+                    // TODO 退出当前用户登录
+
+                    return
+                }
+            }
+
             this.EventList.push(newEvent)
             this.chosenEventID = newEvent.id
-            this.newEventBriefInput = ''
         },
         async updateEvent(eventToUpdate, immediate) {
+            // 在用户频繁修改事件时，延迟一段时间再同步数据
+
             loopRequestID++
             loopRequestID %= maxLoopRequestID
             if (loopRequestID < 0) loopRequestID += maxLoopRequestID
@@ -480,26 +432,40 @@ export default {
                 await new Promise(r => setTimeout(r, updateDelay)) // sleep
                 if (currentID !== loopRequestID) return
             }
-            // let response = await axios.post('/api/event/update', {
-            //     token: localStorage.getItem('token'),
-            //     event: eventToUpdate,
-            // })
-            // console.log(response)
-            let success = true // 测试
-            if (success) {
-                ElMessage({
-                    message: '已保存',
-                    type: 'success',
-                    grouping: true
+            try {
+                await axios.post('/api/event/update', {
+                    token: localStorage.getItem('token'),
+                    event: eventToUpdate,
                 })
-            } else {
-                ElMessage({
-                    message: '保存失败',
-                    type: 'error',
-                    grouping: true
-                })
+            } catch (err) {
+                // TODO 退出当前用户登录
+                return
             }
+            ElMessage({
+                message: '已保存',
+                type: 'success',
+                grouping: true
+            })
         },
+        async deleteEvent(eventToDelete) {
+            try {
+                await axios.post('/api/event/delete', {
+                    token: localStorage.getItem('token'),
+                    id: eventToDelete.id,
+                })
+            } catch (err) {
+                // TODO 退出当前用户登录
+                return
+            }
+            this.EventList = this.EventList.filter(ev => ev.id != eventToDelete.id)
+            this.chosenEventID = undefined
+            notUserEdit = true
+            ElMessage({
+                message: '已保存',
+                type: 'success',
+                grouping: true
+            })
+        }
     },
     computed: {
         eventGrouped() {
@@ -547,6 +513,19 @@ export default {
     },
     created() {
         this.openedGroups = this.eventGrouped.map(group => group.groupName) // 默认展开所有事件组
+    },
+    async mounted() {
+        let response
+        try {
+            response = await axios.post('/api/event/getAll', {
+                token: localStorage.getItem('token'),
+            })
+        } catch (err) {
+            // TODO 退出当前用户登录
+            return
+        }
+
+        this.EventList = response.data
     }
 }
 </script>

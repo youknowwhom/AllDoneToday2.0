@@ -25,11 +25,13 @@ import logger from './logger.js'
 
 
 /**
- * 导入用户数据数据库
+ * 导入数据库
  */
 import { UserdataDB, User } from './db/userdata.js'
+import { EventDB, Event } from './db/event.js'
 try {
     await UserdataDB.authenticate()
+    await EventDB.authenticate()
     logger.info('成功连接到数据库')
 } catch (error) {
     logger.error('无法连接到数据库: ', error)
@@ -374,22 +376,203 @@ app.post('/api/user/updateInfo', async (req, res) => {
 })
 
 app.post('/api/event/update', async (req, res) => {
-    logger.info(req.body)
+    if (!req.body.token) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '缺少 token'
+        })
+        return
+    }
+
+    let userName, event
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+        event = req.body.event
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({
+                msg: 'expired',
+                detail: 'token 过期'
+            })
+        } else {
+            logger.info(err)
+            res.status(400).send({
+                msg: 'invalid',
+                detail: '其他错误'
+            })
+        }
+        return
+    }
+
+    if (!await User.findOne({ where: { username: userName } })) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '用户名错误'
+        })
+        return
+    }
+
+    if (!await Event.findOne({ where: { id: event.id, username: userName } })) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '用户没有对应的事件'
+        })
+        return
+    }
+
+    event.username = userName
+    await Event.update(event, { where: { id: event.id, username: userName } })
+
+    logger.info(`用户#${userName} 更新了事件#${event.id}`)
+
     res.sendStatus(200)
 })
 
 app.post('/api/event/getAll', async (req, res) => {
-    logger.info(req.body)
-    res.sendStatus(200)
+    if (!req.body.token) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '缺少 token'
+        })
+        return
+    }
+
+    let userName
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({
+                msg: 'expired',
+                detail: 'token 过期'
+            })
+            logger.info(`用户#${userName} 的 token 过期了`)
+        } else {
+            logger.info(err)
+            res.status(400).send({
+                msg: 'invalid',
+                detail: '其他错误'
+            })
+        }
+        return
+    }
+
+    if (!await User.findOne({ where: { username: userName } })) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '用户名错误'
+        })
+        return
+    }
+
+    let eventList = await Event.findAll({ where: { username: userName } })
+    logger.info(`用户#${userName} 查询所有事件`, eventList)
+
+    res.status(200).send(eventList)
 })
 
 app.post('/api/event/create', async (req, res) => {
-    logger.info(req.body)
+    if (!req.body.token) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '缺少 token'
+        })
+        return
+    }
+
+    let userName, event
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+        event = req.body.event
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({
+                msg: 'expired',
+                detail: 'token 过期'
+            })
+        } else {
+            logger.info(err)
+            res.status(400).send({
+                msg: 'invalid',
+                detail: '其他错误'
+            })
+        }
+        return
+    }
+
+    if (!await User.findOne({ where: { username: userName } })) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '用户名错误'
+        })
+        return
+    }
+
+    if (await Event.findOne({ where: { id: event.id } })) {
+        res.status(400).send({
+            msg: 'duplicate_id',
+            detail: '事件 id 重复'
+        })
+        return
+    }
+
+    event.username = userName
+    await Event.create(event)
+
+    logger.info(`用户#${userName} 创建了事件#${event.id}`)
+
     res.sendStatus(200)
 })
 
 app.post('/api/event/delete', async (req, res) => {
-    logger.info(req.body)
+    if (!req.body.token) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '缺少 token'
+        })
+        return
+    }
+
+    let userName, id
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+        id = req.body.id
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({
+                msg: 'expired',
+                detail: 'token 过期'
+            })
+        } else {
+            logger.info(err)
+            res.status(400).send({
+                msg: 'invalid',
+                detail: '其他错误'
+            })
+        }
+        return
+    }
+
+    if (!await User.findOne({ where: { username: userName } })) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '用户名错误'
+        })
+        return
+    }
+
+    if (!await Event.findOne({ where: { id: id, username: userName } })) {
+        res.status(400).send({
+            msg: 'invalid',
+            detail: '用户没有对应的事件'
+        })
+        return
+    }
+
+    await Event.destroy({ where: { id: id, username: userName } })
+
+    logger.info(`用户#${userName} 删除了事件#${id}`)
+
     res.sendStatus(200)
 })
 
