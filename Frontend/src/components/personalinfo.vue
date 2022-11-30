@@ -101,7 +101,7 @@ export default {
         }
     },
     async created() {
-        let url = '/api/GetPersonalInfo'
+        let url = '/api/user/getInfo'
         let response = {}
         try {
             response = await axios.post(url, {

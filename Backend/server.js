@@ -58,7 +58,7 @@ try {
  * --ToDo
  *   由于无法写入数据库 先使用伪数据
  */
-app.post('/api/SignUp', async (req, res) => {
+app.post('/api/user/signup', async (req, res) => {
     const username = req.body.UserName
     const PasswordHash = req.body.PasswordHash
     const EmailAddress = req.body.EmailAddress
@@ -134,7 +134,7 @@ app.post('/api/SignUp', async (req, res) => {
  *     - 值只可能为 'success' / 'fail' / 'invalid' 之一
  *   - msg: 服务端返回的信息
  */
-app.post('/api/SignIn', async (req, res) => {
+app.post('/api/user/signin', async (req, res) => {
     const username = req.body.username
     const passwordHash = req.body.passwordHash
     if (!username || !passwordHash) {
@@ -187,7 +187,7 @@ app.post('/api/SignIn', async (req, res) => {
  *   - IsUsernameTrue: 用户名是否正确(防止未注册使用)
  *   - IsEmailAddressValid: 邮箱是否有效
  */
-app.post('/api/ForgetPassword', async (req, res) => {
+app.post('/api/user/forgetPassword', async (req, res) => {
     const EmailAddress = req.body.EmailAddress
     const SecurityCode = req.body.SecurityCode
     const PasswordHash = req.body.PasswordHash
@@ -239,7 +239,7 @@ app.post('/api/ForgetPassword', async (req, res) => {
  *   - response(failure):
  *     - msg: 后端返回给前端的错误信息，为 'invalid' / 'expired' 之一
  */
-app.post('/api/GetPersonalInfo', async (req, res) => {
+app.post('/api/user/getInfo', async (req, res) => {
     if (!req.body.token) {
         res.status(400).send({
             msg: 'invalid'
@@ -301,7 +301,7 @@ app.post('/api/GetPersonalInfo', async (req, res) => {
  *      - UserChangePhoto(没写)
  */
 
-app.post('/api/ChangePersonalInfo', async (req, res) => {
+app.post('/api/user/updateInfo', async (req, res) => {
     if (!req.body.token) {
         res.status(400).send({
             msg: 'invalid'
@@ -373,7 +373,22 @@ app.post('/api/ChangePersonalInfo', async (req, res) => {
     })
 })
 
-app.post('/api/UpdateEvent', async (req, res) => {
+app.post('/api/event/update', async (req, res) => {
+    logger.info(req.body)
+    res.sendStatus(200)
+})
+
+app.post('/api/event/getAll', async (req, res) => {
+    logger.info(req.body)
+    res.sendStatus(200)
+})
+
+app.post('/api/event/create', async (req, res) => {
+    logger.info(req.body)
+    res.sendStatus(200)
+})
+
+app.post('/api/event/delete', async (req, res) => {
     logger.info(req.body)
     res.sendStatus(200)
 })

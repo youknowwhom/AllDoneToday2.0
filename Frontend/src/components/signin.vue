@@ -32,7 +32,7 @@ export default {
         async Login() {
             let response = {}
             try {
-                response = await axios.post('/api/SignIn', this.LoginInfo)
+                response = await axios.post('/api/user/signin', this.LoginInfo)
             } catch (err) {
                 console.error(err)
                 return

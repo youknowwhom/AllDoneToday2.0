@@ -480,7 +480,7 @@ export default {
                 await new Promise(r => setTimeout(r, updateDelay)) // sleep
                 if (currentID !== loopRequestID) return
             }
-            // let response = await axios.post('/api/UpdateEvent', {
+            // let response = await axios.post('/api/event/update', {
             //     token: localStorage.getItem('token'),
             //     event: eventToUpdate,
             // })
