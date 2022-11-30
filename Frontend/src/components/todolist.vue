@@ -70,10 +70,10 @@
                                             <el-space style="display: flex; flex-flow: row nowrap; align-items: center">
                                                 <el-checkbox class="todolist-item-checkbox" v-model="ev.finished">
                                                 </el-checkbox>
-                                                <p class="todolist-list-item-title" :class="{ empty: !ev.brief }">{{
+                                                <span class="todolist-list-item-title" :class="{ empty: !ev.brief }">{{
                                                         ev.brief ? ev.brief : '无标题'
                                                 }}
-                                                </p>
+                                                </span>
                                                 <el-tag v-if="ev.importance.important">重要</el-tag>
                                                 <el-tag v-if="ev.importance.urgent">紧急</el-tag>
                                             </el-space>
@@ -93,7 +93,7 @@
                     <input v-model="chosenEvent.brief" id="todolist-detail-brief" placeholder="添加事件简介……" />
                 </el-space>
                 <el-space class="todolist-detail-container" direction="horizontal">
-                    <p style="font-weight: bold; margin: 0; width: 100px;">重要程度：</p>
+                    <span style="font-weight: bold; margin: 0; width: 100px;">重要程度：</span>
                     <el-button plain :type="this.chosenEvent.importance.important ? 'primary' : ''"
                         :class="{ active: this.chosenEvent.importance.important }" style="width:100px;"
                         @click="this.chosenEvent.importance.important = !this.chosenEvent.importance.important">
@@ -112,15 +112,15 @@
                             <el-icon>
                                 <Calendar />
                             </el-icon>
-                            添加{{ this.beginTimeTag +
+                            <span>添加{{ this.beginTimeTag +
                                     this.beginTimeType
-                            }}
+                            }}</span>
                         </el-space>
                     </el-button>
                     <template v-else>
-                        <p style="font-weight: bold; margin: 0; width: 100px;">
+                        <span style="font-weight: bold; margin: 0; width: 100px;">
                             {{ this.beginTimeTag + this.beginTimeType + '：' }}
-                        </p>
+                        </span>
                         <el-date-picker v-model="this.chosenEvent.time.beginTime.date"></el-date-picker>
                         <el-button text bg v-if="!this.chosenEvent.time.beginTime.time"
                             @click="this.chosenEvent.time.beginTime.time = new Date()">
@@ -128,7 +128,7 @@
                                 <el-icon>
                                     <Clock />
                                 </el-icon>
-                                添加{{ this.beginTimeTag }}时间
+                                <span>添加{{ this.beginTimeTag }}时间</span>
                             </el-space>
                         </el-button>
                         <el-time-picker v-else v-model="this.chosenEvent.time.beginTime.time"></el-time-picker>
@@ -142,12 +142,12 @@
                             <el-icon>
                                 <Calendar />
                             </el-icon>
-                            添加结束{{ this.endTimeType }}
+                            <span>添加结束{{ this.endTimeType }}</span>
                         </el-space>
                     </el-button>
                     <template v-else>
-                        <p style="font-weight: bold; margin: 0; width: 100px;">{{ '结束' + this.endTimeType + '：' }}
-                        </p>
+                        <span style="font-weight: bold; margin: 0; width: 100px;">{{ '结束' + this.endTimeType + '：' }}
+                        </span>
                         <el-date-picker v-model="this.chosenEvent.time.endTime.date"></el-date-picker>
                         <el-button text bg v-if="!this.chosenEvent.time.endTime.time"
                             @click="this.chosenEvent.time.endTime.time = new Date()">
@@ -155,7 +155,7 @@
                                 <el-icon>
                                     <Clock />
                                 </el-icon>
-                                添加结束时间
+                                <span>添加结束时间</span>
                             </el-space>
                         </el-button>
                         <el-time-picker v-else v-model="this.chosenEvent.time.endTime.time"></el-time-picker>
@@ -168,20 +168,20 @@
                 <el-divider style="margin: 0;" />
                 <el-space class="todolist-detail-container" direction="horizontal" style="flex-direction: row-reverse;">
                     <el-button style="width: 100px;" type="danger">
-                        <el-spcae>
+                        <el-space direction="horizontal">
                             <el-icon>
                                 <Delete />
                             </el-icon>
-                            删除
-                        </el-spcae>
+                            <span>删除</span>
+                        </el-space>
                     </el-button>
                     <el-button style="width: 100px;" @click="this.updateEvent(this.chosenEvent, true)">
-                        <el-spcae>
+                        <el-space direction="horizontal">
                             <el-icon>
                                 <Check />
                             </el-icon>
-                            保存
-                        </el-spcae>
+                            <span>保存</span>
+                        </el-space>
                     </el-button>
                 </el-space>
             </el-container>
@@ -296,7 +296,7 @@ export default {
     name: 'ToDoList',
     data() {
         return {
-            newEventBrief: '',
+            newEventBriefInput: '',
             openedGroups: [],
             chosenEventID: undefined,
             EventList: [
@@ -441,7 +441,6 @@ export default {
         },
         chosenEvent: {
             handler(newEvent, formerEvent) {
-                console.log(newEvent, formerEvent, 'system: ', notUserEdit)
                 if (notUserEdit) {
                     notUserEdit = false
                     return
