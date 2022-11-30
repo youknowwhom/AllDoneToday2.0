@@ -96,7 +96,7 @@ app.post('/api/SignUp', async (req, res) => {
         }
     })
 
-    if(UserObj){
+    if (UserObj) {
         res.status(400).send({
             IsFormValid: true,
             //IsSecurityCodeTrue: IsSecurityCodeTrue,
@@ -105,11 +105,11 @@ app.post('/api/SignUp', async (req, res) => {
         })
         return
     }
-    else{
+    else {
         let newUser = User.build({
-            username:username,
-            passwordHash:PasswordHash,
-            EmailAddress:EmailAddress
+            username: username,
+            passwordHash: PasswordHash,
+            EmailAddress: EmailAddress
         })
         await newUser.save()
         res.status(200).send({
@@ -203,7 +203,7 @@ app.post('/api/ForgetPassword', async (req, res) => {
         })
         return
     }
-    
+
     // let requestedUser = User.findOne({
     //     where:{
     //         EmailAddress:EmailAddress
@@ -301,7 +301,7 @@ app.post('/api/GetPersonalInfo', async (req, res) => {
  *      - UserChangePhoto(没写)
  */
 
-app.post('/api/ChangePersonalInfo',async(req,res)=>{
+app.post('/api/ChangePersonalInfo', async (req, res) => {
     if (!req.body.token) {
         res.status(400).send({
             msg: 'invalid'
@@ -340,27 +340,27 @@ app.post('/api/ChangePersonalInfo',async(req,res)=>{
     }
 
     let resData = {
-        UserGenderChange:false,
-        UserSignatureChange:false,
-        UserBirthdayChange:false,
+        UserGenderChange: false,
+        UserSignatureChange: false,
+        UserBirthdayChange: false,
     }
 
-    for(const key in req.body){
-        if(key==='UserGender'){
+    for (const key in req.body) {
+        if (key === 'UserGender') {
             await UserObj.update({
-                UserGender:req.body[key]
+                UserGender: req.body[key]
             })
             resData.UserGenderChange = true
         }
-        if(key==='Signature'){
+        if (key === 'Signature') {
             await UserObj.update({
-                Signature:req.body[key]
+                Signature: req.body[key]
             })
             resData.UserSignatureChange = true
         }
-        if(key==='Birthday'){
+        if (key === 'Birthday') {
             await UserObj.update({
-                Birthday:req.body[key]
+                Birthday: req.body[key]
             })
             resData.UserBirthdayChange = true
         }
@@ -369,8 +369,13 @@ app.post('/api/ChangePersonalInfo',async(req,res)=>{
 
     res.status(200).send({
         resData,
-        msg:'修改成功'
+        msg: '修改成功'
     })
+})
+
+app.post('/api/UpdateEvent', async (req, res) => {
+    logger.info(req.body)
+    res.sendStatus(200)
 })
 
 /**

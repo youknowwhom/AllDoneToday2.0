@@ -42,13 +42,12 @@
         </div>
         <el-divider direction="vertical" style="height: 100%" />
 
-        <el-container class="todolist-main" direction="vertical">
-
+        <el-container class="todolist-main" direction="vertical" ref="ToDoList_CenterList">
             <el-container class="todolist-top-itemadder" direction="horizontal">
-                <el-input type="text" placeholder="在此处添加新的待办事项" id="todolist-top-itemadder-input"
-                    v-model="this.newEventBrief" clearable @keypress.enter="CreateEventFromBrief" />
+                <el-input type="text" placeholder="在此处添加新的待办事项" class="todolist-top-itemadder-input"
+                    v-model="this.newEventBriefInput" clearable @keypress.enter="CreateEventFromBrief" />
                 <el-divider direction="vertical" style="height: 100%; border: none;" />
-                <el-button type="primary" @click="CreateEventFromBrief">
+                <el-button type="primary" @click="CreateEventFromBrief" style="height: 100%;">
                     <el-icon color="#FFFFFF">
                         <Plus />
                     </el-icon>
@@ -57,7 +56,7 @@
             <el-divider content-position="left">
                 <h4 class="todolist-top-headline">待办清单</h4>
             </el-divider>
-            <el-container class="todolist-list" direction="vertical">
+            <el-container direction="vertical">
                 <el-scrollbar>
                     <el-collapse v-model="this.openedGroups">
                         <template v-for="group in eventGrouped" :key="group.groupName">
@@ -71,7 +70,9 @@
                                             <el-space style="display: flex; flex-flow: row nowrap; align-items: center">
                                                 <el-checkbox class="todolist-item-checkbox" v-model="ev.finished">
                                                 </el-checkbox>
-                                                <p style="flex: 1 0 auto; margin: 0px; overflow: hidden;">{{ ev.brief }}
+                                                <p class="todolist-list-item-title" :class="{ empty: !ev.brief }">{{
+                                                        ev.brief ? ev.brief : '无标题'
+                                                }}
                                                 </p>
                                                 <el-tag v-if="ev.importance.important">重要</el-tag>
                                                 <el-tag v-if="ev.importance.urgent">紧急</el-tag>
@@ -89,7 +90,7 @@
         <div class="todolist-detail-right-background">
             <el-container class="todolist-detail" v-if="this.chosenEventID" direction="vertical">
                 <el-space class="todolist-detail-container" direction="vertical" :fill="true">
-                    <input v-model="chosenEvent.brief" id="todolist-detail-brief" placeholder="无标题" />
+                    <input v-model="chosenEvent.brief" id="todolist-detail-brief" placeholder="添加事件简介……" />
                 </el-space>
                 <el-space class="todolist-detail-container" direction="horizontal">
                     <p style="font-weight: bold; margin: 0; width: 100px;">重要程度：</p>
@@ -106,15 +107,29 @@
                 </el-space>
                 <el-space class="todolist-detail-container" direction="horizontal">
                     <el-button text bg v-if="!this.chosenEvent.time.beginTime.date"
-                        @click="this.chosenEvent.time.beginTime.date = new Date()">添加{{ this.beginTimeTag }}日期
+                        @click="this.chosenEvent.time.beginTime.date = new Date()">
+                        <el-space>
+                            <el-icon>
+                                <Calendar />
+                            </el-icon>
+                            添加{{ this.beginTimeTag +
+                                    this.beginTimeType
+                            }}
+                        </el-space>
                     </el-button>
                     <template v-else>
                         <p style="font-weight: bold; margin: 0; width: 100px;">
-                            {{ this.beginTimeTag }}时间：
+                            {{ this.beginTimeTag + this.beginTimeType + '：' }}
                         </p>
                         <el-date-picker v-model="this.chosenEvent.time.beginTime.date"></el-date-picker>
                         <el-button text bg v-if="!this.chosenEvent.time.beginTime.time"
-                            @click="this.chosenEvent.time.beginTime.time = new Date()">添加{{ this.beginTimeTag }}时间
+                            @click="this.chosenEvent.time.beginTime.time = new Date()">
+                            <el-space>
+                                <el-icon>
+                                    <Clock />
+                                </el-icon>
+                                添加{{ this.beginTimeTag }}时间
+                            </el-space>
                         </el-button>
                         <el-time-picker v-else v-model="this.chosenEvent.time.beginTime.time"></el-time-picker>
                     </template>
@@ -122,19 +137,52 @@
                 <el-space class="todolist-detail-container" direction="horizontal"
                     v-if="this.chosenEvent.time.beginTime.date">
                     <el-button text bg v-if="!this.chosenEvent.time.endTime.date"
-                        @click="this.chosenEvent.time.endTime.date = new Date()">添加结束日期
+                        @click="this.chosenEvent.time.endTime.date = new Date()">
+                        <el-space>
+                            <el-icon>
+                                <Calendar />
+                            </el-icon>
+                            添加结束{{ this.endTimeType }}
+                        </el-space>
                     </el-button>
                     <template v-else>
-                        <p style="font-weight: bold; margin: 0; width: 100px;">结束时间：</p>
+                        <p style="font-weight: bold; margin: 0; width: 100px;">{{ '结束' + this.endTimeType + '：' }}
+                        </p>
                         <el-date-picker v-model="this.chosenEvent.time.endTime.date"></el-date-picker>
                         <el-button text bg v-if="!this.chosenEvent.time.endTime.time"
-                            @click="this.chosenEvent.time.endTime.time = new Date()">添加结束时间
+                            @click="this.chosenEvent.time.endTime.time = new Date()">
+                            <el-space>
+                                <el-icon>
+                                    <Clock />
+                                </el-icon>
+                                添加结束时间
+                            </el-space>
                         </el-button>
                         <el-time-picker v-else v-model="this.chosenEvent.time.endTime.time"></el-time-picker>
                     </template>
                 </el-space>
-                <el-space class="todolist-detail-container" direction="horizontal" :fill="true">
-                    <el-input type="textarea" placeholder="详细信息" v-model="this.chosenEvent.description" />
+                <el-space class="todolist-detail-container" direction="vertical" :fill="true" style="flex: 1 1 100%;">
+                    <textarea placeholder="添加详细信息……" v-model="this.chosenEvent.description"
+                        class="todolist-detail-description"></textarea>
+                </el-space>
+                <el-divider style="margin: 0;" />
+                <el-space class="todolist-detail-container" direction="horizontal" style="flex-direction: row-reverse;">
+                    <el-button style="width: 100px;" type="danger">
+                        <el-spcae>
+                            <el-icon>
+                                <Delete />
+                            </el-icon>
+                            删除
+                        </el-spcae>
+                    </el-button>
+                    <el-button style="width: 100px;" @click="this.updateEvent(this.chosenEvent, true)">
+                        <el-spcae>
+                            <el-icon>
+                                <Check />
+                            </el-icon>
+                            保存
+                        </el-spcae>
+                    </el-button>
                 </el-space>
             </el-container>
         </div>
@@ -146,6 +194,8 @@
 <script>
 
 import { v4 as uuid } from 'uuid'
+
+import { ElMessage } from 'element-plus'
 
 function compareDate(a, b) {
     a = new Date(a), b = new Date(b)
@@ -233,6 +283,14 @@ let GroupFilters = [
 ]
 
 let DisplayFilters = []
+
+// import axios from 'axios'
+
+let loopRequestID = 0
+const maxLoopRequestID = 10000
+const updateDelay = 1000
+
+let notUserEdit = false
 
 export default {
     name: 'ToDoList',
@@ -329,6 +387,8 @@ export default {
     watch: {
         chosenEventID() {
             this.chosenEvent = this.EventList.find(ev => ev.id === this.chosenEventID)
+            if (!this.chosenEvent) return
+            notUserEdit = true
             this.chosenEvent.brief = this.chosenEvent.brief ?? null
             this.chosenEvent.description = this.chosenEvent.description ?? null
             this.chosenEvent.importance = this.chosenEvent.importance ?? {}
@@ -366,23 +426,40 @@ export default {
             }
         },
         'chosenEvent.time.beginTime.date': function () {
-            if (!this.chosenEvent.time.beginTime.date) this.chosenEvent.time.beginTime = {}
+            if (!this.chosenEvent) return
+            if (!this.chosenEvent.time.beginTime.date) {
+                notUserEdit = true
+                this.chosenEvent.time.beginTime = {}
+            }
         },
         'chosenEvent.time.endTime.date': function () {
-            if (!this.chosenEvent.time.endTime.date) this.chosenEvent.time.endTime = {}
+            if (!this.chosenEvent) return
+            if (!this.chosenEvent.time.endTime.date) {
+                notUserEdit = true
+                this.chosenEvent.time.endTime = {}
+            }
         },
-        'chosenEvent.description': function (val) {
-            console.warn(val, val.length, typeof val)
-        },
-        'chosenEvent.brief': function (val) {
-            console.warn(val, val.length, typeof val)
+        chosenEvent: {
+            handler(newEvent, formerEvent) {
+                console.log(newEvent, formerEvent, 'system: ', notUserEdit)
+                if (notUserEdit) {
+                    notUserEdit = false
+                    return
+                } else if (!newEvent) {
+                    this.updateEvent(formerEvent, true)
+                    return
+                }
+                if (!formerEvent) return
+                if (newEvent) this.updateEvent(newEvent)
+            },
+            deep: true,
         },
     },
     methods: {
         CreateEventFromBrief() {
             let newEvent = {
                 id: uuid(),
-                brief: this.newEventBrief ?? '',
+                brief: this.newEventBriefInput ?? '',
                 description: '',
                 finished: false,
                 importance: {
@@ -393,9 +470,37 @@ export default {
             }
             this.EventList.push(newEvent)
             this.chosenEventID = newEvent.id
-            this.newEventBrief = ''
+            this.newEventBriefInput = ''
         },
-
+        async updateEvent(eventToUpdate, immediate) {
+            loopRequestID++
+            loopRequestID %= maxLoopRequestID
+            if (loopRequestID < 0) loopRequestID += maxLoopRequestID
+            if (!immediate) {
+                let currentID = loopRequestID
+                await new Promise(r => setTimeout(r, updateDelay)) // sleep
+                if (currentID !== loopRequestID) return
+            }
+            // let response = await axios.post('/api/UpdateEvent', {
+            //     token: localStorage.getItem('token'),
+            //     event: eventToUpdate,
+            // })
+            // console.log(response)
+            let success = true // 测试
+            if (success) {
+                ElMessage({
+                    message: '已保存',
+                    type: 'success',
+                    grouping: true
+                })
+            } else {
+                ElMessage({
+                    message: '保存失败',
+                    type: 'error',
+                    grouping: true
+                })
+            }
+        },
     },
     computed: {
         eventGrouped() {
@@ -425,7 +530,21 @@ export default {
         },
         beginTimeTag() {
             return CheckDateTime(this.chosenEvent.time.endTime) ? '开始' : ''
-        }
+        },
+        beginTimeType() {
+            try {
+                return this.chosenEvent.time.beginTime.time ? '时间' : '日期'
+            } catch (err) {
+                return '日期'
+            }
+        },
+        endTimeType() {
+            try {
+                return this.chosenEvent.time.endTime.time ? '时间' : '日期'
+            } catch (err) {
+                return '日期'
+            }
+        },
     },
     created() {
         this.openedGroups = this.eventGrouped.map(group => group.groupName) // 默认展开所有事件组
@@ -458,10 +577,8 @@ export default {
     margin: 0;
 }
 
-#todolist-top-itemadder-input {
-    height: fit-content;
-    /* caret-color: #7a7af9; */
-    background-color: #f6f6ff;
+.todolist-top-itemadder-input {
+    height: 40px;
 }
 
 .todolist-top-itemadder {
@@ -536,8 +653,14 @@ export default {
     background-color: rgb(255, 255, 255);
 }
 
-.todolist-list {
-    overflow-y: hidden;
+.todolist-list-item-title {
+    flex: 1 0 auto;
+    margin: 0px;
+    overflow: hidden;
+}
+
+.todolist-list-item-title.empty {
+    color: var(--el-color-info)
 }
 
 #todolist-detail-right-itemname {
@@ -566,17 +689,17 @@ export default {
     width: 100%
 }
 
-.todolist-item-checkbox {}
-
 .todolist-detail {
     background: white;
     width: 100%;
     height: 100%;
     padding: 0;
+    overflow: hidden;
 }
 
 .todolist-item.chosen {
-    background-color: #f5f5f5;
+    border-color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
 }
 
 .todolist-detail-container {
@@ -594,14 +717,35 @@ export default {
     font-weight: bold;
     padding: 5px;
     box-sizing: border-box;
-    color: var(--el-text-color-regular)
+    color: var(--el-text-color-regular);
 }
 
 #todolist-detail-brief:focus {
     border-bottom-width: 3px;
     padding-bottom: 4px;
     border-color: var(--el-color-info);
-    color: var(--el-text-color-primary)
+    color: var(--el-text-color-primary);
+}
+
+.todolist-detail-description {
+    border: none;
+    outline: none;
+    font-size: large;
+    box-sizing: border-box;
+    resize: none;
+    border-radius: var(--el-border-radius-base);
+    padding: 20px;
+    color: var(--el-text-color-regular);
+    transition: var(--el-transition-duration-fast);
+}
+
+.todolist-detail-description:focus {
+    color: var(--el-text-color-primary);
+    background-color: #f5f5f584;
+}
+
+.todolist-detail-description:hover {
+    background-color: #f5f5f584;
 }
 </style>
   
