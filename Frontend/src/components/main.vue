@@ -80,7 +80,7 @@ export default {
 .mainframe-header-logo {
     --logo-height: 50px;
     vertical-align: middle;
-    height: min(var(--logo-height), var(--el-menu-item-height));
+    height: min(var(--logo-height), var(--mainframe-header-height));
     cursor: pointer;
 }
 
@@ -97,10 +97,12 @@ export default {
 }
 
 .mainframe-header {
+    --mainframe-header-height: var(--el-menu-item-height);
+
     box-shadow: 0px 0px 5px 5px #e9e9ff;
     box-sizing: content-box;
     border-bottom: 1px var(--el-border-color) var(--el-border-style);
-    height: var(--el-menu-item-height);
+    height: var(--mainframe-header-height);
 
     /* flex */
     display: flex;

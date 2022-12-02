@@ -413,6 +413,7 @@ export default {
                     }
                     else if (err.response.data.msg === 'invalid_token') {
                         this.$router.replace('/welcome')
+                        localStorage.removeItem('token')
                         ElMessage({
                             message: '登录信息无效',
                             type: 'error',
@@ -452,6 +453,7 @@ export default {
             } catch (err) {
                 if (err.response.data.msg === 'invalid_token') {
                     this.$router.replace('/welcome')
+                    localStorage.removeItem('token')
                     ElMessage({
                         message: '登录信息无效',
                         type: 'error',
@@ -481,6 +483,7 @@ export default {
             } catch (err) {
                 if (err.response.data.msg === 'invalid_token') {
                     this.$router.replace('/welcome')
+                    localStorage.removeItem('token')
                     ElMessage({
                         message: '登录信息无效',
                         type: 'error',
@@ -561,6 +564,7 @@ export default {
         } catch (err) {
             if (err.response.data.msg === 'invalid_token') {
                 this.$router.replace('/welcome')
+                localStorage.removeItem('token')
                 ElMessage({
                     message: '登录信息无效',
                     type: 'error',

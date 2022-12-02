@@ -29,6 +29,7 @@ export default {
             })
         } catch (err) {
             console.debug('bad token')
+            localStorage.removeItem('token')
             userLoggedIn = false
             return
         }
