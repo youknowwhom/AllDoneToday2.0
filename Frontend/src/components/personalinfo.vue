@@ -111,7 +111,7 @@ export default {
             console.error(err)
             return
         }
-        console.log(response)
+        console.debug(response)
     },
     methods: {
         BasicEnsure() {

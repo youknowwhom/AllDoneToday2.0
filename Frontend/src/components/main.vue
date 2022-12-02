@@ -31,7 +31,7 @@ export default {
         }
     },
     async created() {
-        console.log('root page')
+        console.debug('root page')
     }
 }
 
