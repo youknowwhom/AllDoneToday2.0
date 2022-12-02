@@ -2,19 +2,12 @@
 
 import axios from 'axios'
 
-import App from './app.vue'
-import Welcome from './welcome.vue'
-
 export default {
     name: 'MainFrame',
     data() {
         return {
-            username: undefined,
+
         }
-    },
-    components: {
-        App,
-        Welcome,
     },
     computed: {
         loggedIn() {
@@ -39,11 +32,7 @@ export default {
     },
     async created() {
         console.log('root page')
-        if (!this.verifyToken()) {
-            this.mainContent = 'Welcome'
-        } else {
-            this.mainContent = 'App'
-        }
+
     }
 }
 
@@ -52,25 +41,27 @@ export default {
 <template>
     <el-container class="mainframe-container">
         <el-header class="mainframe-header">
-            <img src="../assets/image/logo.png" class="mainframe-header-logo" />
-            <el-button text  @click="this.$router.push('/app')" class="mainframe-navbutton">
+            <button @click="this.$router.push('/welcome')" class="mainframe-navbutton">
+                <img src="../assets/image/logo.png" class="mainframe-header-logo" />
+            </button>
+            <button @click="this.$router.push('/app')" class="mainframe-navbutton">
                 应用
-            </el-button>
-            <el-button text  @click="this.$router.push('/welcome')" class="mainframe-navbutton">
+            </button>
+            <button @click="this.$router.push('/welcome')" class="mainframe-navbutton">
                 欢迎页
-            </el-button>
+            </button>
             <div style="flex: 0 1 100%"><!--填充空白--></div>
-            <div>
-                <el-container v-if="this.loggedIn" direction="horizontal">
+            <div style="height: 100%">
+                <el-container v-if="this.loggedIn" direction="horizontal" style="height: 100%">
                     你好
                 </el-container>
-                <el-container v-else direction="horizontal">
-                    <el-button text class="mainframe-navbutton" @click="this.$router.push('/signin')">
+                <el-container v-else direction="horizontal" style="height: 100%">
+                    <button class="mainframe-navbutton" @click="this.$router.push('/signin')">
                         登录
-                    </el-button>
-                    <el-button text class="mainframe-navbutton" @click="this.$router.push('/signup')">
+                    </button>
+                    <button class="mainframe-navbutton" @click="this.$router.push('/signup')">
                         注册
-                    </el-button>
+                    </button>
                 </el-container>
             </div>
         </el-header>
@@ -84,8 +75,8 @@ export default {
 <style scoped>
 .mainframe-header-logo {
     --logo-height: 50px;
-    height: var(--logo-height);
-    padding: calc((var(--el-menu-item-height) - var(--logo-height)) / 2)
+    vertical-align: middle;
+    height: min(var(--logo-height), calc(var(--el-menu-item-height) - var(--mainframe-navbutton-underline-width) * 2));
 }
 
 .mainframe-container {
@@ -102,7 +93,8 @@ export default {
 
 .mainframe-header {
     box-shadow: 0px 0px 5px 5px #e9e9ff;
-    border-bottom: #e1e1e14d solid 1px;
+    box-sizing: content-box;
+    border-bottom: 1px var(--el-border-color) var(--el-border-style);
     height: var(--el-menu-item-height);
 
     /* flex */
@@ -119,7 +111,28 @@ export default {
 }
 
 .mainframe-navbutton {
+    --mainframe-navbutton-horizontal-padding: 15px;
+    --mainframe-navbutton-underline-width: 2px;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 0;
+    padding-left: var(--mainframe-navbutton-horizontal-padding);
+    padding-right: var(--mainframe-navbutton-horizontal-padding);
     font-size: large;
+    white-space: nowrap;
+    background-color: transparent;
+    text-align: center;
+    border: none;
+    transition: var(--el-transition-duration-fast);
+    color: var(--el-color-primary-dark-2);
+}
+
+.mainframe-navbutton:hover {
+    cursor: pointer;
+    color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
+    border-top: var(--mainframe-navbutton-underline-width) solid transparent;
+    border-bottom: var(--mainframe-navbutton-underline-width) solid var(--el-color-primary);
 }
 </style>
   
