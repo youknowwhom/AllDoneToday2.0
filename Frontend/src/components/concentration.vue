@@ -3,8 +3,8 @@
     <div class="Concentration-container">
         <el-container class = "CenterContainer" direction = "vertical">
 
-            <el-progress type="circle" :percentage="getPercentage" color="var(--el-color-primary-light-3)" stroke-width="20"
-                width="400">
+            <el-progress type="circle" :percentage="getPercentage" color="var(--el-color-primary-light-3)" :stroke-width="20"
+                :width="400">
                 <img :src="displayPic" class="DemonPic" />
             </el-progress>
 
@@ -104,6 +104,10 @@ export default {
             else
                 return '0' + String(num);
         },
+        checkDone(){
+            if(this.curState == 'growing' && String(this.curTime) == String(this.goalTime))
+                this.curState = 'done';
+        }
     },
     computed: {
         //圆形进度条percentage
@@ -147,10 +151,6 @@ export default {
             else if(this.curState == 'done')
                 return "专注成功";
         },
-        checkDone(){
-            if(this.curState == 'growing' && String(this.curTime) == String(this.goalTime))
-                this.curState = 'done';
-        }
     },
     created() {
         setInterval(() => {
