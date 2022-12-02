@@ -407,16 +407,24 @@ export default {
                     })
                     break
                 } catch (err) {
-                    if (err.response.data.msg == 'duplicate_id') {
+                    if (err.response.data.msg === 'duplicate_id') {
                         newEvent.id = GetUniqueUUID()
                         continue
                     }
-                    this.$router.replace('welcome')
-                    ElMessage({
-                        message: '保存失败',
-                        type: 'error',
-                        grouping: true
-                    })
+                    else if (err.response.data.msg === 'invalid_token') {
+                        this.$router.replace('/welcome')
+                        ElMessage({
+                            message: '登录信息无效',
+                            type: 'error',
+                            grouping: true
+                        })
+                    } else {
+                        ElMessage({
+                            message: '保存失败',
+                            type: 'error',
+                            grouping: true
+                        })
+                    }
 
                     return
                 }
@@ -442,12 +450,20 @@ export default {
                     event: eventToUpdate,
                 })
             } catch (err) {
-                this.$router.replace('welcome')
-                ElMessage({
-                    message: '保存失败',
-                    type: 'error',
-                    grouping: true
-                })
+                if (err.response.data.msg === 'invalid_token') {
+                    this.$router.replace('/welcome')
+                    ElMessage({
+                        message: '登录信息无效',
+                        type: 'error',
+                        grouping: true
+                    })
+                } else {
+                    ElMessage({
+                        message: '保存失败',
+                        type: 'error',
+                        grouping: true
+                    })
+                }
                 return
             }
             ElMessage({
@@ -463,12 +479,20 @@ export default {
                     id: eventToDelete.id,
                 })
             } catch (err) {
-                this.$router.replace('welcome')
-                ElMessage({
-                    message: '保存失败',
-                    type: 'error',
-                    grouping: true
-                })
+                if (err.response.data.msg === 'invalid_token') {
+                    this.$router.replace('/welcome')
+                    ElMessage({
+                        message: '登录信息无效',
+                        type: 'error',
+                        grouping: true
+                    })
+                } else {
+                    ElMessage({
+                        message: '保存失败',
+                        type: 'error',
+                        grouping: true
+                    })
+                }
                 return
             }
             this.EventList = this.EventList.filter(ev => ev.id != eventToDelete.id)
@@ -535,12 +559,21 @@ export default {
                 token: localStorage.getItem('token'),
             })
         } catch (err) {
-            this.$router.replace('welcome')
-            ElMessage({
-                message: '保存失败',
-                type: 'error',
-                grouping: true
-            })
+            if (err.response.data.msg === 'invalid_token') {
+                this.$router.replace('/welcome')
+                ElMessage({
+                    message: '登录信息无效',
+                    type: 'error',
+                    grouping: true
+                })
+            } else {
+                ElMessage({
+                    message: '保存失败',
+                    type: 'error',
+                    grouping: true
+                })
+            }
+
             return
         }
 

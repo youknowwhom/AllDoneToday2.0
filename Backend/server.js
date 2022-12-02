@@ -412,7 +412,7 @@ app.post('/api/user/updateInfo', async (req, res) => {
 app.post('/api/event/update', async (req, res) => {
     if (!req.body.token) {
         res.status(400).send({
-            msg: 'invalid',
+            msg: 'invalid_token',
             detail: '缺少 token'
         })
         return
@@ -425,13 +425,13 @@ app.post('/api/event/update', async (req, res) => {
     } catch (err) {
         if (err instanceof jwt.TokenExpiredError) {
             res.status(400).send({
-                msg: 'expired',
+                msg: 'invalid_token',
                 detail: 'token 过期'
             })
         } else {
             logger.info(err)
             res.status(400).send({
-                msg: 'invalid',
+                msg: 'invalid_token',
                 detail: '其他错误'
             })
         }
@@ -440,7 +440,7 @@ app.post('/api/event/update', async (req, res) => {
 
     if (!await User.findOne({ where: { username: userName } })) {
         res.status(400).send({
-            msg: 'invalid',
+            msg: 'invalid_token',
             detail: '用户名错误'
         })
         return
@@ -465,7 +465,7 @@ app.post('/api/event/update', async (req, res) => {
 app.post('/api/event/getAll', async (req, res) => {
     if (!req.body.token) {
         res.status(400).send({
-            msg: 'invalid',
+            msg: 'invalid_token',
             detail: '缺少 token'
         })
         return
@@ -477,14 +477,14 @@ app.post('/api/event/getAll', async (req, res) => {
     } catch (err) {
         if (err instanceof jwt.TokenExpiredError) {
             res.status(400).send({
-                msg: 'expired',
+                msg: 'invalid_token',
                 detail: 'token 过期'
             })
             logger.info(`用户#${userName} 的 token 过期了`)
         } else {
             logger.info(err)
             res.status(400).send({
-                msg: 'invalid',
+                msg: 'invalid_token',
                 detail: '其他错误'
             })
         }
@@ -493,7 +493,7 @@ app.post('/api/event/getAll', async (req, res) => {
 
     if (!await User.findOne({ where: { username: userName } })) {
         res.status(400).send({
-            msg: 'invalid',
+            msg: 'invalid_token',
             detail: '用户名错误'
         })
         return
@@ -508,7 +508,7 @@ app.post('/api/event/getAll', async (req, res) => {
 app.post('/api/event/create', async (req, res) => {
     if (!req.body.token) {
         res.status(400).send({
-            msg: 'invalid',
+            msg: 'invalid_token',
             detail: '缺少 token'
         })
         return
@@ -521,13 +521,13 @@ app.post('/api/event/create', async (req, res) => {
     } catch (err) {
         if (err instanceof jwt.TokenExpiredError) {
             res.status(400).send({
-                msg: 'expired',
+                msg: 'invalid_token',
                 detail: 'token 过期'
             })
         } else {
             logger.info(err)
             res.status(400).send({
-                msg: 'invalid',
+                msg: 'invalid_token',
                 detail: '其他错误'
             })
         }
@@ -536,7 +536,7 @@ app.post('/api/event/create', async (req, res) => {
 
     if (!await User.findOne({ where: { username: userName } })) {
         res.status(400).send({
-            msg: 'invalid',
+            msg: 'invalid_token',
             detail: '用户名错误'
         })
         return
@@ -561,7 +561,7 @@ app.post('/api/event/create', async (req, res) => {
 app.post('/api/event/delete', async (req, res) => {
     if (!req.body.token) {
         res.status(400).send({
-            msg: 'invalid',
+            msg: 'invalid_token',
             detail: '缺少 token'
         })
         return
@@ -574,13 +574,13 @@ app.post('/api/event/delete', async (req, res) => {
     } catch (err) {
         if (err instanceof jwt.TokenExpiredError) {
             res.status(400).send({
-                msg: 'expired',
+                msg: 'invalid_token',
                 detail: 'token 过期'
             })
         } else {
             logger.info(err)
             res.status(400).send({
-                msg: 'invalid',
+                msg: 'invalid_token',
                 detail: '其他错误'
             })
         }
@@ -589,7 +589,7 @@ app.post('/api/event/delete', async (req, res) => {
 
     if (!await User.findOne({ where: { username: userName } })) {
         res.status(400).send({
-            msg: 'invalid',
+            msg: 'invalid_token',
             detail: '用户名错误'
         })
         return
