@@ -1,9 +1,7 @@
-//index.js
 import {
     createRouter,
-    createWebHistory
+    createWebHistory,
 } from 'vue-router'
-
 
 const routes = [
     {
@@ -53,8 +51,10 @@ const routes = [
         component: () => import('../components/personalinfo.vue')
     },
 ]
+
 const router = createRouter({
     history: createWebHistory(),
     routes
 })
+
 export default router
