@@ -411,7 +411,7 @@ export default {
                         newEvent.id = GetUniqueUUID()
                         continue
                     }
-                    // TODO 退出当前用户登录
+                    this.$router.replace('welcome')
                     ElMessage({
                         message: '保存失败',
                         type: 'error',
@@ -442,7 +442,7 @@ export default {
                     event: eventToUpdate,
                 })
             } catch (err) {
-                // TODO 退出当前用户登录
+                this.$router.replace('welcome')
                 ElMessage({
                     message: '保存失败',
                     type: 'error',
@@ -463,7 +463,7 @@ export default {
                     id: eventToDelete.id,
                 })
             } catch (err) {
-                // TODO 退出当前用户登录
+                this.$router.replace('welcome')
                 ElMessage({
                     message: '保存失败',
                     type: 'error',
@@ -535,7 +535,7 @@ export default {
                 token: localStorage.getItem('token'),
             })
         } catch (err) {
-            // TODO 退出当前用户登录
+            this.$router.replace('welcome')
             ElMessage({
                 message: '保存失败',
                 type: 'error',

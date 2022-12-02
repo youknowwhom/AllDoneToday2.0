@@ -1,6 +1,5 @@
 **/node_modules
 
-
 # Logs
 **/logs
 **/*.log
@@ -26,4 +25,6 @@
 **/*.sln
 **/*.sw?
 
-**/*.dev.db
+Backend/db/*.dev.db
+
+Backend/log

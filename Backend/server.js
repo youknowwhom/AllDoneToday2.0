@@ -291,6 +291,40 @@ app.post('/api/user/getInfo', async (req, res) => {
 
 })
 
+app.post('/api/user/verifyToken', async (req, res) => {
+    if (!req.body.token) {
+        res.sendStatus(400)
+        logger.info('校验 token 失败')
+        return
+    }
+
+    let userName
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+    } catch (err) {
+        res.sendStatus(400)
+        logger.info('校验 token 失败')
+        return
+    }
+
+    // 数据库中查找 username
+
+    const UserObj = await User.findOne({
+        where: {
+            username: userName
+        }
+    })
+
+    if (!UserObj) {
+        res.sendStatus(400)
+        logger.info('校验 token 失败')
+    }
+
+    logger.info(`用户#${userName} 校验 token 成功`)
+
+    res.sendStatus(200)
+})
+
 /**
  * 修改个人信息的api
  *  - request
