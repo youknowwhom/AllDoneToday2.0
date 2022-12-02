@@ -26,8 +26,9 @@ export default {
             }
         }
     },
-
-
+    mounted() {
+        localStorage.removeItem('token')
+    },
     methods: {
         async Login() {
             let response = {}
