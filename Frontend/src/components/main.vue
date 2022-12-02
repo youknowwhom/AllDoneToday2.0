@@ -63,7 +63,14 @@ export default {
             </div>
         </el-header>
         <el-container class="mainframe-content">
-            <RouterView></RouterView>
+            <Suspense>
+                <template #default>
+                    <RouterView></RouterView>
+                </template>
+                <template #fallback>
+                    <div><!--TODO 加载画面--></div>
+                </template>
+            </Suspense>
         </el-container>
     </el-container>
 </template>

@@ -9,40 +9,41 @@ export default {
     name: 'App',
     data() {
         return {
-            
+            loggedIn: userLoggedIn,
         }
     },
     methods: {
-        async verifyToken() {
-            let token = localStorage.getItem('token')
-            if (!token) {
-                return false
-            }
-            try {
-                await axios.post('/api/user/verifyToken', {
-                    token: token
-                })
-            } catch (err) {
-                return false
-            }
-            return true
-        }
+
     },
-    async created() {
-        console.log('app')
-        if (await this.verifyToken()) {
-            userLoggedIn = true
-        } else {
+    async setup() {
+        console.debug('app')
+        let token = localStorage.getItem('token')
+        if (!token) {
+            console.debug('no token')
+            userLoggedIn = false
+            return
+        }
+        try {
+            await axios.post('/api/user/verifyToken', {
+                token: token
+            })
+        } catch (err) {
+            console.debug('bad token')
+            userLoggedIn = false
+            return
+        }
+        console.debug('good token')
+        userLoggedIn = true
+        return
+    },
+    created() {
+        if (!this.loggedIn) {
+            console.debug('no')
             ElMessage({
                 message: '您还未登录',
                 type: 'error'
             })
-            this.$router.replace('welcome')
-        }
-    },
-    computed: {
-        loggedIn() {
-            return userLoggedIn
+            this.$router.replace('/welcome')
         }
     }
 }
@@ -50,7 +51,7 @@ export default {
 </script>
 
 <template>
-    <el-container class="app-content">
+    <el-container class="app-content" v-if="this.loggedIn">
         <el-aside class="sidebar" width="auto">
             <img src="../assets/image/app-leftbar-todolist.png" class="leftbar-icon"
                 @click="this.$router.push('ToDoList')" />
@@ -60,8 +61,8 @@ export default {
                         class="leftbar-icon" @click="this.$router.push('TimeTable')" />
                     <img v-else src="../assets/image/app-leftbar-timetable-focus.png" class="leftbar-icon" />
                     <br /> -->
-            <img src="../assets/image/app-leftbar-concentrate.png"
-                class="leftbar-icon" @click="this.$router.push('Concentration')" />
+            <img src="../assets/image/app-leftbar-concentrate.png" class="leftbar-icon"
+                @click="this.$router.push('Concentration')" />
             <!-- <img v-else src="../assets/image/app-leftbar-concentrate-focus.png" class="leftbar-icon" /> -->
         </el-aside>
         <el-main class="component-content">
