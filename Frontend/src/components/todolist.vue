@@ -401,7 +401,6 @@ export default {
             // eslint-disable-next-line no-constant-condition
             while (true) {
                 try {
-                    console.log('try create event: ', newEvent)
                     await axios.post('/api/event/create', {
                         token: localStorage.getItem('token'),
                         event: newEvent,
@@ -413,6 +412,11 @@ export default {
                         continue
                     }
                     // TODO 退出当前用户登录
+                    ElMessage({
+                        message: '保存失败',
+                        type: 'error',
+                        grouping: true
+                    })
 
                     return
                 }
@@ -439,6 +443,11 @@ export default {
                 })
             } catch (err) {
                 // TODO 退出当前用户登录
+                ElMessage({
+                    message: '保存失败',
+                    type: 'error',
+                    grouping: true
+                })
                 return
             }
             ElMessage({
@@ -455,6 +464,11 @@ export default {
                 })
             } catch (err) {
                 // TODO 退出当前用户登录
+                ElMessage({
+                    message: '保存失败',
+                    type: 'error',
+                    grouping: true
+                })
                 return
             }
             this.EventList = this.EventList.filter(ev => ev.id != eventToDelete.id)
@@ -522,6 +536,11 @@ export default {
             })
         } catch (err) {
             // TODO 退出当前用户登录
+            ElMessage({
+                message: '保存失败',
+                type: 'error',
+                grouping: true
+            })
             return
         }
 
