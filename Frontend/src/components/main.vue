@@ -32,7 +32,6 @@ export default {
     },
     async created() {
         console.log('root page')
-
     }
 }
 
@@ -41,9 +40,7 @@ export default {
 <template>
     <el-container class="mainframe-container">
         <el-header class="mainframe-header">
-            <button @click="this.$router.push('/welcome')" class="mainframe-navbutton">
-                <img src="../assets/image/logo.png" class="mainframe-header-logo" />
-            </button>
+            <img @click="this.$router.push('/welcome')" src="../assets/image/logo.png" class="mainframe-header-logo" />
             <button @click="this.$router.push('/app')" class="mainframe-navbutton">
                 应用
             </button>
@@ -76,7 +73,8 @@ export default {
 .mainframe-header-logo {
     --logo-height: 50px;
     vertical-align: middle;
-    height: min(var(--logo-height), calc(var(--el-menu-item-height) - var(--mainframe-navbutton-underline-width) * 2));
+    height: min(var(--logo-height), var(--el-menu-item-height));
+    cursor: pointer;
 }
 
 .mainframe-container {
