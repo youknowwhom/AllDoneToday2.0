@@ -42,7 +42,8 @@ export default {
             console.debug('no')
             ElMessage({
                 message: '您还未登录',
-                type: 'error'
+                type: 'error',
+                grouping: true,
             })
             this.$router.replace('/welcome')
         }
