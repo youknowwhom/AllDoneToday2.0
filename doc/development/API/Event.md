@@ -37,8 +37,14 @@
 - `Time` 定义如下：（前端）
   ```javascript
   {
-    "beginTime": Date, // 非必需
-    "endTime": Date, // 非必需
+    "beginTime": {
+      "date": Date, // 只有年月日数据有效，必需
+      "time": Date, // 只有时分秒数据有效，非必需
+    }, // 非必需，但如果存在则一定有 date 属性
+    "endTime": {
+      "date": Date, // 只有年月日数据有效，必需
+      "time": Date, // 只有时分秒数据有效，非必需
+    }, // 非必需，但如果存在则一定有 date 属性
     "repetition": {
         "enabled": Boolean, // 是否重复
         "deltaBase": String, // 「间隔」的时间单位

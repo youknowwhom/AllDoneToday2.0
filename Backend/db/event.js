@@ -16,14 +16,15 @@ const db_event = new sequelize.Sequelize('eventdata.dev', null, null, {
 
 class Event extends sequelize.Model { }
 Event.init({
-    eventid: {
+    id: {
         type: sequelize.DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
+        primaryKey: true,
     },
     username: {
         type: sequelize.DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     brief: {
         type: sequelize.DataTypes.STRING,
@@ -55,7 +56,6 @@ Event.init({
         set: function (value) {
             return this.setDataValue('time', JSON.stringify(value))
         },
-        allowNull: false
     }
 }, {
     sequelize: db_event,

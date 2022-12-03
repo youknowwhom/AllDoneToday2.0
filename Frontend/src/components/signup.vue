@@ -101,7 +101,7 @@ export default {
 
                 let response = {}
                 try {
-                    response = await axios.post('/api/SignUp', body)
+                    response = await axios.post('/api/user/signup', body)
                 } catch (err) {
                     console.error(err)
                 }
@@ -130,6 +130,9 @@ export default {
             }
 
         }
+    },
+    mounted() {
+        localStorage.removeItem('token')
     },
 }
 </script>

@@ -2,13 +2,15 @@
 
 一个清单应用。
 
+同济大学 2022秋季 计算机科学导论 小组作业
+
 ## 本地预览（保姆级教程）
 
 以下命令应该在你所使用的操作系统的命令行中执行。
 
 ### 安装 git
 
-需要安装 git ，安装方法请自行搜索。
+需要安装 [git](https://git-scm.com/) ，安装方法请查看对应官网上的指引。
 
 安装完成后，输入如下命令验证 git 的安装：
 
@@ -24,9 +26,9 @@ git version 2.38.1
 
 ### 一些工具
 
-需要安装 NodeJS, npm, sqlite3 。
+需要安装 [NodeJS](https://nodejs.dev/), [npm](https://github.com/npm/cli), [sqlite3](https://www.sqlite.org/index.html) 。
 
-具体安装方法请自行搜索。
+具体安装方法请查看对应官网上的指引。
 
 ### 验证这些工具的安装
 
@@ -57,7 +59,7 @@ code . # 运行 Visual Studio Code ，并打开当前文件夹
 
 你也可以使用你所使用的编辑器的*集成终端*，假定你正在使用 Visual Studio Code 。
 
-按下 `Ctrl` + <code>\`</code> 打开一个新的终端。
+打开一个新的终端，执行如下命令。
 
 ```sh
 cd Frontend
@@ -67,7 +69,7 @@ npm start # 启动 Vite dev server
 
 ### 配置并启动后端
 
-按下 `Ctrl` + <code>\`</code> 打开一个新的终端，注意不要关闭先前的终端。
+打开一个新的终端，执行如下命令，注意不要关闭先前的终端。
 
 ```sh
 cd Backend
