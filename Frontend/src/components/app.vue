@@ -54,17 +54,18 @@ export default {
 <template>
     <el-container class="app-content" v-if="this.loggedIn">
         <el-aside class="sidebar" width="auto">
-            <img src="../assets/image/app-leftbar-todolist.png" class="leftbar-icon"
+            <!--TODO 优化此处判断-->
+            <img v-if="this.$route.fullPath !== '/app/ToDoList'" src="../assets/image/app-leftbar-todolist.png" class="leftbar-icon"
                 @click="this.$router.push('ToDoList')" />
-            <!-- <img v-else src="../assets/image/app-leftbar-todolist-focus.png" class="leftbar-icon" /> -->
+            <img v-else src="../assets/image/app-leftbar-todolist-focus.png" class="leftbar-icon" />
             <br />
-            <!-- <img src="../assets/image/app-leftbar-timetable.png"
+            <!-- <img v-if="this.$route.fullPath !== '/app/TimeTable'" src="../assets/image/app-leftbar-timetable.png"
                         class="leftbar-icon" @click="this.$router.push('TimeTable')" />
                     <img v-else src="../assets/image/app-leftbar-timetable-focus.png" class="leftbar-icon" />
                     <br /> -->
-            <img src="../assets/image/app-leftbar-concentrate.png" class="leftbar-icon"
+            <img v-if="this.$route.fullPath !== '/app/Concentration'" src="../assets/image/app-leftbar-concentrate.png" class="leftbar-icon"
                 @click="this.$router.push('Concentration')" />
-            <!-- <img v-else src="../assets/image/app-leftbar-concentrate-focus.png" class="leftbar-icon" /> -->
+            <img v-else src="../assets/image/app-leftbar-concentrate-focus.png" class="leftbar-icon" />
         </el-aside>
         <el-main class="component-content">
             <RouterView></RouterView>

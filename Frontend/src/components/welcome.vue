@@ -40,7 +40,10 @@ export default {
         }
     },
     async created() {
-
+        
+    },
+    async setup() {
+        // await new Promise(r => setTimeout(r, 2000)) // sleep
     }
 }
 
