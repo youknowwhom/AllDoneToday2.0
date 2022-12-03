@@ -2,8 +2,6 @@
 
 let isTokenValid = false
 
-let userInfo = {}
-
 import axios from 'axios'
 
 export default {
@@ -11,6 +9,9 @@ export default {
     data() {
         return {
             loggedIn: isTokenValid,
+            userInfo: {
+                username: '',
+            }
         }
     },
     computed: {
@@ -20,11 +21,25 @@ export default {
         handleDropdownCommand(command) {
             if (command === 'logout') {
                 localStorage.removeItem('token');
-                this.$router.go()
+                this.loggedIn = false
+                this.$router.push('/welcome')
             }
         }
     },
-    async created() {
+    async mounted() {
+
+        // 获取用户基本信息
+
+        try {
+            let response = await axios.post('/api/user/getInfo', {
+                token: localStorage.getItem('token'),
+            })
+            this.userInfo.username = response.data.UserName
+        } catch (err) {
+            // 获取用户基本信息失败
+            console.error(err)
+        }
+        return
 
     },
     async setup() {
@@ -44,17 +59,6 @@ export default {
             return
         }
         isTokenValid = true
-
-        // 获取用户基本信息
-
-        try {
-            let response = await axios.post('/api/users/getInfo', {
-                token: token,
-            })
-        } catch (err) {
-            // 获取用户基本信息失败
-        }
-        return
     }
 }
 
@@ -65,7 +69,7 @@ export default {
         <el-container class="navbar-user-dropdown-container">
             <el-dropdown style="height: 100%" @command="this.handleDropdownCommand">
                 <el-container class="navbar-user-inner-container">
-                    <p>你好，</p>
+                    <p>你好，{{this.userInfo.username}}</p>
                 </el-container>
                 <template #dropdown>
                     <el-dropdown-menu>
