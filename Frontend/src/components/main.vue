@@ -49,17 +49,17 @@ export default {
             </button>
             <div style="flex: 0 1 100%"><!--填充空白--></div>
             <div style="height: 100%">
-                <el-container v-if="this.loggedIn" direction="horizontal" style="height: 100%">
+                <template v-if="this.loggedIn">
                     你好
-                </el-container>
-                <el-container v-else direction="horizontal" style="height: 100%">
+                </template>
+                <template v-else>
                     <button class="mainframe-navbutton" @click="this.$router.push('/signin')">
                         登录
                     </button>
                     <button class="mainframe-navbutton" @click="this.$router.push('/signup')">
                         注册
                     </button>
-                </el-container>
+                </template>
             </div>
         </el-header>
         <el-container class="mainframe-content">
