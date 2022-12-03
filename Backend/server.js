@@ -141,8 +141,8 @@ app.post('/api/user/signin', async (req, res) => {
     const passwordHash = req.body.passwordHash
     if (!username || !passwordHash) {
         res.status(400).send({
-            result: 'invalid',
-            msg: '登录请求格式错误'
+            result: 'fail',
+            msg: '用户名或密码为空'
         })
         return
     }
@@ -150,16 +150,16 @@ app.post('/api/user/signin', async (req, res) => {
         where: { username: username }
     }) // 由于 username 是 unique 的，所以可以使用 findOne
     if (!requestedUser) {
-        res.status(200).send({
+        res.status(400).send({
             result: 'fail',
-            msg: '用户不存在'
+            msg: '用户名或密码错误'
         })
         return
     }
     if (requestedUser.passwordHash != passwordHash) {
-        res.status(200).send({
+        res.status(400).send({
             result: 'fail',
-            msg: '密码错误'
+            msg: '用户名或密码错误'
         })
         return
     }

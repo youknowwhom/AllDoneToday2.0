@@ -5,8 +5,8 @@
             <input type="text" placeholder="用户名" class="input" v-model="LoginInfo.username" /><br />
             <input type="password" placeholder="密码" class="input" v-model="LoginInfo.passwordHash" /><br />
             <input type="submit" value="登录" class="login-button" @click="Login" />
-            <input type="submit" value="忘记密码" class="forget-password" @click="toForgetPassword" />
-            <input type="submit" value="注册" class="register" @click="toSignup" />
+            <input type="submit" value="忘记密码" class="forget-password" @click="this.$router.push('/forgetpassword')" />
+            <input type="submit" value="注册" class="register" @click="this.$router.push('/signup')" />
         </div>
     </div>
 </template>
@@ -15,6 +15,7 @@
 <script>
 
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 
 export default {
     name: 'signIn',
@@ -31,32 +32,33 @@ export default {
     },
     methods: {
         async Login() {
-            let response = {}
+            let response
             try {
                 response = await axios.post('/api/user/signin', this.LoginInfo)
             } catch (err) {
-                console.error(err)
+                if (err.response.data.result == 'fail') {
+                    ElMessage({
+                        message: err.response.data.msg,
+                        grouping: false,
+                        type: 'error',
+                    })
+                } else {
+                    ElMessage({
+                        message: '未知错误',
+                        grouping: false,
+                        type: 'error',
+                    })
+                }
                 return
             }
-            if (response.status != 200) {
-                alert('登录请求失败')
-            } else if (response.data.result == 'success') {
-                alert('登录成功')
-                localStorage.setItem('token', response.data.token)
-            } else if (response.data.result == 'fail') {
-                alert(response.data.msg)
-            } else if (response.data.result == 'invalid') {
-                alert('登录请求有误')
-            } else {
-                alert('服务端故障')
-            }
+            ElMessage({
+                message: '登录成功',
+                grouping: false,
+                type: 'success',
+            })
+            localStorage.setItem('token', response.data.token)
+            this.$router.push('/app')
         },
-        toSignup() {
-            this.$router.push('/signup')
-        },
-        toForgetPassword() {
-            this.$router.push('/forgetpassword')
-        }
 
     },
 }
