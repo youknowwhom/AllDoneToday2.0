@@ -43,9 +43,9 @@ export default {
         // 获取用户基本信息
 
         try {
-            let response = await axios.post('/api/users/getInfo'), {
+            let response = await axios.post('/api/users/getInfo', {
                 token: token,
-            }
+            })
         } catch (err) {
             // 获取用户基本信息失败
         }
