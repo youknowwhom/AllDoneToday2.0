@@ -63,7 +63,7 @@ export default {
             //是否是全屏
             isFullScreen: false,
             //专注的最长时间
-            maxTime:0.1
+            maxTime:120
         }
     },
     methods: {

@@ -115,6 +115,7 @@ export default {
 
 .mainframe-content {
     padding: 0;
+    height:100%;
 }
 
 .mainframe-navbutton {

@@ -162,7 +162,7 @@
                     </template>
                 </el-space>
                 <el-space class="todolist-detail-container" direction="vertical" :fill="true" style="flex: 1 1 100%;">
-                    <textarea placeholder="添加详细信息……" v-model="this.chosenEvent.description"
+                    <textarea placeholder="点击添加详细信息" v-model="this.chosenEvent.description"
                         class="todolist-detail-description"></textarea>
                 </el-space>
                 <el-divider style="margin: 0;" />
@@ -765,6 +765,7 @@ export default {
     border: none;
     outline: none;
     font-size: large;
+    font-family: "微软雅黑";
     box-sizing: border-box;
     resize: none;
     border-radius: var(--el-border-radius-base);
