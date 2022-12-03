@@ -14,7 +14,7 @@
     "UserGender": String, // 用户性别
     "Signature": String, // 个性签名
     "BirthDay": String, // 用户生日
-    "Photourl": String// 用于记录头像信息
+    "Photourl": String, // 用于记录头像信息
 }
 ```
 
@@ -25,7 +25,7 @@
 {
     "username": String, // 用户名
     "EmailAddress": String, // 用户邮箱地址，用于实现发验证码和找回密码
-    "passwordHash":String// 已经被定义好的密码哈希
+    "passwordHash":String, // 已经被定义好的密码哈希
 }
 ```
 
