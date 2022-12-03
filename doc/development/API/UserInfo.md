@@ -8,7 +8,7 @@
 
 ```javascript
 {
-    "username": String, // 用户名
+    "UserName": String, // 用户名
     "EmailAddress": String, // 用户邮箱地址，用于实现发验证码和找回密码
     "passwordHash":String, // 已经被定义好的密码哈希
     "UserGender": String, // 用户性别
