@@ -94,16 +94,18 @@
                 </el-space>
                 <el-space class="todolist-detail-container" direction="horizontal">
                     <span style="font-weight: bold; margin: 0; width: 100px;">重要程度：</span>
-                    <el-button plain :type="this.chosenEvent.importance.important ? 'primary' : ''"
-                        :class="{ active: this.chosenEvent.importance.important }" style="width:100px;"
-                        @click="this.chosenEvent.importance.important = !this.chosenEvent.importance.important">
+                    <el-check-tag 
+                        :checked="this.chosenEvent.importance.important" 
+                        style="width:100px; text-align: center; "
+                        @change="status => this.chosenEvent.importance.important = status">
                         {{ this.chosenEvent.importance.important ? '重要' : '不重要' }}
-                    </el-button>
-                    <el-button plain :type="this.chosenEvent.importance.urgent ? 'primary' : ''"
-                        :class="{ active: this.chosenEvent.importance.urgent }" style="width:100px;"
-                        @click="this.chosenEvent.importance.urgent = !this.chosenEvent.importance.urgent">
+                    </el-check-tag>
+                    <el-check-tag 
+                        :checked="this.chosenEvent.importance.urgent" 
+                        style="width:100px; text-align: center; "
+                        @change="status => this.chosenEvent.importance.urgent = status">
                         {{ this.chosenEvent.importance.urgent ? '紧急' : '不紧急' }}
-                    </el-button>
+                    </el-check-tag>
                 </el-space>
                 <el-space class="todolist-detail-container" direction="horizontal">
                     <el-button text bg v-if="!this.chosenEvent.time.beginTime.date"
