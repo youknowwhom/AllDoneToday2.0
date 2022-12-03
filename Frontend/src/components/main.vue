@@ -48,7 +48,7 @@ export default {
                 欢迎页
             </button>
             <div style="flex: 0 1 100%"><!--填充空白--></div>
-            <div style="height: 100%">
+            <div style="height: 100%; flex: 0 0 auto;">
                 <template v-if="this.loggedIn">
                     你好
                 </template>
@@ -82,6 +82,7 @@ export default {
     vertical-align: middle;
     height: min(var(--logo-height), var(--mainframe-header-height));
     cursor: pointer;
+    flex: 0 0 auto;
 }
 
 .mainframe-container {
@@ -132,6 +133,7 @@ export default {
     border: none;
     transition: var(--el-transition-duration-fast);
     color: var(--el-color-primary-dark-2);
+    flex: 0 0 auto;
 }
 
 .mainframe-navbutton:hover {
