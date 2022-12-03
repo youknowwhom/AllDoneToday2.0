@@ -767,7 +767,7 @@ export default {
     border: none;
     outline: none;
     font-size: large;
-    font-family: "微软雅黑";
+    font-family: var(--el-font-family);
     box-sizing: border-box;
     resize: none;
     border-radius: var(--el-border-radius-base);
