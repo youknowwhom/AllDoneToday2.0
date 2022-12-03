@@ -19,10 +19,18 @@ export default {
     },
     methods: {
         handleDropdownCommand(command) {
-            if (command === 'logout') {
-                localStorage.removeItem('token');
-                this.loggedIn = false
-                this.$router.push('/welcome')
+            const jumpFunctions = {
+                logout: () => {
+                    localStorage.removeItem('token');
+                    this.loggedIn = false
+                    this.$router.push('/welcome')
+                },
+                info: () => {
+                    this.$router.push('/profile')
+                }
+            }
+            if (Object.hasOwn(jumpFunctions, command)) {
+                jumpFunctions[command]()
             }
         }
     },
@@ -69,7 +77,7 @@ export default {
         <el-container class="navbar-user-dropdown-container">
             <el-dropdown style="height: 100%" @command="this.handleDropdownCommand">
                 <el-container class="navbar-user-inner-container">
-                    <p>你好，{{this.userInfo.username}}</p>
+                    <p>你好，{{ this.userInfo.username }}</p>
                 </el-container>
                 <template #dropdown>
                     <el-dropdown-menu>

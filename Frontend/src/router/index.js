@@ -26,29 +26,25 @@ const routes = [
             {
                 path: 'welcome',
                 component: () => import('../components/welcome.vue')
-            }
+            },
+            {
+                path: '/profile',
+                component: () => import('../components/profile.vue')
+            },
         ],
         redirect: '/app'
     },
     {
         path: '/signin',
-        name: 'signin',
         component: () => import('../components/signin.vue')
     },
     {
         path: '/signup',
-        name: 'signup',
         component: () => import('../components/signup.vue')
     },
     {
         path: '/forgetpassword',
-        name: 'forgetPassword',
         component: () => import('../components/forgetpassword.vue')
-    },
-    {
-        path: '/personalinfo',
-        name: 'personalInfo',
-        component: () => import('../components/personalinfo.vue')
     },
 ]
 
