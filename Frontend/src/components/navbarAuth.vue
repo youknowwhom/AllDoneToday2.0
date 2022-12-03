@@ -17,7 +17,12 @@ export default {
 
     },
     methods: {
-
+        handleDropdownCommand(command) {
+            if (command === 'logout') {
+                localStorage.removeItem('token');
+                this.$router.go()
+            }
+        }
     },
     async created() {
 
@@ -57,8 +62,18 @@ export default {
 
 <template>
     <template v-if="this.loggedIn">
-        <el-container class="navbar-user">
-            <span>你好，</span>
+        <el-container class="navbar-user-dropdown-container">
+            <el-dropdown style="height: 100%" @command="this.handleDropdownCommand">
+                <el-container class="navbar-user-inner-container">
+                    <p>你好，</p>
+                </el-container>
+                <template #dropdown>
+                    <el-dropdown-menu>
+                        <el-dropdown-item command="info">个人设置</el-dropdown-item>
+                        <el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
         </el-container>
     </template>
     <template v-else>

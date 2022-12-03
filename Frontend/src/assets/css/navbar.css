@@ -50,7 +50,14 @@
     flex-direction: row;
 }
 
-.navbar-user {
+.navbar-user-dropdown-container {
+    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.navbar-user-inner-container {
     height: 100%;
     display: flex;
     flex-flow: row nowrap;
