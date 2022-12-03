@@ -51,8 +51,8 @@ export default {
         <el-container class="intro-div">
             <el-container class="text-div">
                 <el-container direction="vertical">
-                    <h2 class="intro-headline">今日事，</h2>
-                    <h2 class="intro-headline">今日毕。</h2>
+                    <h2 class="welcome-intro-headline">今日事，</h2>
+                    <h2 class="welcome-intro-headline">今日毕。</h2>
                 </el-container>
                 <el-container direction="vertical" class="maintext">
                     <p class="welcome-text">在今日毕，你能够一站式管理待办清单，让日程井井有条。</p>
@@ -207,10 +207,11 @@ export default {
     flex-direction: column;
 }
 
-.intro-headline {
+.welcome-intro-headline {
     color: #7a7af9;
     font-size: 60px;
     margin: 0px;
+    text-align: left;
 }
 
 .welcome-function-headline {
