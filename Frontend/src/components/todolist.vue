@@ -164,8 +164,8 @@
                     </template>
                 </el-space>
                 <el-space class="todolist-detail-container" direction="vertical" :fill="true" style="flex: 1 1 100%;">
-                    <textarea placeholder="点击添加详细信息" v-model="this.chosenEvent.description"
-                        class="todolist-detail-description"></textarea>
+                    <textarea placeholder="添加详细信息……" v-model="this.chosenEvent.description"
+                        class="todolist-detail-description"></textarea><!--TODO 将placeholder和文本对齐-->
                 </el-space>
                 <el-divider style="margin: 0;" />
                 <el-space class="todolist-detail-container" direction="horizontal" style="flex-direction: row-reverse;">
@@ -766,8 +766,8 @@ export default {
 .todolist-detail-description {
     border: none;
     outline: none;
-    font-size: large;
     font-family: var(--el-font-family);
+    font-size: large;
     box-sizing: border-box;
     resize: none;
     border-radius: var(--el-border-radius-base);
@@ -776,13 +776,17 @@ export default {
     transition: var(--el-transition-duration-fast);
 }
 
+.todolist-detail-description::placeholder {
+    font-size: large;
+}
+
 .todolist-detail-description:focus {
     color: var(--el-text-color-primary);
-    background-color: #f5f5f584;
+    background-color: var(--el-color-info-light-9);
 }
 
 .todolist-detail-description:hover {
-    background-color: #f5f5f584;
+    background-color: var(--el-color-info-light-9);
 }
 </style>
   
