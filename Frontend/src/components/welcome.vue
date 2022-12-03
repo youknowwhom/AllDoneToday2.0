@@ -55,8 +55,8 @@ export default {
                     <h2 class="intro-headline">今日毕。</h2>
                 </el-container>
                 <el-container direction="vertical" class="maintext">
-                    <p class="text">在今日毕，你能够一站式管理待办清单，让日程井井有条。</p>
-                    <p class="text">快速安排日程，专注管理时间，从即刻开始。</p>
+                    <p class="welcome-text">在今日毕，你能够一站式管理待办清单，让日程井井有条。</p>
+                    <p class="welcome-text">快速安排日程，专注管理时间，从即刻开始。</p>
                 </el-container>
                 <el-container>
                     <el-button type="primary" @click="this.$router.push('/signin')">注册新用户</el-button>
@@ -73,11 +73,11 @@ export default {
                     <div>
                         <el-container class="text-div">
                             <el-container direction="vertical">
-                                <h2 class="function-headline">{{item['headline']}}</h2>
+                                <h2 class="welcome-function-headline">{{item['headline']}}</h2>
                             </el-container>
                             <el-container direction="vertical" class="maintext">
-                                <p class="text">{{item['prompt1']}}</p>
-                                <p class="text">{{item['prompt2']}}</p>
+                                <p class="welcome-text">{{item['prompt1']}}</p>
+                                <p class="welcome-text">{{item['prompt2']}}</p>
                             </el-container>
                         </el-container>
                     </div>
@@ -91,11 +91,11 @@ export default {
                     <div>
                         <el-container class="text-div">
                             <el-container direction="vertical">
-                                <h2 class="function-headline">{{item['headline']}}</h2>
+                                <h2 class="welcome-function-headline">{{item['headline']}}</h2>
                             </el-container>
                             <el-container direction="vertical" class="maintext">
-                                <p class="text">{{item['prompt1']}}</p>
-                                <p class="text">{{item['prompt2']}}</p>
+                                <p class="welcome-text">{{item['prompt1']}}</p>
+                                <p class="welcome-text">{{item['prompt2']}}</p>
                             </el-container>
                         </el-container>
                     </div>
@@ -107,13 +107,13 @@ export default {
         <el-container class="bottom-div">
             <el-container class="text-div-bottom">
                 <el-container direction="vertical">
-                    <h2 class="function-headline">今日毕贡献者</h2>
+                    <h2 class="welcome-function-headline">今日毕贡献者</h2>
                 </el-container>
                 <el-container direction="vertical" class="maintext">
-                    <p class="text"><span class="bottom-text-bold">蔡一锴</span> 环境搭建 后端 清单模式 个人信息界面 </p>
-                    <p class="text"><span class="bottom-text-bold">郭桉齐</span> 注册界面 个人信息界面 </p>
-                    <p class="text"><span class="bottom-text-bold">王颢瑾</span> 登录界面 后端 邮箱验证码 </p>
-                    <p class="text"><span class="bottom-text-bold">郑博远</span> UI设计 专注模式 清单模式 欢迎页  </p>
+                    <p class="welcome-text"><span class="bottom-text-bold">蔡一锴</span> 环境搭建 后端 清单模式 个人信息界面 </p>
+                    <p class="welcome-text"><span class="bottom-text-bold">郭桉齐</span> 注册界面 个人信息界面 </p>
+                    <p class="welcome-text"><span class="bottom-text-bold">王颢瑾</span> 登录界面 后端 邮箱验证码 </p>
+                    <p class="welcome-text"><span class="bottom-text-bold">郑博远</span> UI设计 专注模式 清单模式 欢迎页  </p>
                 </el-container>
             </el-container>
         </el-container>
@@ -213,10 +213,11 @@ export default {
     margin: 0px;
 }
 
-.function-headline {
+.welcome-function-headline {
     color: #7a7af9;
     font-size: 40px;
     margin: 0px;
+    text-align: left;
 }
 
 .maintext {
@@ -226,8 +227,9 @@ export default {
     margin-bottom: 70px;
 }
 
-.text {
+.welcome-text {
     margin: 3px;
+    text-align: left;
 }
 
 .demon-pic {
