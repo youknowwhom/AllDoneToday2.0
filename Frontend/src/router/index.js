@@ -43,8 +43,8 @@ const routes = [
         component: () => import('../components/signup.vue')
     },
     {
-        path: '/forgetpassword',
-        component: () => import('../components/forgetpassword.vue')
+        path: '/resetPassword',
+        component: () => import('../components/resetPassword.vue')
     },
 ]
 

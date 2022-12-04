@@ -16,28 +16,27 @@
                 <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-else
                     @click="SendSecCode">发送验证码</el-button>
             </div>
-            <el-input type="password" class="auth-box-item" placeholder="密码" v-model="this.Password" />
+            <el-input type="password" class="auth-box-item" placeholder="新密码" v-model="this.Password" />
             <el-input type="password" class="auth-box-item" placeholder="确认密码" v-model="this.PasswordAgain" />
-            <el-button class="auth-box-item" type="primary" @click="SignUp">注册</el-button>
-            <div style="flex: 0 0 10px;"></div>
+            <el-button class="auth-box-item" type="primary" @click="SignUp">重置密码</el-button>
         </div>
     </div>
 </template>
-  
+    
 <script>
 
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 
 export default {
-    name: 'signUp',
+    name: 'ResetPassword',
     data() {
         return {
+            UserName: '',
             EmailAddress: '',
+            VerificationCode: '',
             Password: '',
             PasswordAgain: '',
-            VerificationCode: '',
-            UserName: '',
             SecCodeCooldown: 0,
             CooldownID: undefined,
         }
@@ -88,7 +87,7 @@ export default {
                 return
             }
             try {
-                await axios.post('/api/user/signup', {
+                await axios.post('/api/user/resetPassword', {
                     UserName: this.UserName,
                     EmailAddress: this.EmailAddress,
                     PasswordHash: this.Password,
@@ -103,7 +102,7 @@ export default {
                 return
             }
             ElMessage({
-                message: '注册成功，请重新登录',
+                message: '密码重置成功，请重新登录',
                 grouping: false,
                 type: 'success',
             })
@@ -152,12 +151,10 @@ export default {
             }, 1000)
         }
     },
-    mounted() {
-        localStorage.removeItem('token')
-    },
 }
 </script>
-  
+    
 <style scoped>
 @import "/assets/css/auth-box.css";
 </style>
+    

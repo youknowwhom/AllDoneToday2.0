@@ -290,55 +290,69 @@ app.post('/api/user/signin', async (req, res) => {
 
 
 /**
- * 忘记密码
+ * 重置密码
  *  - request
  *   - EmailAddress: 邮箱地址
  *   - VerificationCode: 验证码
  *   - PasswordHash: 修改好的密码
  *  - respond:
- *   - IsVerificationCodeTrue: 验证码是否正确
- *   - IsUsernameTrue: 用户名是否正确(防止未注册使用)
- *   - IsEmailAddressValid: 邮箱是否有效
+ *   - msg: 服务端返回的信息
  */
-app.post('/api/user/forgetPassword', async (req, res) => {
+app.post('/api/user/resetPassword', async (req, res) => {
+    const username = req.body.UserName
+    const PasswordHash = req.body.PasswordHash
     const EmailAddress = req.body.EmailAddress
     const VerificationCode = req.body.VerificationCode
-    const PasswordHash = req.body.PasswordHash
 
-    /**
-     * 请求格式判断
-     */
-
-    if (!EmailAddress || !VerificationCode || !PasswordHash) {
-        res.status(200).send({
-            IsVerificationCodeTrue: undefined,
-            msg: '忘记密码请求格式出错'
-        })
+    if (!username) {
+        res.status(400).send({ msg: '未填写用户名' })
         return
     }
 
-    // let requestedUser = User.findOne({
-    //     where:{
-    //         EmailAddress:EmailAddress
-    //     }
-    // })
+    if (!PasswordHash) {
+        res.status(400).send({ msg: '未填写密码' })
+        return
+    }
 
+    if (!EmailAddress) {
+        res.status(400).send({ msg: '未填写电子邮箱地址' })
+        return
+    }
 
-    /**
-     * 发邮箱不会
-     */
+    if (!VerificationCode) {
+        res.status(400).send({ msg: '验证码为空' })
+        return
+    }
 
+    let targetUser = await User.findOne({ where: { username: username } })
 
-    if (VerificationCode !== '123456') {
-        res.status(200).send({
-            IsVerificationCodeTrue: false,
-            msg: '验证码不正确'
+    if (!targetUser) {
+        res.status(400).send({ msg: '用户不存在' })
+        return
+    }
+
+    if (targetUser.EmailAddress != EmailAddress) {
+        res.status(400).send({ msg: '邮箱不正确' })
+        return
+    }
+
+    await RemoveExpiredEmailVerifySession()
+
+    if (!await EmailVerifySession.findOne({ where: { email: EmailAddress, code: VerificationCode } })) {
+        res.status(400).send({ msg: '验证码错误或已失效' })
+        return
+    }
+
+    try {
+        await User.update({ PasswordHash: PasswordHash }, { where: { username: username } })
+    } catch (err) {
+        res.status(400).send({
+            msg: '未知错误'
         })
         return
     }
 
     res.status(200).send({
-        IsVerificationCodeTrue: true,
         msg: '重置密码成功'
     })
 })
