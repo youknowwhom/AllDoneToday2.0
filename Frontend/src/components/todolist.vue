@@ -10,6 +10,7 @@
                             <template v-for="filter in group.filters">
                                 <el-check-tag class="todolist-filter-alternative-box"
                                     :checked="group.active === filter.name"
+                                    :class="{enabled: group.active === filter.name}"
                                     @change="this.toggleDisplayFilter(group.groupName, filter.name)">
                                     <img :src="filter.icon" class="todolist-filter-icon" />
                                     <p class="todolist-filter-alternative-text">{{ filter.name }}</p>
@@ -721,13 +722,19 @@ export default {
 }
 
 .todolist-filter-alternative-box:active {
-    transition: initial;
     background-color: var(--el-color-info-light-7);
 }
 
 .todolist-filter-alternative-box.enabled {
-    transition: var(--el-transition-duration-fast);
     background-color: var(--el-color-primary-light-9);
+}
+
+.todolist-filter-alternative-box.enabled:hover {
+    background-color: var(--el-color-primary-light-7);
+}
+
+.todolist-filter-alternative-box.enabled:active {
+    background-color: var(--el-color-primary-light-5);
 }
 
 .todolist-filter-alternative-text {
