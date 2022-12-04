@@ -96,23 +96,4 @@ await User.sync({
     match: /_dev$/
 })
 
-/**
- * 创建测试用户
- */
-await (async () => {
-    await User.destroy({
-        where: {
-            username: 'test'
-        }
-    })
-    await User.create({
-        username: 'test',
-        passwordHash: 'test',
-        EmailAddress: 'test@test.test',
-        UserGender:'男',
-        Signature:'Wo shi wawa',
-        BirthDay: new Date(2002, 9, 8),
-    })
-})()
-
 export { db as UserdataDB, User }

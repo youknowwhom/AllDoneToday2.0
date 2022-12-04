@@ -4,8 +4,9 @@
             <div class="auth-box-item">
                 <img src="/assets/image/logo.png" class="auth-box-logo" />
             </div>
-            <el-input class="auth-box-item bottomMargin1" placeholder="用户名" v-model="LoginInfo.username" />
-            <el-input class="auth-box-item bottomMargin2" type="password" placeholder="密码" v-model="LoginInfo.passwordHash" />
+            <el-input class="auth-box-item bottomMargin1" placeholder="用户名" v-model="this.username" />
+            <el-input class="auth-box-item bottomMargin2" type="password" placeholder="密码"
+                v-model="this.password" />
             <el-button class="auth-box-item" type="primary" @click="Login">登录</el-button>
             <div style="flex: 1 1 auto;"></div>
             <div class="auth-box-item"
@@ -27,10 +28,8 @@ export default {
     name: 'signIn',
     data() {
         return {
-            LoginInfo: {
-                username: '',
-                passwordHash: '',
-            }
+            username: '',
+            password: '',
         }
     },
     mounted() {
@@ -40,7 +39,10 @@ export default {
         async Login() {
             let response
             try {
-                response = await axios.post('/api/user/signin', this.LoginInfo)
+                response = await axios.post('/api/user/signin', {
+                    username: this.username,
+                    passwordHash: await this.sha256(this.password)
+                })
             } catch (err) {
                 if (err.response.data.result == 'fail') {
                     ElMessage({
@@ -65,7 +67,13 @@ export default {
             localStorage.setItem('token', response.data.token)
             this.$router.push('/app')
         },
-
+        async sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        },
     },
 }
 </script>
@@ -73,11 +81,11 @@ export default {
 <style scoped>
 @import "/assets/css/auth-box.css";
 
-    .bottomMargin1{
-        margin-bottom: 20px;
-    }
-    .bottomMargin2{
-        margin-bottom: 40px;
-    }
+.bottomMargin1 {
+    margin-bottom: 20px;
+}
 
+.bottomMargin2 {
+    margin-bottom: 40px;
+}
 </style>
