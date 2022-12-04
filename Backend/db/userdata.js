@@ -72,7 +72,6 @@ User.init({
         set: function (value) {
             return this.setDataValue('BirthDay', new Date(value).toDateString())
         },
-        allowNull: false
     },
     /**
      * 头像url

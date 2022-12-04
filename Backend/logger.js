@@ -22,13 +22,15 @@ const pinoTransports = pino.transport({
         {
             target: 'pino/file',
             options: {
-                destination: 'log/tmp.log'
+                destination: 'log/tmp.log',
+                minimumLevel: 'debug',
             }
         },
         {
             target: 'pino-pretty',
             options: {
-                destination: 1
+                destination: 1,
+                minimumLevel: 'debug',
             }
         }
     ]

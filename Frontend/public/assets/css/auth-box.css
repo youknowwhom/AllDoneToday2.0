@@ -4,6 +4,7 @@
     background-image: url(/assets/image/background.jpg);
     background-size: 100% 100%;
     padding-top: min(max(100px, 15%), 150px);
+    box-sizing: border-box;
 }
 
 .auth-box {

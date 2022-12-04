@@ -5,41 +5,38 @@ import logger from '../logger.js'
  *  邮箱地址与验证码 数据库对象
  */
 
-const db_email = new sequelize.Sequelize('emaildata.dev.db',null,null,{
-    dialect:'sqlite',
-    storage: 'db/emaildata.dev.db',
-    logging: msg=> logger.debug(msg)
+const db_emailSession = new sequelize.Sequelize('verificationSession.dev.db', null, null, {
+    dialect: 'sqlite',
+    storage: 'db/verificationSession.dev.db',
+    logging: msg => logger.debug(msg)
 })
 
-/**
- *  Email 模型
- */
+class EmailVerifySession extends sequelize.Model { }
 
-class Email extends sequelize.Model { }
-
-Email.init({
-    EmailAddress:{
-        type:sequelize.DataTypes.STRING,
-        allowNull:false,
-        unique:true
+EmailVerifySession.init({
+    email: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: false,
     },
-    CheckCode:{
-        type:sequelize.DataTypes.STRING,
-        allowNull:false
+    code: {
+        type: sequelize.DataTypes.STRING,
+        allowNull: false,
+        unique: true
     }
-},{
-    sequelize:db_email,
+}, {
+    sequelize: db_emailSession,
     paranoid: false,
-    timestamps: false
+    timestamps: true,
+    updatedAt: false,
 })
 
 /**
  * 将模型与数据库同步
  * 如有必要，会对数据库作更改
  */
-await Email.sync({
+await EmailVerifySession.sync({
     alter: true,
     match: /_dev$/
 })
 
-export {db_email as EmailDB, Email}
+export { db_emailSession as EmailVerifySessionDB, EmailVerifySession }

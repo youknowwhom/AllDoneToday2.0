@@ -1,5 +1,4 @@
 <template>
-
     <div class="auth-container">
         <div class="auth-box">
             <div class="auth-box-item">

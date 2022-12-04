@@ -28,3 +28,5 @@
 Backend/db/*.dev.db
 
 Backend/log
+
+Backend/serverConfig.json

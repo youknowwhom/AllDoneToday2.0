@@ -4,10 +4,10 @@
             <div class="auth-box-item">
                 <img src="/assets/image/logo.png" class="auth-box-logo" />
             </div>
-            <el-input class="auth-box-item" placeholder="用户名" v-model="UserName" />
-            <el-input class="auth-box-item" placeholder="邮箱" v-model="EmailAddress" />
+            <el-input class="auth-box-item" placeholder="用户名" v-model="this.UserName" />
+            <el-input class="auth-box-item" placeholder="邮箱" v-model="this.EmailAddress" />
             <div style="display: flex; flex-flow: row nowrap; ">
-                <el-input class="auth-box-item" placeholder="验证码" v-model="SecurityCodeInput" />
+                <el-input class="auth-box-item" placeholder="验证码" v-model="this.VerificationCodeInput" />
                 <div style="flex: 0 0 10px;"></div>
                 <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-if="this.SecCodeCooldown"
                     disabled>
@@ -16,8 +16,8 @@
                 <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-else
                     @click="SendSecCode">发送验证码</el-button>
             </div>
-            <el-input class="auth-box-item" placeholder="密码" v-model="PasswordHash" />
-            <el-input class="auth-box-item" placeholder="确认密码" v-model="PasswordAgainHash" />
+            <el-input class="auth-box-item" placeholder="密码" v-model="this.Password" />
+            <el-input class="auth-box-item" placeholder="确认密码" v-model="this.PasswordAgain" />
             <el-button class="auth-box-item" type="primary" @click="SignUp">注册</el-button>
             <div style="flex: 0 0 10px;"></div>
         </div>
@@ -34,9 +34,9 @@ export default {
     data() {
         return {
             EmailAddress: '',
-            PasswordHash: '',
-            PasswordAgainHash: '',
-            SecurityCodeInput: '',
+            Password: '',
+            PasswordAgain: '',
+            VerificationCodeInput: '',
             UserName: '',
             SecCodeCooldown: 0,
             CooldownID: undefined,
@@ -44,31 +44,87 @@ export default {
     },
     methods: {
         async SignUp() {
-            let response
-            try {
-                response = await axios.post('/api/user/signup', {
-                    UserName: this.UserName,
-                    EmailAddress: this.EmailAddress,
-                    PasswordHash: this.PasswordHash,
-                    SecurityCode: this.SecurityCodeInput
-                })
-            } catch (err) {
-                console.error(err.response)
+            if (!this.UserName) {
                 ElMessage({
-                    message: '未知错误',
+                    message: '请输入用户名',
+                    grouping: false,
+                    type: 'error',
+                })
+            }
+            if (!this.EmailAddress) {
+                ElMessage({
+                    message: '请输入电子邮箱地址',
+                    grouping: false,
+                    type: 'error',
+                })
+            }
+            if (!this.VerificationCodeInput) {
+                ElMessage({
+                    message: '请输入电子邮箱验证码',
+                    grouping: false,
+                    type: 'error',
+                })
+            }
+            if (!this.Password) {
+                ElMessage({
+                    message: '请输入密码',
+                    grouping: false,
+                    type: 'error',
+                })
+            }
+            if (!this.PasswordAgain) {
+                ElMessage({
+                    message: '请再次输入密码',
+                    grouping: false,
+                    type: 'error',
+                })
+            }
+            if (this.Password !== this.PasswordAgain) {
+                ElMessage({
+                    message: '两次密码不一致',
                     grouping: false,
                     type: 'error',
                 })
                 return
             }
-
+            try {
+                await axios.post('/api/user/signup', {
+                    UserName: this.UserName,
+                    EmailAddress: this.EmailAddress,
+                    PasswordHash: this.Password,
+                    VerificationCode: this.VerificationCodeInput,
+                })
+            } catch (err) {
+                ElMessage({
+                    message: err.response.data.msg,
+                    grouping: false,
+                    type: 'error',
+                })
+                return
+            }
+            ElMessage({
+                message: '注册成功，请重新登录',
+                grouping: false,
+                type: 'success',
+            })
+            this.$router.push('/signin')
         },
         async SendSecCode() {
             try {
-                await axios.post('api/user/sendSecurityCode', {
+                console.warn(this.EmailAddress)
+                await axios.post('api/user/sendVerificationCode', {
                     email: this.EmailAddress,
                 })
             } catch (err) {
+                if (err.response.data.type === 'cooldown') {
+                    ElMessage({
+                        message: '操作过于频繁',
+                        grouping: false,
+                        type: 'error',
+                    })
+                    this.SetCooldown(err.response.data.cd)
+                    return
+                }
                 ElMessage({
                     message: '验证码发送失败',
                     grouping: false,
@@ -76,7 +132,16 @@ export default {
                 })
                 return
             }
-            this.SecCodeCooldown = 60
+            ElMessage({
+                message: '验证码已发送',
+                grouping: false,
+                type: 'success',
+            })
+            this.SetCooldown(60)
+        },
+        SetCooldown(cd) {
+            this.SecCodeCooldown = Math.round(cd)
+            clearInterval(this.CooldownID)
             this.CooldownID = setInterval(() => {
                 if (this.SecCodeCooldown <= 0) {
                     clearInterval(this.CooldownID)
@@ -85,7 +150,6 @@ export default {
                 }
                 this.SecCodeCooldown -= 1
             }, 1000)
-
         }
     },
     mounted() {

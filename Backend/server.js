@@ -23,21 +23,148 @@ app.use(cors())
  */
 import logger from './logger.js'
 
+import fs from 'fs/promises'
+const serverConfig = JSON.parse(await fs.readFile('./serverConfig.json', { encoding: 'utf-8' }))
+
+logger.info('读取到服务器配置：')
+logger.info(serverConfig)
+
 
 /**
  * 导入数据库
  */
 import { UserdataDB, User } from './db/userdata.js'
 import { EventDB, Event } from './db/event.js'
+import { EmailVerifySessionDB, EmailVerifySession } from './db/email.js'
+import { Op } from 'sequelize'
 try {
     await UserdataDB.authenticate()
     await EventDB.authenticate()
+    await EmailVerifySessionDB.authenticate()
     logger.info('成功连接到数据库')
 } catch (error) {
     logger.error('无法连接到数据库: ', error)
     process.exit(-1)
 }
 
+const verificationInterval = 60
+const verificationExpire = 10 * 60
+
+const RemoveExpiredEmailVerifySession = async () => {
+    await EmailVerifySession.destroy({
+        where: {
+            createdAt: {
+                [Op.lt]: new Date() - verificationExpire * 1000,
+            }
+        }
+    })
+}
+
+import nodemailer from 'nodemailer'
+
+
+const verificationMailer = nodemailer.createTransport({
+    service: '163',
+    auth: serverConfig.mailer,
+})
+
+app.post('/api/user/sendVerificationCode', async (req, res) => {
+    const GenerateCode = async () => {
+        const Generate = () => {
+            const charset = 'ABCDEFGHJKLMNPQRSTUVWXYZ0123456789'
+            let str = ''
+            for (let i = 0; i < 5; i++) {
+                str += charset.charAt(Math.floor(Math.random() * charset.length))
+            }
+            return str
+        }
+        let code = Generate()
+        logger.info(`生成验证码：${code}`)
+        while (await EmailVerifySession.findOne({ where: { code: code } })) {
+            code = Generate()
+            logger.info(`重复，生成新的验证码：${code}`)
+        }
+        return code
+    }
+
+    logger.info(req.body)
+
+    let email
+    try {
+        email = req.body.email
+    } catch (err) {
+        res.status(400).send({
+            type: 'invalid',
+            msg: '电子邮箱地址无效',
+        })
+        return
+    }
+
+    if (!email) {
+        res.status(400).send({
+            type: 'invalid',
+            msg: '电子邮箱地址无效',
+        })
+        return
+    }
+
+    logger.info(`收到向 ${email} 发送验证码的请求`)
+
+    await RemoveExpiredEmailVerifySession()
+
+    for (let s of await EmailVerifySession.findAll({
+        where: {
+            email: email,
+        }
+    })) {
+        logger.info(`${s.email} 的暂时还有效的验证码： ${s.code} （${s.createdAt}）`)
+    }
+
+    let lastSend = await EmailVerifySession.max('createdAt', { where: { email: email } })
+
+    logger.info(`上一条验证码在 ${lastSend} 发出`)
+
+    if (lastSend > new Date() - verificationInterval * 1000) {
+        logger.info(`上一条在 ${verificationInterval} 秒内发出，取消发送`)
+        res.status(400).send({
+            type: 'cooldown',
+            cd: verificationInterval - (new Date() - lastSend) / 1000,
+        })
+        return
+    }
+
+    try {
+        const code = await GenerateCode()
+
+        logger.info(`即将发出验证码 ${code} 给 ${email}`)
+
+        await verificationMailer.sendMail({
+            from: {
+                name: '今日毕',
+                address: serverConfig.mailer.user,
+            },
+            to: email,
+            subject: '今日毕 - 您的邮箱验证码',
+            text: `您的邮箱验证码为：\n${code}\n此验证码 ${Math.round(verificationExpire / 60)} 分钟内有效`
+        })
+
+        await EmailVerifySession.create({
+            email: email,
+            code: code
+        })
+
+        logger.info(`已经发送验证码 ${code} 给 ${email}`)
+    } catch (err) {
+        logger.error(err)
+        res.status(400).send({
+            type: 'error',
+            msg: '服务器故障',
+        })
+        return
+    }
+
+    res.sendStatus(200)
+})
 
 /**
  * 注册 API
@@ -45,7 +172,7 @@ try {
  *  - username: 用户名
  *  - passwordHash: 密码Hash
  *  - EmailAddress: 邮箱地址
- *  - SecurityCode: 验证码
+ *  - VerificationCode: 验证码
  * - response
  *  - msg: 后端返回给前端的信息
  */
@@ -53,7 +180,7 @@ app.post('/api/user/signup', async (req, res) => {
     const username = req.body.UserName
     const PasswordHash = req.body.PasswordHash
     const EmailAddress = req.body.EmailAddress
-    const SecurityCode = req.body.SecurityCode
+    const VerificationCode = req.body.VerificationCode
 
     if (!username) {
         res.status(400).send({ msg: '未填写用户名' })
@@ -70,7 +197,7 @@ app.post('/api/user/signup', async (req, res) => {
         return
     }
 
-    if (!SecurityCode) {
+    if (!VerificationCode) {
         res.status(400).send({ msg: '验证码为空' })
         return
     }
@@ -85,15 +212,25 @@ app.post('/api/user/signup', async (req, res) => {
         return
     }
 
+    await RemoveExpiredEmailVerifySession()
+
+    if (!await EmailVerifySession.findOne({ where: { email: EmailAddress, code: VerificationCode } })) {
+        res.status(400).send({ msg: '验证码错误或已失效' })
+        return
+    }
+
     let newUser = User.build({
         username: username,
         passwordHash: PasswordHash,
         EmailAddress: EmailAddress
     })
+
     await newUser.save()
+
     res.status(200).send({
         msg: '注册成功'
     })
+
     return
 })
 
@@ -156,25 +293,25 @@ app.post('/api/user/signin', async (req, res) => {
  * 忘记密码
  *  - request
  *   - EmailAddress: 邮箱地址
- *   - SecurityCode: 验证码
+ *   - VerificationCode: 验证码
  *   - PasswordHash: 修改好的密码
  *  - respond:
- *   - IsSecurityCodeTrue: 验证码是否正确
+ *   - IsVerificationCodeTrue: 验证码是否正确
  *   - IsUsernameTrue: 用户名是否正确(防止未注册使用)
  *   - IsEmailAddressValid: 邮箱是否有效
  */
 app.post('/api/user/forgetPassword', async (req, res) => {
     const EmailAddress = req.body.EmailAddress
-    const SecurityCode = req.body.SecurityCode
+    const VerificationCode = req.body.VerificationCode
     const PasswordHash = req.body.PasswordHash
 
     /**
      * 请求格式判断
      */
 
-    if (!EmailAddress || !SecurityCode || !PasswordHash) {
+    if (!EmailAddress || !VerificationCode || !PasswordHash) {
         res.status(200).send({
-            IsSecurityCodeTrue: undefined,
+            IsVerificationCodeTrue: undefined,
             msg: '忘记密码请求格式出错'
         })
         return
@@ -192,16 +329,16 @@ app.post('/api/user/forgetPassword', async (req, res) => {
      */
 
 
-    if (SecurityCode !== '123456') {
+    if (VerificationCode !== '123456') {
         res.status(200).send({
-            IsSecurityCodeTrue: false,
+            IsVerificationCodeTrue: false,
             msg: '验证码不正确'
         })
         return
     }
 
     res.status(200).send({
-        IsSecurityCodeTrue: true,
+        IsVerificationCodeTrue: true,
         msg: '重置密码成功'
     })
 })
