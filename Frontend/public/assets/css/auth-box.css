@@ -1,0 +1,32 @@
+.auth-container {
+    height: 100%;
+    width: 100%;
+    background-image: url(/assets/image/background.jpg);
+    background-size: 100% 100%;
+    padding-top: min(max(50px, 15%), 60px);
+}
+
+.auth-box {
+    border-radius: var(--el-border-radius-round);
+    background-color: var(--el-fill-color-blank);
+    padding: 20px;
+    width: 450px;
+    min-height: 450px;
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.auth-box-logo {
+    height: 80px;
+    padding-top: 10px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.auth-box-item {
+    min-height: 50px;
+    margin-bottom: 10px;
+}
