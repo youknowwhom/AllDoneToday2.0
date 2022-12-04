@@ -9,10 +9,12 @@
             <div style="display: flex; flex-flow: row nowrap; ">
                 <el-input class="auth-box-item" placeholder="验证码" v-model="SecurityCodeInput" />
                 <div style="flex: 0 0 10px;"></div>
-                <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-if="this.SecCodeCooldown" disabled>
+                <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-if="this.SecCodeCooldown"
+                    disabled>
                     重新发送（{{ this.SecCodeCooldown }}）
                 </el-button>
-                <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-else @click="SendSecCode">发送验证码</el-button>
+                <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-else
+                    @click="SendSecCode">发送验证码</el-button>
             </div>
             <el-input class="auth-box-item" placeholder="密码" v-model="PasswordHash" />
             <el-input class="auth-box-item" placeholder="确认密码" v-model="PasswordAgainHash" />
@@ -42,31 +44,26 @@ export default {
     },
     methods: {
         async SignUp() {
-            let body = {
-                UserName: this.UserName,
-                EmailAddress: this.EmailAddress,
-                PasswordHash: this.PasswordHash,
-                SecurityCode: this.SecurityCodeInput
-            }
-
             let response
             try {
-                response = await axios.post('/api/user/signup', body)
+                response = await axios.post('/api/user/signup', {
+                    UserName: this.UserName,
+                    EmailAddress: this.EmailAddress,
+                    PasswordHash: this.PasswordHash,
+                    SecurityCode: this.SecurityCodeInput
+                })
             } catch (err) {
-                console.error(err)
+                console.error(err.response)
+                ElMessage({
+                    message: '未知错误',
+                    grouping: false,
+                    type: 'error',
+                })
+                return
             }
 
         },
         async SendSecCode() {
-            this.SecCodeCooldown = 60
-            this.CooldownID = setInterval(() => {
-                if (this.SecCodeCooldown <= 0) {
-                    clearInterval(this.CooldownID)
-                    this.CooldownID = undefined
-                    return
-                }
-                this.SecCodeCooldown -= 1
-            }, 1000)
             try {
                 await axios.post('api/user/sendSecurityCode', {
                     email: this.EmailAddress,
@@ -79,6 +76,16 @@ export default {
                 })
                 return
             }
+            this.SecCodeCooldown = 60
+            this.CooldownID = setInterval(() => {
+                if (this.SecCodeCooldown <= 0) {
+                    clearInterval(this.CooldownID)
+                    this.CooldownID = undefined
+                    return
+                }
+                this.SecCodeCooldown -= 1
+            }, 1000)
+
         }
     },
     mounted() {

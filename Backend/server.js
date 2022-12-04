@@ -47,80 +47,54 @@ try {
  *  - EmailAddress: 邮箱地址
  *  - SecurityCode: 验证码
  * - response
- *  - IsFormValid: 判断post表单是否数据正确
- *    - 如果不正确返回四个boolean值(真值)
- *      - IsUserNameEmpty: 用户名是否为空
- *      - IsPasswordEmpty: 密码是否为空
- *      - IsEmailAddressEmpty: 邮箱地址是否为空
- *      - IsSecurityCodeEmpty: 验证码是否为空
- *    - 如果正确上述boolean值不存在，进入下面的判断
- *    *注意：Json格式已经不一样
- *  - IsSecurityCodeTrue:验证码正确判断
- *  - IsUsernameTrue：用户名是否合法
- * --ToDo
- *   由于无法写入数据库 先使用伪数据
+ *  - msg: 后端返回给前端的信息
  */
 app.post('/api/user/signup', async (req, res) => {
     const username = req.body.UserName
     const PasswordHash = req.body.PasswordHash
     const EmailAddress = req.body.EmailAddress
-    //const SecurityCode = req.body.SecurityCode
+    const SecurityCode = req.body.SecurityCode
 
-    let IsUserNameEmpty = username ? false : true
-    let IsPasswordEmpty = PasswordHash ? false : true
-    let IsEmailAddressEmpty = EmailAddress ? false : true
-    //let IsSecurityCodeEmpty = SecurityCode ? false : true
-
-    //logger.info(SecurityCode)
-    //if (IsUserNameEmpty || IsPasswordEmpty || IsEmailAddressEmpty || IsSecurityCodeEmpty) {
-    if (IsUserNameEmpty || IsPasswordEmpty || IsEmailAddressEmpty) {
-        res.status(200).send({
-            IsFormValid: false,
-            IsUserNameEmpty: IsUserNameEmpty,
-            IsPasswordEmpty: IsPasswordEmpty,
-            IsEmailAddressEmpty: IsEmailAddressEmpty,
-            //IsSecurityCodeEmpty: IsSecurityCodeEmpty,
-            msg: '登录格式不正确'
-        })
+    if (!username) {
+        res.status(400).send({ msg: '未填写用户名' })
         return
     }
 
-    /**
-     * Todo：找数据库中有无用户名
-     * 验证码是否实现
-     * （未成功）
-     */
-    // 数据库中查找 username
+    if (!PasswordHash) {
+        res.status(400).send({ msg: '未填写密码' })
+        return
+    }
 
-    const UserObj = await User.findOne({
-        where: {
-            username: username
-        }
+    if (!EmailAddress) {
+        res.status(400).send({ msg: '未填写电子邮箱地址' })
+        return
+    }
+
+    if (!SecurityCode) {
+        res.status(400).send({ msg: '验证码为空' })
+        return
+    }
+
+    if (await User.findOne({ where: { username: username } })) {
+        res.status(400).send({ msg: '该用户名已被使用' })
+        return
+    }
+
+    if (await User.findOne({ where: { EmailAddress: EmailAddress } })) {
+        res.status(400).send({ msg: '该邮箱已被使用' })
+        return
+    }
+
+    let newUser = User.build({
+        username: username,
+        passwordHash: PasswordHash,
+        EmailAddress: EmailAddress
     })
-
-    if (UserObj) {
-        res.status(400).send({
-            IsFormValid: true,
-            //IsSecurityCodeTrue: IsSecurityCodeTrue,
-            IsUsernameTrue: false,
-            msg: '用户输入信息不符合'
-        })
-        return
-    }
-    else {
-        let newUser = User.build({
-            username: username,
-            passwordHash: PasswordHash,
-            EmailAddress: EmailAddress
-        })
-        await newUser.save()
-        res.status(200).send({
-            IsFormValid: true,
-            //IsSecurityCodeTrue: true,
-            IsUsernameTrue: true,
-            msg: '注册成功'
-        })
-    }
+    await newUser.save()
+    res.status(200).send({
+        msg: '注册成功'
+    })
+    return
 })
 
 
