@@ -35,9 +35,6 @@ const NavbarAuth = defineAsyncComponent(() => import('./navbarAuth.vue'))
             <button @click="this.$router.push('/app')" class="navbar-button">
                 应用
             </button>
-            <button @click="this.$router.push('/welcome')" class="navbar-button">
-                欢迎页
-            </button>
             <div style="flex: 0 1 100%"><!--填充空白--></div>
             <div style="height: 100%; flex: 0 0 auto;">
                 <Suspense>
