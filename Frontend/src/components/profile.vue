@@ -57,6 +57,7 @@ export default {
             filter : "personal-info",
             username: '今日毕',
             gender: '男',
+            birthday:'',
             signature: 'All done today',
             email: 'alldonetoday@163.com'
         }
