@@ -77,7 +77,7 @@ export default {
         <el-container class="navbar-user-dropdown-container navbar-button">
             <el-dropdown style="height: 100%" @command="this.handleDropdownCommand">
                 <el-container class="navbar-user-inner-container">
-                    <p>你好，{{ this.userInfo.username }}</p>
+                    <p style="font-size: large;">你好，{{ this.userInfo.username }}</p>
                 </el-container>
                 <template #dropdown>
                     <el-dropdown-menu>
