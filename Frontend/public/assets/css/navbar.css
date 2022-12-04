@@ -36,7 +36,7 @@
 .navbar {
     --header-height: var(--el-menu-item-height);
 
-    box-shadow: 0px 0px 5px 5px #e9e9ff;
+    box-shadow: 0px 0px 5px 5px var(--el-color-primary-light-9);
     box-sizing: content-box;
     border-bottom: 1px var(--el-border-color) var(--el-border-style);
     height: var(--header-height);

@@ -1,43 +1,25 @@
 <template>
 
-    <el-container class="ToDoList-container">
+    <div class="ToDoList-container">
         <div class="todolist-filter">
             <el-scrollbar>
-                <p class="todolist-filter-index"> 时间 </p>
-                <div class="todolist-filter-alternative-box">
-                    <img src="../assets/image/filter-all.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 全部 </p>
-                </div>
-                <div class="todolist-filter-alternative-box">
-                    <img src="../assets/image/filter-past.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 往日 </p>
-                </div>
-                <div class="todolist-filter-alternative-box">
-                    <img src="../assets/image/filter-today.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 今日 </p>
-                </div>
-                <div class="todolist-filter-alternative-box">
-                    <img src="../assets/image/filter-recent7.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 最近七日 </p>
-                </div>
-                <hr class="todolist-filter-separater">
-                <p class="todolist-filter-index"> 四象限 </p>
-                <div class="todolist-filter-alternative-box">
-                    <img src="../assets/image/filter-one.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 重要 & 紧急 </p>
-                </div>
-                <div class="todolist-filter-alternative-box">
-                    <img src="../assets/image/filter-two.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 重要 & 不紧急 </p>
-                </div>
-                <div class="todolist-filter-alternative-box">
-                    <img src="../assets/image/filter-three.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 紧急 & 不重要 </p>
-                </div>
-                <div class="todolist-filter-alternative-box">
-                    <img src="../assets/image/filter-four.png" class="todolist-filter-icon" />
-                    <p class="todolist-filter-alternative-text"> 不重要 & 不紧急 </p>
-                </div>
+                <el-space direction="vertical" :fill="true" style="padding: 20px;">
+                    <template v-for="group in this.DisplayFilters">
+                        <p class="todolist-filter-index">{{ group.groupName }}</p>
+                        <el-space direction="vertical" :fill="true">
+                            <template v-for="filter in group.filters">
+                                <el-check-tag class="todolist-filter-alternative-box"
+                                    :checked="group.active === filter.name"
+                                    :class="{enabled: group.active === filter.name}"
+                                    @change="this.toggleDisplayFilter(group.groupName, filter.name)">
+                                    <img :src="filter.icon" class="todolist-filter-icon" />
+                                    <p class="todolist-filter-alternative-text">{{ filter.name }}</p>
+                                </el-check-tag>
+                            </template>
+                        </el-space>
+                    </template>
+                    <el-divider />
+                </el-space>
             </el-scrollbar>
         </div>
         <el-divider direction="vertical" style="height: 100%" />
@@ -56,13 +38,12 @@
             <el-divider content-position="left">
                 <h4 class="todolist-top-headline">待办清单</h4>
             </el-divider>
-            <el-container direction="vertical">
-                <el-scrollbar>
-                    <el-collapse v-model="this.openedGroups">
+            <el-container direction="vertical" class="todolist-list">
+                <el-scrollbar max-height="100%">
+                    <el-collapse v-model="this.openedGroups" v-if="eventGrouped.length">
                         <template v-for="group in eventGrouped" :key="group.groupName">
                             <el-collapse-item :title="group.groupName" :name="group.groupName">
-                                <el-space direction="vertical" alignment="flex-start" :fill="true"
-                                    class="todolist-item-group">
+                                <el-space direction="vertical" alignment="flex-start" :fill="true" style="width: 100%;">
                                     <template v-for="ev in group.events" :key="ev.id">
                                         <el-card class="todolist-item" :class="{ chosen: this.chosenEventID == ev.id }"
                                             :shadow="this.chosenEventID == ev.id ? 'always' : 'hover'"
@@ -83,6 +64,9 @@
                             </el-collapse-item>
                         </template>
                     </el-collapse>
+                    <el-empty v-else>
+                        
+                    </el-empty>
                 </el-scrollbar>
             </el-container>
         </el-container>
@@ -90,18 +74,16 @@
         <div class="todolist-detail-right-background">
             <el-container class="todolist-detail" v-if="this.chosenEventID" direction="vertical">
                 <el-space class="todolist-detail-container" direction="vertical" :fill="true">
-                    <input v-model="chosenEvent.brief" id="todolist-detail-brief" placeholder="添加事件简介……" />
+                    <input v-model="chosenEvent.brief" class="todolist-detail-brief" placeholder="添加事件简介……" />
                 </el-space>
                 <el-space class="todolist-detail-container" direction="horizontal">
                     <span style="font-weight: bold; margin: 0; width: 100px;">重要程度：</span>
-                    <el-check-tag 
-                        :checked="this.chosenEvent.importance.important" 
+                    <el-check-tag :checked="this.chosenEvent.importance.important"
                         style="width:100px; text-align: center; "
                         @change="status => this.chosenEvent.importance.important = status">
                         {{ this.chosenEvent.importance.important ? '重要' : '不重要' }}
                     </el-check-tag>
-                    <el-check-tag 
-                        :checked="this.chosenEvent.importance.urgent" 
+                    <el-check-tag :checked="this.chosenEvent.importance.urgent"
                         style="width:100px; text-align: center; "
                         @change="status => this.chosenEvent.importance.urgent = status">
                         {{ this.chosenEvent.importance.urgent ? '紧急' : '不紧急' }}
@@ -189,14 +171,13 @@
             </el-container>
         </div>
 
-    </el-container>
+    </div>
 
 </template>
   
 <script>
 
 import { v4 as uuid } from 'uuid'
-
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
 
@@ -285,9 +266,92 @@ let GroupFilters = [
     }
 ]
 
-let DisplayFilters = []
-
-// import axios from 'axios'
+let DisplayFilters = [
+    {
+        groupName: '时间',
+        active: '',
+        filters: [
+            {
+                name: '全部',
+                icon: '/assets/image/filter-all.png',
+                filterFunction() {
+                    return true
+                }
+            },
+            {
+                name: '往日',
+                icon: '/assets/image/filter-past.png',
+                filterFunction(ev) {
+                    let curDateTime = {
+                        date: new Date(),
+                        time: new Date(),
+                    }
+                    if (!ev.time) return false
+                    if (CheckDateTime(ev.time.endTime)) {
+                        return CompareDateTime(curDateTime, ev.time.endTime) === 1
+                    } else if (CheckDateTime(ev.time.beginTime)) {
+                        return CompareDateTime(curDateTime, ev.time.beginTime) === 1
+                    } else {
+                        return false
+                    }
+                }
+            },
+            {
+                name: '今日',
+                icon: '/assets/image/filter-today.png',
+                filterFunction(ev) {
+                    if (!ev.time) return false
+                    if (!CheckDateTime(ev.time.beginTime)) return false
+                    return compareDate(ev.time.beginTime.date, new Date()) === 0
+                }
+            },
+            {
+                name: '最近七日',
+                icon: '/assets/image/filter-recent7.png',
+                filterFunction(ev) {
+                    if (!ev.time) return false
+                    if (!CheckDateTime(ev.time.beginTime)) return false
+                    let evDate = new Date(ev.time.beginTime.date), next7day = (new Date()).setDate((new Date()).getDate() + 7)
+                    return compareDate(new Date(), evDate) === -1 && compareDate(evDate, next7day) === -1
+                }
+            },
+        ]
+    },
+    {
+        groupName: '四象限',
+        active: '',
+        filters: [
+            {
+                name: '重要 & 紧急',
+                icon: '/assets/image/filter-one.png',
+                filterFunction(ev) {
+                    return ev.importance.important && ev.importance.urgent
+                }
+            },
+            {
+                name: '重要 & 不紧急',
+                icon: '/assets/image/filter-two.png',
+                filterFunction(ev) {
+                    return ev.importance.important && !ev.importance.urgent
+                }
+            },
+            {
+                name: '紧急 & 不重要',
+                icon: '/assets/image/filter-three.png',
+                filterFunction(ev) {
+                    return !ev.importance.important && ev.importance.urgent
+                }
+            },
+            {
+                name: '不重要 & 不紧急',
+                icon: '/assets/image/filter-four.png',
+                filterFunction(ev) {
+                    return !ev.importance.important && !ev.importance.urgent
+                }
+            },
+        ]
+    },
+]
 
 let loopRequestID = 0
 const maxLoopRequestID = 10000
@@ -303,7 +367,8 @@ export default {
             openedGroups: [],
             chosenEventID: undefined,
             EventList: [],
-            chosenEvent: undefined
+            chosenEvent: undefined,
+            DisplayFilters: DisplayFilters,
         }
     },
     watch: {
@@ -508,13 +573,24 @@ export default {
                 type: 'success',
                 grouping: true
             })
+        },
+        toggleDisplayFilter(groupName, filterName) {
+            for (let group of this.DisplayFilters.filter(group => group.groupName === groupName)) {
+                if (group.active === filterName) {
+                    group.active = ''
+                } else {
+                    group.active = filterName
+                }
+            }
         }
     },
     computed: {
         eventGrouped() {
             let ungrouped = this.EventList
-            for (let filter of DisplayFilters) {
-                ungrouped = ungrouped.filter(filter.filterFunction)
+            for (let filterGroup of this.DisplayFilters) {
+                for (let filter of filterGroup.filters.filter(filter => filter.name === filterGroup.active)) {
+                    ungrouped = ungrouped.filter(filter.filterFunction)
+                }
             }
             let grouped = []
             let grouped_reverse = []
@@ -534,6 +610,7 @@ export default {
                     events: ungrouped
                 })
             }
+            console.debug(grouped.concat(grouped_reverse.reverse()))
             return grouped.concat(grouped_reverse.reverse())
         },
         beginTimeTag() {
@@ -589,17 +666,15 @@ export default {
 </script>
   
 <style scoped>
-.todolsit-main-additem {
-    padding: auto;
-}
-
 .todolist-main {
     flex: 1 0 35%;
     padding: 20px;
 }
 
 .todolist-detail-right-background {
-    flex: 1 0 35%;
+    flex: 1 1 35%;
+    display: flex;
+    width: 100%;
 }
 
 .todolist-filter {
@@ -619,7 +694,6 @@ export default {
 
 .todolist-top-itemadder {
     height: fit-content;
-    background-color: #ffffff;
     flex: 0 0 auto;
 }
 
@@ -630,28 +704,37 @@ export default {
     margin-top: 5px;
 }
 
+
+.todolist-filter-alternative-box {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    background-color: initial;
+    transition: var(--el-transition-duration-fast);
+    border: 0;
+    padding: 0;
+    border-radius: var(--el-border-radius-round);
+}
+
 .todolist-filter-alternative-box:hover {
-    background-color: #f7f7ff;
-    cursor: pointer;
-    background-clip: content-box;
+    background-color: var(--el-color-info-light-9);
+    box-shadow: var(--el-box-shadow-light);
 }
 
 .todolist-filter-alternative-box:active {
-    cursor: pointer;
-    background-color: #f2f2ff;
-    background-clip: content-box;
+    background-color: var(--el-color-info-light-7);
 }
 
+.todolist-filter-alternative-box.enabled {
+    background-color: var(--el-color-primary-light-9);
+}
 
-.todolist-filter-alternative-box {
-    padding-left: 10px;
-    padding-right: 10px;
-    height: 40px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    line-height: 40px;
-    border-radius: 25px;
-    display: flex;
+.todolist-filter-alternative-box.enabled:hover {
+    background-color: var(--el-color-primary-light-7);
+}
+
+.todolist-filter-alternative-box.enabled:active {
+    background-color: var(--el-color-primary-light-5);
 }
 
 .todolist-filter-alternative-text {
@@ -668,17 +751,6 @@ export default {
     color: #5b5bef;
 }
 
-.todolist-filter-separater {
-    margin-top: 30px;
-    margin-bottom: 18px;
-    border: none;
-    height: 1px;
-    margin-left: 10px;
-    margin-right: 10px;
-    background-color: #7a7af9;
-    opacity: 20%;
-}
-
 .ToDoList-container {
     height: 100%;
     width: 100%;
@@ -686,7 +758,11 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
-    background-color: rgb(255, 255, 255);
+}
+
+.todolist-list {
+    height: 0;
+    /* 这样写可以修复折叠菜单超出父元素高度的 BUG ，不知道为什么 */
 }
 
 .todolist-list-item-title {
@@ -699,50 +775,23 @@ export default {
     color: var(--el-color-info)
 }
 
-#todolist-detail-right-itemname {
-    font-weight: bolder;
-}
-
-#todolist-detail-right-time {
-    padding-top: 10px;
-    font-size: 13px;
-    font-weight: bold;
-    display: inline-block;
-    white-space: nowrap;
-    color: #7a7af9;
-}
-
-#todolist-detail-right-priority {
-    padding-top: 5px;
-    font-size: 13px;
-    font-weight: bold;
-    display: inline-block;
-    white-space: nowrap;
-    color: #b8b8ff;
-}
-
-.todolist-item-group {
-    width: 100%
+.todolist-item.chosen {
+    border-color: var(--el-color-primary);
+    background-color: var(--el-color-primary-light-9);
 }
 
 .todolist-detail {
-    background: white;
     width: 100%;
     height: 100%;
     padding: 0;
     overflow: hidden;
 }
 
-.todolist-item.chosen {
-    border-color: var(--el-color-primary);
-    background-color: var(--el-color-primary-light-9);
-}
-
 .todolist-detail-container {
     padding: 15px;
 }
 
-#todolist-detail-brief {
+.todolist-detail-brief {
     border-top-width: 0px;
     border-left-width: 0px;
     border-right-width: 0px;
@@ -754,9 +803,10 @@ export default {
     padding: 5px;
     box-sizing: border-box;
     color: var(--el-text-color-regular);
+    transition: var(--el-transition-duration-fast);
 }
 
-#todolist-detail-brief:focus {
+.todolist-detail-brief:focus {
     border-bottom-width: 3px;
     padding-bottom: 4px;
     border-color: var(--el-color-info);
