@@ -60,7 +60,7 @@ export default {
                 </el-container>
                 <el-container>
                     <el-button type="primary" @click="this.$router.push('/signup')">注册新用户</el-button>
-                    <el-button @click="this.$router.push('/app')">进入今日毕 </el-button>
+                    <el-button @click="this.$router.push('/signin')">进入今日毕 </el-button>
                 </el-container>
             </el-container>
             <img src="/assets/image/homepage-demonstration.jpg" class="demon-pic" />
