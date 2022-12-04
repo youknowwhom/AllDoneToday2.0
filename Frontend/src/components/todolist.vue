@@ -39,7 +39,7 @@
             </el-divider>
             <el-container direction="vertical" class="todolist-list">
                 <el-scrollbar max-height="100%">
-                    <el-collapse v-model="this.openedGroups">
+                    <el-collapse v-model="this.openedGroups" v-if="eventGrouped.length">
                         <template v-for="group in eventGrouped" :key="group.groupName">
                             <el-collapse-item :title="group.groupName" :name="group.groupName">
                                 <el-space direction="vertical" alignment="flex-start" :fill="true" style="width: 100%;">
@@ -63,6 +63,9 @@
                             </el-collapse-item>
                         </template>
                     </el-collapse>
+                    <el-empty v-else>
+                        
+                    </el-empty>
                 </el-scrollbar>
             </el-container>
         </el-container>
@@ -606,6 +609,7 @@ export default {
                     events: ungrouped
                 })
             }
+            console.debug(grouped.concat(grouped_reverse.reverse()))
             return grouped.concat(grouped_reverse.reverse())
         },
         beginTimeTag() {
