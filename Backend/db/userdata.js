@@ -65,8 +65,14 @@ User.init({
      * 用户生日
      */
     BirthDay:{
-        type:sequelize.DataTypes.STRING,
-        allowNull: true
+        type: sequelize.DataTypes.TEXT,
+        get: function () {
+            return new Date(this.getDataValue('BirthDay'))
+        },
+        set: function (value) {
+            return this.setDataValue('BirthDay', new Date(value).toDateString())
+        },
+        allowNull: false
     },
     /**
      * 头像url
@@ -106,7 +112,7 @@ await (async () => {
         EmailAddress: 'test@test.test',
         UserGender:'男',
         Signature:'Wo shi wawa',
-        BirthDay:'2002-09-08'
+        BirthDay: new Date(2002, 9, 8),
     })
 })()
 
