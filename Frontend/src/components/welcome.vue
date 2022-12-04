@@ -188,6 +188,7 @@ export default {
     min-height: 760px;
     width: 100%;
     background-color: #efefff;
+    user-select: none;
 }
 
 .function-div2 {
@@ -250,11 +251,13 @@ export default {
 .demon-pic {
     height: 90%;
     margin-right: -80px;
+    user-select: none;
 }
 
 .demon-pic2 {
     height: 70%;
     box-shadow: 0px 0px 20px rgba(50, 50, 50, 0.169);
+    user-select: none;
 }
 
 .el-button {
