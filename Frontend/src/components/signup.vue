@@ -7,7 +7,7 @@
             <el-input class="auth-box-item" placeholder="用户名" v-model="this.UserName" />
             <el-input class="auth-box-item" placeholder="邮箱" v-model="this.EmailAddress" />
             <div style="display: flex; flex-flow: row nowrap; ">
-                <el-input class="auth-box-item" placeholder="验证码" v-model="this.VerificationCodeInput" />
+                <el-input class="auth-box-item" placeholder="验证码" v-model="this.VerificationCode" />
                 <div style="flex: 0 0 10px;"></div>
                 <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-if="this.SecCodeCooldown"
                     disabled>
@@ -16,8 +16,8 @@
                 <el-button class="auth-box-item" style="flex: 0 1 250px;" type="primary" v-else
                     @click="SendSecCode">发送验证码</el-button>
             </div>
-            <el-input class="auth-box-item" placeholder="密码" v-model="this.Password" />
-            <el-input class="auth-box-item" placeholder="确认密码" v-model="this.PasswordAgain" />
+            <el-input type="password" class="auth-box-item" placeholder="密码" v-model="this.Password" />
+            <el-input type="password" class="auth-box-item" placeholder="确认密码" v-model="this.PasswordAgain" />
             <el-button class="auth-box-item" type="primary" @click="SignUp">注册</el-button>
             <div style="flex: 0 0 10px;"></div>
         </div>
@@ -36,7 +36,7 @@ export default {
             EmailAddress: '',
             Password: '',
             PasswordAgain: '',
-            VerificationCodeInput: '',
+            VerificationCode: '',
             UserName: '',
             SecCodeCooldown: 0,
             CooldownID: undefined,
@@ -58,7 +58,7 @@ export default {
                     type: 'error',
                 })
             }
-            if (!this.VerificationCodeInput) {
+            if (!this.VerificationCode) {
                 ElMessage({
                     message: '请输入电子邮箱验证码',
                     grouping: false,
@@ -92,7 +92,7 @@ export default {
                     UserName: this.UserName,
                     EmailAddress: this.EmailAddress,
                     PasswordHash: this.Password,
-                    VerificationCode: this.VerificationCodeInput,
+                    VerificationCode: this.VerificationCode,
                 })
             } catch (err) {
                 ElMessage({
