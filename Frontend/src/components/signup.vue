@@ -91,7 +91,7 @@ export default {
                 await axios.post('/api/user/signup', {
                     UserName: this.UserName,
                     EmailAddress: this.EmailAddress,
-                    PasswordHash: this.Password,
+                    PasswordHash: await this.sha256(this.Password),
                     VerificationCode: this.VerificationCode,
                 })
             } catch (err) {
@@ -150,7 +150,14 @@ export default {
                 }
                 this.SecCodeCooldown -= 1
             }, 1000)
-        }
+        },
+        async sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        },
     },
     mounted() {
         localStorage.removeItem('token')

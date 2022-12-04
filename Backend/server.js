@@ -60,6 +60,41 @@ const RemoveExpiredEmailVerifySession = async () => {
     })
 }
 
+await RemoveExpiredEmailVerifySession()
+
+import crypto from 'crypto'
+
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+    return hashHex
+}
+
+/**
+ * 创建测试用户
+ */
+await (async () => {
+    if (await User.findAll({where: {username: serverConfig.testUser.username}})) {
+        logger.warn(`已有账户与测试用户（${serverConfig.testUser.username}）重名，即将清除`)
+    }
+    await User.destroy({
+        where: {
+            username: serverConfig.testUser.username
+        }
+    })
+    await User.create({
+        username: serverConfig.testUser.username,
+        passwordHash: await sha256(serverConfig.testUser.password),
+        EmailAddress: 'test@test.test',
+        UserGender:'男',
+        Signature:'Wo shi wawa',
+        BirthDay: new Date(2002, 9, 8),
+    })
+    logger.info(`已经创建测试用户 ${serverConfig.testUser.username}，密码为 ${serverConfig.testUser.password}`)
+})()
+
 import nodemailer from 'nodemailer'
 
 
@@ -135,8 +170,6 @@ app.post('/api/user/sendVerificationCode', async (req, res) => {
 
     try {
         const code = await GenerateCode()
-
-        logger.info(`即将发出验证码 ${code} 给 ${email}`)
 
         await verificationMailer.sendMail({
             from: {
