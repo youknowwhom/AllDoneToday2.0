@@ -3,8 +3,8 @@
         <div class="profile-header">
             <h2 class="header-title">个人设置</h2>
             <el-button class="header-button" @click="update" :disabled="filter=='safety-setting'"
-                :type="modify?'primary':'basic'">
-                <p v-if="modify == true">保存设置</p>
+                :type="this.modify?'primary':''">
+                <p v-if="this.modify == true">保存设置</p>
                 <p v-else>修改信息</p>
             </el-button>
         </div>
@@ -61,7 +61,7 @@
                     </el-col>
                     <el-col :span="12">
                         <p v-if="!modify"> {{ email }} </p>
-                        <el-tag v-else type="primary">请在安全设置中重置邮箱</el-tag>
+                        <el-tag v-else>请在安全设置中重置邮箱</el-tag>
                     </el-col>
                 </div>
             </el-main>
@@ -86,7 +86,7 @@
                         <p>已设置</p>
                     </el-col>
                     <el-col :span="6">
-                        <el-button :type="primary" @click="this.$router.push('/resetPassword')">修改</el-button>
+                        <el-button type="primary" @click="this.$router.push('/resetPassword')">修改</el-button>
                     </el-col>
                 </div>
             </el-main>
@@ -126,24 +126,29 @@ export default {
             return
         }
         console.debug(response)
-        if (response.data['UserName'])
+        if (response.data['UserName']) {
             this.username = response.data['UserName'];
-        if (response.data['EmailAddress'])
+        }
+        if (response.data['EmailAddress']) {
             this.email = response.data['EmailAddress'];
-        if (response.data['UserGender'])
+        }
+        if (response.data['UserGender']) {
             this.gender = response.data['UserGender'];
-        if (response.data['Signature'])
+        }
+        if (response.data['Signature']) {
             this.signature = response.data['Signature'];
-        if (response.data['Birthday'])
-            this.signature = response.data['Birthday'];           
+        }
+        if (response.data['Birthday']) {
+            this.signature = response.data['Birthday'];
+        }
 
     },
     methods: {
         async update() {
             this.modify = !this.modify
-            if(true){
+            if (!this.modify) {
                 try {
-                    await axios.post('/api/event/updateInfo', {
+                    await axios.post('/api/user/updateInfo', {
                         token: localStorage.getItem('token'),
                         UserGender: this.gender,
                         Signature: this.signature,
