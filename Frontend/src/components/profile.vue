@@ -72,9 +72,6 @@
                     <el-col :span="12">
                         <p> {{email}} </p>
                     </el-col>       
-                    <el-col :span="6">
-                    <el-button :type="primary">修改</el-button>     
-                    </el-col>           
                 </div>
                 <div class="info-item">
                     <el-col :span="6"><p class="info-item-title"> 密码 </p></el-col>
@@ -82,7 +79,7 @@
                         <p>已设置</p>
                     </el-col>
                     <el-col :span="6">
-                    <el-button :type="primary">修改</el-button>     
+                    <el-button :type="primary" @click="this.$router.push('/resetPassword')">修改</el-button>     
                     </el-col>      
                 </div>
             </el-main>
@@ -103,9 +100,9 @@ export default {
             filter : "personal-info",
             //是否是修改模式
             modify: false,
-            username: '今日毕',
-            gender: '男',
-            birthday: new Date(2003,4,4),
+            username: '',
+            gender: '',
+            birthday: new Date(2000,0,1),
             signature: 'All done today',
             email: 'alldonetoday@163.com'
         }
@@ -121,6 +118,15 @@ export default {
             return
         }
         console.debug(response)
+        if(response.data['UserName'])
+            this.username = response.data['UserName'];
+        if(response.data['EmailAddress'])
+            this.email = response.data['EmailAddress'];
+        if(response.data['UserGender'])
+            this.gender = response.data['UserGender'];
+        if(response.data['Signature'])
+            this.signature = response.data['Signature'];
+        
     },
     methods: {
 

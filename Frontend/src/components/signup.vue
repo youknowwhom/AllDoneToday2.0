@@ -1,5 +1,5 @@
 <template>
-    <div class="auth-container">
+    <div class="auth-container" style="user-select: none;">
         <div class="auth-box">
             <div class="auth-box-item">
                 <img src="/assets/image/logo.png" class="auth-box-logo" />
@@ -17,7 +17,7 @@
                     @click="SendSecCode">发送验证码</el-button>
             </div>
             <el-input type="password" class="auth-box-item" placeholder="密码" v-model="this.Password" />
-            <el-input type="password" class="auth-box-item" placeholder="确认密码" v-model="this.PasswordAgain" />
+            <el-input type="password" class="auth-box-item bottomMargin" placeholder="确认密码" v-model="this.PasswordAgain" />
             <el-button class="auth-box-item" type="primary" @click="SignUp">注册</el-button>
             <div style="flex: 0 0 10px;"></div>
         </div>
@@ -167,4 +167,9 @@ export default {
   
 <style scoped>
 @import "/assets/css/auth-box.css";
+
+.bottomMargin{
+    margin-bottom: 20px;
+}
+
 </style>
