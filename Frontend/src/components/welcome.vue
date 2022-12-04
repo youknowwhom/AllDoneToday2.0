@@ -59,7 +59,7 @@ export default {
                     <p class="welcome-text">快速安排日程，专注管理时间，从即刻开始。</p>
                 </el-container>
                 <el-container>
-                    <el-button type="primary" @click="this.$router.push('/signin')">注册新用户</el-button>
+                    <el-button type="primary" @click="this.$router.push('/signup')">注册新用户</el-button>
                     <el-button @click="this.$router.push('/app')">进入今日毕 </el-button>
                 </el-container>
             </el-container>
