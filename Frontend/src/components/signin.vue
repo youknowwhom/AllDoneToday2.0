@@ -1,11 +1,11 @@
 <template>
-    <div class="auth-container">
+    <div class="auth-container" style="user-select: none;">
         <div class="auth-box">
             <div class="auth-box-item">
                 <img src="/assets/image/logo.png" class="auth-box-logo" />
             </div>
-            <el-input class="auth-box-item" placeholder="用户名" v-model="LoginInfo.username" />
-            <el-input class="auth-box-item" type="password" placeholder="密码" v-model="LoginInfo.passwordHash" />
+            <el-input class="auth-box-item bottomMargin1" placeholder="用户名" v-model="LoginInfo.username" />
+            <el-input class="auth-box-item bottomMargin2" type="password" placeholder="密码" v-model="LoginInfo.passwordHash" />
             <el-button class="auth-box-item" type="primary" @click="Login">登录</el-button>
             <div style="flex: 1 1 auto;"></div>
             <div class="auth-box-item"
@@ -72,4 +72,12 @@ export default {
   
 <style scoped>
 @import "/assets/css/auth-box.css";
+
+    .bottomMargin1{
+        margin-bottom: 20px;
+    }
+    .bottomMargin2{
+        margin-bottom: 40px;
+    }
+
 </style>
