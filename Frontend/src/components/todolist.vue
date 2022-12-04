@@ -619,7 +619,6 @@ export default {
 
 .todolist-top-itemadder {
     height: fit-content;
-    background-color: #ffffff;
     flex: 0 0 auto;
 }
 
@@ -686,7 +685,6 @@ export default {
     display: flex;
     flex-flow: row nowrap;
     justify-content: flex-start;
-    background-color: rgb(255, 255, 255);
 }
 
 .todolist-list-item-title {
@@ -726,7 +724,6 @@ export default {
 }
 
 .todolist-detail {
-    background: white;
     width: 100%;
     height: 100%;
     padding: 0;
