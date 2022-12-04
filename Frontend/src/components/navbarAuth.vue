@@ -74,7 +74,7 @@ export default {
 
 <template>
     <template v-if="this.loggedIn">
-        <el-container class="navbar-user-dropdown-container">
+        <el-container class="navbar-user-dropdown-container navbar-button">
             <el-dropdown style="height: 100%" @command="this.handleDropdownCommand">
                 <el-container class="navbar-user-inner-container">
                     <p>你好，{{ this.userInfo.username }}</p>
