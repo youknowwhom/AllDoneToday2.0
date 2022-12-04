@@ -1,6 +1,6 @@
 <template>
 
-    <el-container class="ToDoList-container">
+    <div class="ToDoList-container">
         <div class="todolist-filter">
             <el-scrollbar>
                 <p class="todolist-filter-index"> 时间 </p>
@@ -189,7 +189,7 @@
             </el-container>
         </div>
 
-    </el-container>
+    </div>
 
 </template>
   
@@ -599,7 +599,9 @@ export default {
 }
 
 .todolist-detail-right-background {
-    flex: 1 0 35%;
+    flex: 1 1 35%;
+    display: flex;
+    width: 100%;
 }
 
 .todolist-filter {
@@ -688,7 +690,8 @@ export default {
 }
 
 .todolist-list {
-    /* height: 300px; */
+    height: 0; 
+    /* 这样写可以修复折叠菜单超出父元素高度的 BUG ，不知道为什么 */
 }
 
 .todolist-list-item-title {

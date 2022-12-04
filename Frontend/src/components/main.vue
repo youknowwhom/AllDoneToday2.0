@@ -29,7 +29,7 @@ const NavbarAuth = defineAsyncComponent(() => import('./navbarAuth.vue'))
 </script>
 
 <template>
-    <el-container class="mainframe-container">
+    <div class="mainframe-container">
         <el-header class="navbar">
             <img @click="this.$router.push('/welcome')" src="../assets/image/logo.png" class="navbar-logo" />
             <button @click="this.$router.push('/app')" class="navbar-button">
@@ -52,19 +52,19 @@ const NavbarAuth = defineAsyncComponent(() => import('./navbarAuth.vue'))
                 </Suspense>
             </div>
         </el-header>
-        <el-container class="mainframe-content">
+        <div class="mainframe-content">
             <Suspense>
                 <template #default>
                     <RouterView></RouterView>
                 </template>
                 <template #fallback>
-                    <el-container v-loading="true" style="width: 100px; height: 100%;">
+                    <div v-loading="true" style="width: 100px; height: 100%;">
                         &nbsp;
-                    </el-container>
+                    </div>
                 </template>
             </Suspense>
-        </el-container>
-    </el-container>
+        </div>
+    </div>
 </template>
 
 
@@ -72,16 +72,14 @@ const NavbarAuth = defineAsyncComponent(() => import('./navbarAuth.vue'))
 @import "../assets/css/navbar.css";
 
 .mainframe-container {
-    /* 占满页面 */
-    position: fixed;
     width: 100%;
     height: 100%;
-    left: 0px;
-    top: 0px;
+    display: flex;
+    flex-flow: column nowrap;
 }
 
 .mainframe-content {
-    padding: 0;
+    width: 100%;
     height: 100%;
 }
 </style>
