@@ -56,8 +56,8 @@
             <el-divider content-position="left">
                 <h4 class="todolist-top-headline">待办清单</h4>
             </el-divider>
-            <el-container direction="vertical">
-                <el-scrollbar>
+            <el-container direction="vertical" class="todolist-list">
+                <el-scrollbar max-height="100%">
                     <el-collapse v-model="this.openedGroups">
                         <template v-for="group in eventGrouped" :key="group.groupName">
                             <el-collapse-item :title="group.groupName" :name="group.groupName">
@@ -687,6 +687,10 @@ export default {
     justify-content: flex-start;
 }
 
+.todolist-list {
+    /* height: 300px; */
+}
+
 .todolist-list-item-title {
     flex: 1 0 auto;
     margin: 0px;
@@ -751,6 +755,7 @@ export default {
     padding: 5px;
     box-sizing: border-box;
     color: var(--el-text-color-regular);
+    transition: var(--el-transition-duration-fast);
 }
 
 #todolist-detail-brief:focus {
