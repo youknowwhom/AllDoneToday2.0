@@ -21,11 +21,11 @@
   
 <script>
 
-import lavender_dead from "../assets/image/lavender-dead.png"
-import lavender_1 from "../assets/image/lavender-1.png"
-import lavender_2 from "../assets/image/lavender-2.png"
-import lavender_3 from "../assets/image/lavender-3.png"
-import lavender_done from "../assets/image/lavender-done.png"
+import lavender_dead from "/assets/image/lavender-dead.png"
+import lavender_1 from "/assets/image/lavender-1.png"
+import lavender_2 from "/assets/image/lavender-2.png"
+import lavender_3 from "/assets/image/lavender-3.png"
+import lavender_done from "/assets/image/lavender-done.png"
 import screenfull from "screenfull"
 import { ElMessageBox } from "element-plus"
 

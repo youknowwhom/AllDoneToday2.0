@@ -1,7 +1,7 @@
 <template>
     <div class="body" onselectstart="return false;">
         <div class="box">
-            <img src="../assets/image/logo.png" class="logo" />
+            <img src="/assets/image/logo.png" class="logo" />
             <input type="text" placeholder="用户名" class="input" v-model="LoginInfo.username" /><br />
             <input type="password" placeholder="密码" class="input" v-model="LoginInfo.passwordHash" /><br />
             <input type="submit" value="登录" class="login-button" @click="Login" />
@@ -72,7 +72,7 @@ export default {
     background-size: 100% 100%;
     left: 0px;
     top: 0px;
-    background-image: url(../assets/image/background.jpg);
+    background-image: url(/assets/image/background.jpg);
 }
 
 .box {
@@ -96,7 +96,7 @@ export default {
 }
 
 .input[type="text"] {
-    background: url(../assets/image/user.png) no-repeat 0.25% 47%;
+    background: url(/assets/image/user.png) no-repeat 0.25% 47%;
     background-size: 30px 30px;
     position: absolute;
     top: 35%;
@@ -119,14 +119,14 @@ export default {
 }
 
 .input[type="text"]:focus {
-    background: url(../assets/image/user-focus.png) no-repeat 0.25% 47%;
+    background: url(/assets/image/user-focus.png) no-repeat 0.25% 47%;
     background-size: 30px 30px;
     border-bottom: #7a7af9 solid;
     animation: mymove 2s 1 linear;
 }
 
 .input[type="password"] {
-    background: url(../assets/image/password.png) no-repeat 1% 47%;
+    background: url(/assets/image/password.png) no-repeat 1% 47%;
     background-size: 25px 25px;
     position: absolute;
     top: 45%;
@@ -145,7 +145,7 @@ export default {
 }
 
 .input[type="password"]:focus {
-    background: url(../assets/image/password-focus.png) no-repeat 1% 47%;
+    background: url(/assets/image/password-focus.png) no-repeat 1% 47%;
     background-size: 25px 25px;
     border-bottom: #2e2ed9 solid;
     animation: mymove 2s 1 linear;

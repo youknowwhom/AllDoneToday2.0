@@ -100,6 +100,6 @@ export default {
 
 
 <style scoped>
-@import "../assets/css/navbar.css";
+@import "/assets/css/navbar.css";
 </style>
   

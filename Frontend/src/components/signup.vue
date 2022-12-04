@@ -1,7 +1,7 @@
 <template>
     <div class="body" onselectstart="return false;">
         <div class="box">
-            <img src="../assets/image/logo.png" class="logo" />
+            <img src="/assets/image/logo.png" class="logo" />
             <input type="text" placeholder="用户名" class="input" v-model="UserName" /><br />
             <div v-if="!IsUsernameTrue" class="username-error">用户名重复</div>
             <div v-if="IsUsernameEmpty" class="username-error">用户名不能为空</div>
@@ -145,7 +145,7 @@ export default {
     background-size: 100% 100%;
     left: 0px;
     top: 0px;
-    background-image: url(../assets/image/background.jpg);
+    background-image: url(/assets/image/background.jpg);
     caret-color: transparent;
 }
 
@@ -169,7 +169,7 @@ export default {
 }
 
 .input[type="text"] {
-    background: url(../assets/image/user.png) no-repeat 0.5% 50%;
+    background: url(/assets/image/user.png) no-repeat 0.5% 50%;
     background-size: 30px 30px;
     position: absolute;
     top: 25%;
@@ -191,7 +191,7 @@ export default {
 }
 
 .input[type="text"]:focus {
-    background: url(../assets/image/user-focus.png) no-repeat 0.5% 50%;
+    background: url(/assets/image/user-focus.png) no-repeat 0.5% 50%;
     background-size: 30px 30px;
     border-bottom: #7a7af9 solid;
     animation: mymove 100ms 1 linear;
@@ -199,7 +199,7 @@ export default {
 }
 
 .input[type="email"] {
-    background: url(../assets/image/email.png) no-repeat 0.5% 50%;
+    background: url(/assets/image/email.png) no-repeat 0.5% 50%;
     background-size: 30px 30px;
     position: absolute;
     top: 37%;
@@ -217,7 +217,7 @@ export default {
 }
 
 .input[type="email"]:focus {
-    background: url(../assets/image/email-focus.png) no-repeat 0.5% 50%;
+    background: url(/assets/image/email-focus.png) no-repeat 0.5% 50%;
     background-size: 30px 30px;
     border-bottom: #7a7af9 solid;
     animation: mymove 100ms 1 linear;
@@ -235,7 +235,7 @@ export default {
 }
 
 .input[type="security-code"] {
-    background: url(../assets/image/security-code.png) no-repeat 1% 48%;
+    background: url(/assets/image/security-code.png) no-repeat 1% 48%;
     background-size: 25px 25px;
     position: absolute;
     top: 44%;
@@ -253,7 +253,7 @@ export default {
 }
 
 .input[type="security-code"]:focus {
-    background: url(../assets/image/security-code-focus.png) no-repeat 1% 48%;
+    background: url(/assets/image/security-code-focus.png) no-repeat 1% 48%;
     background-size: 25px 25px;
     border-bottom: #7a7af9 solid;
     animation: mymove 100ms 1 linear;
@@ -261,7 +261,7 @@ export default {
 }
 
 .input[type="password"] {
-    background: url(../assets/image/password.png) no-repeat 1% 45%;
+    background: url(/assets/image/password.png) no-repeat 1% 45%;
     background-size: 25px 25px;
     position: absolute;
     top: 56%;
@@ -279,7 +279,7 @@ export default {
 }
 
 .input[type="password"]:focus {
-    background: url(../assets/image/password-focus.png) no-repeat 1% 45%;
+    background: url(/assets/image/password-focus.png) no-repeat 1% 45%;
     background-size: 25px 25px;
     border-bottom: #7a7af9 solid;
     animation: mymove 100ms 1 linear;
@@ -287,7 +287,7 @@ export default {
 }
 
 .input-again {
-    background: url(../assets/image/password.png) no-repeat 1% 45%;
+    background: url(/assets/image/password.png) no-repeat 1% 45%;
     background-size: 25px 25px;
     position: absolute;
     top: 68%;
@@ -309,7 +309,7 @@ export default {
 }
 
 .input-again:focus {
-    background: url(../assets/image/password-focus.png) no-repeat 1% 45%;
+    background: url(/assets/image/password-focus.png) no-repeat 1% 45%;
     background-size: 25px 25px;
     border-bottom: #7a7af9 solid;
     animation: mymove 100ms 1 linear;
@@ -338,7 +338,7 @@ export default {
     position: absolute;
     top: 80%;
     left: 8%;
-    background: url(../assets/image/error.png) no-repeat 0% 53%;
+    background: url(/assets/image/error.png) no-repeat 0% 53%;
     padding-left: 20px;
     background-size: 16px 16px;
     background-position: left;
@@ -350,7 +350,7 @@ export default {
     position: absolute;
     top: 80%;
     left: 8%;
-    background: url(../assets/image/true.png) no-repeat 0% 53%;
+    background: url(/assets/image/true.png) no-repeat 0% 53%;
     padding-left: 20px;
     background-size: 16px 16px;
     background-position: left;
@@ -362,7 +362,7 @@ export default {
     position: absolute;
     top: 30%;
     left: 8%;
-    background: url(../assets/image/error.png) no-repeat 0% 53%;
+    background: url(/assets/image/error.png) no-repeat 0% 53%;
     padding-left: 20px;
     background-size: 16px 16px;
     background-position: left;
@@ -374,7 +374,7 @@ export default {
     position: absolute;
     top: 42%;
     left: 8%;
-    background: url(../assets/image/error.png) no-repeat 0% 53%;
+    background: url(/assets/image/error.png) no-repeat 0% 53%;
     padding-left: 20px;
     background-size: 16px 16px;
     background-position: left;
@@ -386,7 +386,7 @@ export default {
     position: absolute;
     top: 66%;
     left: 8%;
-    background: url(../assets/image/error.png) no-repeat 0% 53%;
+    background: url(/assets/image/error.png) no-repeat 0% 53%;
     padding-left: 20px;
     background-size: 16px 16px;
     background-position: left;
@@ -398,7 +398,7 @@ export default {
     position: absolute;
     top: 54.1%;
     left: 8%;
-    background: url(../assets/image/error.png) no-repeat 0% 53%;
+    background: url(/assets/image/error.png) no-repeat 0% 53%;
     padding-left: 20px;
     background-size: 16px 16px;
     background-position: left;

@@ -1,9 +1,9 @@
 <script>
 
-import todolist_demo1 from "../assets/image/todolist-demopic1.png"
-import todolist_demo2 from "../assets/image/todolist-demopic2.png"
-import concentration_demo1 from "../assets/image/concentration-demopic1.png"
-import concentration_demo2 from "../assets/image/concentration-demopic2.png"
+import todolist_demo1 from "/assets/image/todolist-demopic1.png"
+import todolist_demo2 from "/assets/image/todolist-demopic2.png"
+import concentration_demo1 from "/assets/image/concentration-demopic1.png"
+import concentration_demo2 from "/assets/image/concentration-demopic2.png"
 
 export default {
     name: 'Welcome',
@@ -63,7 +63,7 @@ export default {
                     <el-button @click="this.$router.push('/app')">进入今日毕 </el-button>
                 </el-container>
             </el-container>
-            <img src="../assets/image/homepage-demonstration.jpg" class="demon-pic" />
+            <img src="/assets/image/homepage-demonstration.jpg" class="demon-pic" />
         </el-container>
 
         <el-container class="function-div">

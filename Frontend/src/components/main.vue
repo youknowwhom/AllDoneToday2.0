@@ -31,7 +31,7 @@ const NavbarAuth = defineAsyncComponent(() => import('./navbarAuth.vue'))
 <template>
     <div class="mainframe-container">
         <el-header class="navbar">
-            <img @click="this.$router.push('/welcome')" src="../assets/image/logo.png" class="navbar-logo" />
+            <img @click="this.$router.push('/welcome')" src="/assets/image/logo.png" class="navbar-logo" />
             <button @click="this.$router.push('/app')" class="navbar-button">
                 应用
             </button>
@@ -69,7 +69,7 @@ const NavbarAuth = defineAsyncComponent(() => import('./navbarAuth.vue'))
 
 
 <style scoped>
-@import "../assets/css/navbar.css";
+@import "/assets/css/navbar.css";
 
 .mainframe-container {
     width: 100%;
