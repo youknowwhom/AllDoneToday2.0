@@ -129,11 +129,7 @@ const RemoveExpiredEmailVerifySession = async () => {
             logger.info(`${s.email} : ${s.code}, 发送于 ${s.createdAt}`)
         }
     }
-    await EmailVerifySession.destroy({
-        where: {
-            code: expired.map(s => s.code)
-        }
-    })
+    await EmailVerifySession.destroy({ where: { code: expired.map(s => s.code) } })
 }
 
 await RemoveExpiredEmailVerifySession()
@@ -211,10 +207,7 @@ app.post('/api/user/sendVerificationCode', async (req, res) => {
             text: `您的邮箱验证码为：\n${code}\n此验证码 ${Math.round(serverConfig.emailVerification.expire / 60)} 分钟内有效`
         })
 
-        await EmailVerifySession.create({
-            email: email,
-            code: code
-        })
+        await EmailVerifySession.create({ email: email, code: code })
 
         logger.info(`已经发送验证码 ${code} 给 ${email}`)
     } catch (err) {
@@ -289,10 +282,7 @@ app.post('/api/user/signup', async (req, res) => {
         return
     }
 
-    logger.info({
-        msg: '收到合法注册请求',
-        body: req.body,
-    })
+    logger.info({ msg: '收到合法注册请求', body: req.body, })
 
     let newUser = {
         username: username,
@@ -302,10 +292,7 @@ app.post('/api/user/signup', async (req, res) => {
 
     await User.create(newUser)
 
-    logger.info({
-        msg: '新增了用户',
-        user: newUser
-    })
+    logger.info({ msg: '新增了用户', user: newUser })
 
     res.status(200).send({
         msg: '注册成功'
@@ -380,25 +367,25 @@ app.post('/api/user/resetPassword', async (req, res) => {
 
     if (!username) {
         res.status(400).send({ msg: '未填写用户名' })
-        logger.info({ msg: '已拒绝注册请求', '原因': '未填写用户名' })
+        logger.info({ msg: '已拒绝重置密码请求', '原因': '未填写用户名' })
         return
     }
 
     if (!PasswordHash) {
         res.status(400).send({ msg: '未填写密码' })
-        logger.info({ msg: '已拒绝注册请求', '原因': '未填写密码' })
+        logger.info({ msg: '已拒绝重置密码请求', '原因': '未填写密码' })
         return
     }
 
     if (!EmailAddress) {
         res.status(400).send({ msg: '未填写电子邮箱地址' })
-        logger.info({ msg: '已拒绝注册请求', '原因': '未填写电子邮箱地址', '请求体': req.body })
+        logger.info({ msg: '已拒绝重置密码请求', '原因': '未填写电子邮箱地址', '请求体': req.body })
         return
     }
 
     if (!VerificationCode) {
         res.status(400).send({ msg: '验证码为空' })
-        logger.info({ msg: '已拒绝注册请求', '原因': '验证码为空', '请求体': req.body })
+        logger.info({ msg: '已拒绝重置密码请求', '原因': '验证码为空', '请求体': req.body })
         return
     }
 
@@ -406,13 +393,13 @@ app.post('/api/user/resetPassword', async (req, res) => {
 
     if (!targetUser) {
         res.status(400).send({ msg: '用户不存在' })
-        logger.info({ msg: '已拒绝注册请求', '原因': '用户不存在', '请求体': req.body })
+        logger.info({ msg: '已拒绝重置密码请求', '原因': '用户不存在', '请求体': req.body })
         return
     }
 
     if (targetUser.EmailAddress != EmailAddress) {
         res.status(400).send({ msg: '邮箱不正确' })
-        logger.info({ msg: '已拒绝注册请求', '原因': '邮箱不正确', '请求体': req.body })
+        logger.info({ msg: '已拒绝重置密码请求', '原因': '邮箱不正确', '请求体': req.body })
         return
     }
 
@@ -420,28 +407,21 @@ app.post('/api/user/resetPassword', async (req, res) => {
 
     if (!await EmailVerifySession.findOne({ where: { email: EmailAddress, code: VerificationCode } })) {
         res.status(400).send({ msg: '验证码错误或已失效' })
-        logger.info({ msg: '已拒绝注册请求', '原因': '验证码错误或已失效', '请求体': req.body })
+        logger.info({ msg: '已拒绝重置密码请求', '原因': '验证码错误或已失效', '请求体': req.body })
         return
     }
 
-    logger.info({
-        msg: '收到合法重置密码请求',
-        body: req.body,
-    })
+    logger.info({ msg: '收到合法重置密码请求', body: req.body, })
 
     try {
         await User.update({ PasswordHash: PasswordHash }, { where: { username: username } })
     } catch (err) {
-        res.status(400).send({
-            msg: '未知错误'
-        })
+        res.status(400).send({ msg: '未知错误' })
         logger.error({ msg: '重置密码失败', '用户名': username, '请求体': req.body })
         return
     }
 
-    res.status(200).send({
-        msg: '重置密码成功'
-    })
+    res.status(200).send({ msg: '重置密码成功' })
     logger.info(`用户 ${username} 重置密码成功`)
 })
 
