@@ -200,7 +200,7 @@ app.post('/api/user/sendVerificationCode', async (req, res) => {
         await verificationMailer.sendMail({
             from: {
                 name: '今日毕',
-                address: serverConfig.mailer.user,
+                address: serverConfig.emailVerification.mailer.auth.user,
             },
             to: email,
             subject: '今日毕 - 您的邮箱验证码',
