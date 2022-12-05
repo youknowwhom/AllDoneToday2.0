@@ -312,7 +312,7 @@ let DisplayFilters = [
                     if (!ev.time) return false
                     if (!CheckDateTime(ev.time.beginTime)) return false
                     let evDate = new Date(ev.time.beginTime.date), next7day = (new Date()).setDate((new Date()).getDate() + 7)
-                    return compareDate(new Date(), evDate) === -1 && compareDate(evDate, next7day) === -1
+                    return compareDate(new Date(), evDate) !== 1 && compareDate(evDate, next7day) === -1
                 }
             },
         ]

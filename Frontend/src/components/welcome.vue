@@ -220,6 +220,7 @@ export default {
     max-width: 1280px;
     display: flex-start;
     flex-direction: column;
+    margin-top: 100px;
 }
 
 .welcome-intro-headline {
@@ -270,7 +271,6 @@ export default {
 }
 
 .welcome-link {
-    width: 300px;
     margin-top: 30px;
 }
 </style>
