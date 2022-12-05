@@ -26,6 +26,7 @@
 **/*.sw?
 
 Backend/db/*.dev.db
+Backend/db/*.dev.db-journal
 
 Backend/log
 

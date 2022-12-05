@@ -1,0 +1,18 @@
+{
+    "emailVerification": {
+        "mailer": {
+            "host": "smtp.ethereal.email",
+            "port": 587,
+            "auth": {
+                "user": "bertha22@ethereal.email",
+                "pass": "YV8f35Q6EXnM7JVr15"
+            }
+        },
+        "cooldown": 60,
+        "expire": 600
+    },
+    "testUser": {
+        "username": "test",
+        "password": "test"
+    }
+}

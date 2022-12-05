@@ -6,10 +6,10 @@ import fs from 'fs/promises'
 await (async function() {
     try {
         await fs.access('log')
-        console.log('日志文件夹已经存在。')
+        console.log('日志文件夹已经存在')
     } catch (err) {
         await fs.mkdir('log')
-        console.log('日志文件夹不存在，已经新建。')
+        console.log('日志文件夹不存在，已经新建')
     }
 })()
 
@@ -20,18 +20,18 @@ import pino from 'pino'
 const pinoTransports = pino.transport({
     targets: [
         {
+            level: 'trace',
             target: 'pino/file',
             options: {
                 destination: 'log/tmp.log',
-                minimumLevel: 'debug',
-            }
+            },
         },
         {
+            level: 'debug',
             target: 'pino-pretty',
             options: {
                 destination: 1,
-                minimumLevel: 'debug',
-            }
+            },
         }
     ]
 })
