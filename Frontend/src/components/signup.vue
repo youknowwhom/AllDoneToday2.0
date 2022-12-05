@@ -50,6 +50,7 @@ export default {
                     grouping: false,
                     type: 'error',
                 })
+                return
             }
             if (!this.EmailAddress) {
                 ElMessage({
@@ -57,6 +58,7 @@ export default {
                     grouping: false,
                     type: 'error',
                 })
+                return
             }
             if (!this.VerificationCode) {
                 ElMessage({
@@ -64,6 +66,7 @@ export default {
                     grouping: false,
                     type: 'error',
                 })
+                return
             }
             if (!this.Password) {
                 ElMessage({
@@ -71,6 +74,7 @@ export default {
                     grouping: false,
                     type: 'error',
                 })
+                return
             }
             if (!this.PasswordAgain) {
                 ElMessage({
@@ -78,6 +82,7 @@ export default {
                     grouping: false,
                     type: 'error',
                 })
+                return
             }
             if (this.Password !== this.PasswordAgain) {
                 ElMessage({
