@@ -17,7 +17,7 @@
     "pino-debug": "^2.0.0",
     "pino-http": "^8.3.0",
     "pino-pretty": "^9.1.1",
-    "sequelize": "^6.27.0",
+    "sequelize": "^6.28.0",
     "sqlite3": "^5.1.4"
   },
   "devDependencies": {
