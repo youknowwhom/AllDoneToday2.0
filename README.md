@@ -10,7 +10,7 @@
 
 ### 前提条件
 
-你需要先安装 [Node.js](https://nodejs.dev/)，[npm](https://github.com/npm/cli)，以及[sqlite3](https://www.sqlite.org/index.html) 。
+你需要先安装 [Node.js](https://nodejs.dev/) ，[npm](https://github.com/npm/cli) ，以及 [sqlite3](https://www.sqlite.org/index.html) 。
 
 ### 克隆项目
 
