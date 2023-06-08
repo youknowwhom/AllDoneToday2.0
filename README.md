@@ -1,12 +1,12 @@
-# ToDoList
+# AllDoneToday
 
-一个清单应用。
+日程清单 课程表
 
-同济大学 2022秋季 计算机科学导论 小组作业
+同济大学 2023春季 Web技术 小组作业
 
-## 本地预览
+## 版本历史
 
-> 原本供小组成员查看的本地预览教程在[这里](doc/development/README.md)
+> 今日毕1.0版本在[这里](https://github.com/VVsxmja/ToDoList.git)
 
 ### 前提条件
 
@@ -15,7 +15,7 @@
 ### 克隆项目
 
 ```sh
-git clone https://github.com/VVsxmja/ToDoList.git
+git clone https://github.com/youknowwhom/AllDoneToday2.0
 ```
 
 ### 配置并启动前端
