@@ -1,5 +1,5 @@
 <template>
-    <div style="display: block">
+    <div class="card-main">
       <el-card style="margin-bottom: 15px">
         <template #header>
           <div class="card-header">
@@ -440,6 +440,10 @@
   </script>
   
   <style>
+  .card-main{
+    display: block;
+  }
+
   .box-card {
     width: 1200px;
   }

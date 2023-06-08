@@ -60,10 +60,10 @@ export default {
                 @click="this.$router.push('ToDoList')" />
             <img v-else src="/assets/image/app-leftbar-todolist-focus.png" class="leftbar-icon" />
             <br />
-            <!-- <img v-if="this.$route.fullPath !== '/app/TimeTable'" src="/assets/image/app-leftbar-timetable.png"
-                        class="leftbar-icon" @click="this.$router.push('TimeTable')" />
-                    <img v-else src="/assets/image/app-leftbar-timetable-focus.png" class="leftbar-icon" />
-                    <br /> -->
+            <img v-if="this.$route.fullPath !== '/app/Curriculum'" src="/assets/image/app-leftbar-timetable.png" class="leftbar-icon"
+                @click="this.$router.push('Curriculum')" />
+            <img v-else src="/assets/image/app-leftbar-timetable-focus.png" class="leftbar-icon" />
+            <br />
             <img v-if="this.$route.fullPath !== '/app/Concentration'" src="/assets/image/app-leftbar-concentrate.png" class="leftbar-icon"
                 @click="this.$router.push('Concentration')" />
             <img v-else src="/assets/image/app-leftbar-concentrate-focus.png" class="leftbar-icon" />
@@ -81,6 +81,7 @@ export default {
     padding-right: 13px;
     background: #f5f5f5;
     font-size: 20px;
+    user-select: none;
 }
 
 .app-content {
