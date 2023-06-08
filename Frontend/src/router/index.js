@@ -19,6 +19,10 @@ const routes = [
                     {
                         path: 'Concentration',
                         component: () => import('../components/concentration.vue'),
+                    },
+                    {
+                        path: 'Curriculum',
+                        component: () =>import('../components/curriculum.vue')
                     }
                 ],
                 redirect: '/app/ToDoList'
