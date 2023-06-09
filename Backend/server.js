@@ -33,29 +33,6 @@ app.use(cors())
  */
 import logger from './logger.js'
 
-// import pinoHttp from 'pino-http'
-
-// app.use(pinoHttp({
-//     logger: logger,
-//     useLevel: 'info',
-//     serializers: {
-//         req(req) {
-//             if (req.url.startsWith('/api')) {
-//                 return {
-//                     API: req.url,
-//                     body: req.raw.body
-//                 }
-//             } else {
-//                 return req
-//             }
-//         },
-//         res(res) {
-//             return {
-//                 statusCode: res.statusCode
-//             }
-//         }
-//     },
-// }))
 
 import fs from 'fs/promises'
 let serverConfig
@@ -79,11 +56,13 @@ logger.info({
 import { UserdataDB, User } from './db/userdata.js'
 import { EventDB, Event } from './db/event.js'
 import { EmailVerifySessionDB, EmailVerifySession } from './db/email.js'
+import { CurriculumDB, Course } from './db/curriculum.js'
 import { Op } from 'sequelize'
 try {
     await UserdataDB.authenticate()
     await EventDB.authenticate()
     await EmailVerifySessionDB.authenticate()
+    await CurriculumDB.authenticate()
     logger.info('成功连接到数据库')
 } catch (error) {
     logger.error('无法连接到数据库: ', error)
@@ -749,6 +728,117 @@ app.post('/api/event/delete', async (req, res) => {
 
     res.sendStatus(200)
 })
+
+
+/**
+ *  添加新课程
+ */
+app.post('/api/curriculum/create', async (req, res) => {
+    if (!req.body.token) {
+        res.status(400).send({ msg: 'invalid_token', detail: '缺少 token' })
+        logger.info({ msg: '已拒绝添加课程请求', '原因': '缺少 token' })
+        return
+    }
+
+    let userName, course
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+        course = req.body.course
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({ msg: 'invalid_token', detail: 'token 过期' })
+            logger.info({ msg: '已拒绝添加课程请求', '原因': 'token 过期' })
+        } else {
+            logger.info(err)
+            res.status(400).send({ msg: 'invalid_token', detail: '其他错误' })
+            logger.info({ msg: '已拒绝添加课程请求', '原因': '其他错误' })
+        }
+        return
+    }
+
+    if (!await User.findOne({ where: { username: userName } })) {
+        res.status(400).send({ msg: 'invalid_token', detail: '用户名错误' })
+        logger.info({ msg: '已拒绝添加课程请求', '原因': '用户名错误' })
+        return
+    }
+
+    course.username = userName
+    try{
+        course = await Course.create(course)
+    }catch(err){
+        if (err instanceof jwt.TokenExpiredError) {
+            logger.info(err)
+            res.status(400).send({ msg: 'missing_field', detail: '缺少应有字段' })
+            logger.info({ msg: '已拒绝添加课程请求', '原因': '用户名错误' })
+        } else {
+            logger.info(err)
+            res.status(400).send({ msg: 'unknown_error', detail: '其他错误' })
+            logger.info({ msg: '已拒绝添加课程请求', '原因': '其他错误' })
+        }
+    }
+
+    logger.info(`用户 ${userName} 创建了课程 ${course.id}`)
+
+    res.sendStatus(200)
+})
+
+
+
+/**
+ *  查询某周所有的课程
+ */
+app.post('/api/curriculum/getweekcourses', async (req, res) => {
+    if (!req.body.token) {
+        res.status(400).send({ msg: 'invalid_token', detail: '缺少 token' })
+        logger.info({ msg: '已拒绝查询课程请求', '原因': '缺少 token' })
+        return
+    }
+
+    let userName, weekId
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+        weekId = req.body.weekId
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({ msg: 'invalid_token', detail: 'token 过期' })
+            logger.info({ msg: '已拒绝查询课程请求', '原因': 'token 过期' })
+        } else {
+            logger.info(err)
+            res.status(400).send({ msg: 'invalid_token', detail: '其他错误' })
+            logger.info({ msg: '已拒绝查询课程请求', '原因': '其他错误' })
+        }
+        return
+    }
+
+    if (!await User.findOne({ where: { username: userName } })) {
+        res.status(400).send({ msg: 'invalid_token', detail: '用户名错误' })
+        logger.info({ msg: '已拒绝查询课程请求', '原因': '用户名错误' })
+        return
+    }
+
+    let courseList
+    try{
+        courseList = await Course.findAll({ where : { username: userName } })
+    }catch(err){
+        logger.info(err)
+        res.status(400).send({ msg: 'invalid_token', detail: '其他错误' })
+        logger.info({ msg: '已拒绝查询课程请求', '原因': '其他错误' })
+    }
+
+    if(!courseList){
+        res.status(400).send({ msg: 'missing_field', detail: '缺少course字段' })
+        logger.info({ msg: '已拒绝查询课程请求', '原因': '缺少course字段' })
+    }
+    
+    courseList = courseList.filter(item => {
+        return weekId in item.weeks
+    })
+
+    logger.info(`用户 ${userName} 查询了第 ${weekId} 周的课程`)
+
+    res.status(200).send({ 'courses' : courseList })
+})
+
 
 /**
  * 运行服务器

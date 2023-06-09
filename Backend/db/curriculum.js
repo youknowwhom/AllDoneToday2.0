@@ -25,60 +25,92 @@ const db = new sequelize.Sequelize('curriculum.dev', null, null, {
 class Course extends sequelize.Model { }
 Course.init({
     /**
-     * 用户名
-     *   - TODO: 增加长度限制
+     * 存储在数据库中的课程ID
+     */
+    id: {
+        type: sequelize.DataTypes.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true
+    },    
+    /**
+     * 用户名（该课程是哪个用户存储的）
      */
     username: {
         type: sequelize.DataTypes.STRING,
         allowNull: false,
-        unique: true
     },
     /**
-     * 密码 hash 值
+     * 课程号
      */
-    passwordHash: {
+    courseId: {
         type: sequelize.DataTypes.STRING,
         allowNull: false
     },
     /**
-     * 邮箱地址
+     * 课程名称
      */
-    EmailAddress: {
+    courseName: {
         type: sequelize.DataTypes.STRING,
         allowNull: false
     },
     /**
-     * 性别
+     * 教师
      */
-    UserGender:{
+    teacher:{
+        type:sequelize.DataTypes.STRING,
+        allowNull: false
+    },
+    /**
+     * 学分
+     */
+    score:{
+        type:sequelize.DataTypes.STRING,
+        allowNull: false
+    },
+    /**
+     * 星期几
+     */
+    weekday:{
+        type: sequelize.DataTypes.STRING,
+        allowNull: false
+    },
+    /**
+     * 上课地点
+     */
+    place:{
         type:sequelize.DataTypes.STRING,
         allowNull: true
     },
     /**
-     *  个性签名
+     * 开始节次
      */
-    Signature:{
-        type:sequelize.DataTypes.STRING,
-        allowNull:true
+    startTime:{
+        type:sequelize.DataTypes.INTEGER,
+        allowNull: false
     },
     /**
-     * 用户生日
+     * 结束节次
      */
-    BirthDay:{
-        type: sequelize.DataTypes.TEXT,
+    endTime:{
+        type:sequelize.DataTypes.INTEGER,
+        allowNull: false
+    },
+    /**
+     * 上课周次
+     */
+    weeks:{
+        type: sequelize.DataTypes.STRING,
         get: function () {
-            return new Date(this.getDataValue('BirthDay'))
+            var ret = this.getDataValue('weeks')
+            ret = ret.split(',')
+            ret = ret.map(Number)
+            return ret
         },
         set: function (value) {
-            return this.setDataValue('BirthDay', new Date(value).toDateString())
+            console.log(value)
+            return this.setDataValue('weeks', value.toString())
         },
-    },
-    /**
-     * 头像url
-     */
-    Photourl:{
-        type:sequelize.DataTypes.STRING,
-        allowNull:true
     }
 }, {
     sequelize: db,
@@ -91,9 +123,9 @@ Course.init({
  * 将模型与数据库同步
  * 如有必要，会对数据库作更改
  */
-await User.sync({
+await Course.sync({
     alter: true,
     match: /_dev$/
 })
 
-export { db as UserdataDB, User }
+export { db as CurriculumDB, Course }
