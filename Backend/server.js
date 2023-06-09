@@ -33,6 +33,29 @@ app.use(cors())
  */
 import logger from './logger.js'
 
+// import pinoHttp from 'pino-http'
+
+// app.use(pinoHttp({
+//     logger: logger,
+//     useLevel: 'info',
+//     serializers: {
+//         req(req) {
+//             if (req.url.startsWith('/api')) {
+//                 return {
+//                     API: req.url,
+//                     body: req.raw.body
+//                 }
+//             } else {
+//                 return req
+//             }
+//         },
+//         res(res) {
+//             return {
+//                 statusCode: res.statusCode
+//             }
+//         }
+//     },
+// }))
 
 import fs from 'fs/promises'
 let serverConfig
@@ -55,8 +78,8 @@ logger.info({
  */
 import { UserdataDB, User } from './db/userdata.js'
 import { EventDB, Event } from './db/event.js'
-import { EmailVerifySessionDB, EmailVerifySession } from './db/email.js'
 import { CurriculumDB, Course } from './db/curriculum.js'
+import { EmailVerifySessionDB, EmailVerifySession } from './db/email.js'
 import { Op } from 'sequelize'
 try {
     await UserdataDB.authenticate()
@@ -729,7 +752,6 @@ app.post('/api/event/delete', async (req, res) => {
     res.sendStatus(200)
 })
 
-
 /**
  *  添加新课程
  */
@@ -838,6 +860,7 @@ app.post('/api/curriculum/getweekcourses', async (req, res) => {
 
     res.status(200).send({ 'courses' : courseList })
 })
+
 
 
 /**
