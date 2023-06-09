@@ -31,3 +31,5 @@ Backend/db/*.dev.db-journal
 Backend/log
 
 Backend/serverConfig.json
+
+Backend/uploads

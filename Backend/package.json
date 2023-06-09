@@ -17,6 +17,7 @@
     "pino-debug": "^2.0.0",
     "pino-http": "^8.3.3",
     "pino-pretty": "^9.3.0",
+    "python-shell": "^5.0.0",
     "sequelize": "^6.28.0",
     "sqlite3": "^5.1.4"
   },

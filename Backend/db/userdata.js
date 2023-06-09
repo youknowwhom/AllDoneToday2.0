@@ -93,6 +93,7 @@ User.init({
  */
 await User.sync({
     alter: true,
+    force: true,
     match: /_dev$/
 })
 
