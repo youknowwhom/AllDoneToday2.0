@@ -108,7 +108,6 @@ Course.init({
             return ret
         },
         set: function (value) {
-            console.log(value)
             return this.setDataValue('weeks', value.toString())
         },
     }
@@ -125,6 +124,7 @@ Course.init({
  */
 await Course.sync({
     alter: true,
+    force: true,
     match: /_dev$/
 })
 

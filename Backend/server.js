@@ -4,6 +4,11 @@ let jwtKey = 'ToDoList_Backend_JSONWebToken_Key_JustForTesting_20221121'
 const port = 8000
 const app = express()
 
+import multer from 'multer'
+const upload = multer({ dest: 'uploads/' })
+
+import { PythonShell } from 'python-shell'
+
 import crypto from 'crypto'
 
 async function sha256(message) {
@@ -757,9 +762,9 @@ app.post('/api/curriculum/create', async (req, res) => {
     }
 
     course.username = userName
-    try{
+    try {
         course = await Course.create(course)
-    }catch(err){
+    } catch (err) {
         if (err instanceof jwt.TokenExpiredError) {
             logger.info(err)
             res.status(400).send({ msg: 'missing_field', detail: '缺少应有字段' })
@@ -803,7 +808,7 @@ app.post('/api/curriculum/delete', async (req, res) => {
         return
     }
 
-    if(!id){
+    if (!id) {
         res.status(400).send({ msg: 'missing_filed', detail: '缺少id字段' })
         logger.info({ msg: '已拒绝删除课程请求', '原因': '缺少id字段' })
         return
@@ -820,7 +825,7 @@ app.post('/api/curriculum/delete', async (req, res) => {
         logger.info({ msg: '已拒绝删除课程请求', '原因': '课程id错误' })
         return
     }
-    
+
     Course.destroy({ where: { username: userName, id: id } })
 
     logger.info(`用户 ${userName} 删除了课程 ${id}`)
@@ -862,29 +867,84 @@ app.post('/api/curriculum/getweekcourses', async (req, res) => {
     }
 
     let courseList
-    try{
-        courseList = await Course.findAll({ where : { username: userName } })
-    }catch(err){
+    try {
+        courseList = await Course.findAll({ where: { username: userName } })
+    } catch (err) {
         logger.info(err)
         res.status(400).send({ msg: 'invalid_token', detail: '其他错误' })
         logger.info({ msg: '已拒绝查询课程请求', '原因': '其他错误' })
     }
 
-    if(!courseList){
+    if (!courseList) {
         res.status(400).send({ msg: 'missing_field', detail: '缺少course字段' })
         logger.info({ msg: '已拒绝查询课程请求', '原因': '缺少course字段' })
     }
-    
-    
+
+
     courseList = courseList.filter(item => {
         return item.weeks.includes(weekId)
     })
 
     logger.info(`用户 ${userName} 查询了第 ${weekId} 周的课程`)
 
-    res.status(200).send({ 'courses' : courseList })
+    res.status(200).send({ 'courses': courseList })
 })
 
+
+
+/**
+ *  用户上传课程表
+ */
+app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res) => {
+    if (!req.body.token) {
+        res.status(400).send({ msg: 'invalid_token', detail: '缺少 token' })
+        logger.info({ msg: '已拒绝上传课表请求', '原因': '缺少 token' })
+        return
+    }
+
+    let userName
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({ msg: 'invalid_token', detail: 'token 过期' })
+            logger.info({ msg: '已拒绝上传课表请求', '原因': 'token 过期' })
+        } else {
+            logger.info(err)
+            res.status(400).send({ msg: 'invalid_token', detail: '其他错误' })
+            logger.info({ msg: '已拒绝上传课表请求', '原因': '其他错误' })
+        }
+        return
+    }
+
+    let fileURL = './uploads/' + req.file.filename
+  
+    let pyshell = new PythonShell('parseCurriculum.py')
+
+    // 向python发送文件url
+    pyshell.send(fileURL)
+    
+    pyshell.on('message', async function (message) {
+        let courses = JSON.parse(message).courses
+        
+        logger.info(`用户 ${userName} 上传的课表文件解析出 ${courses.length} 节课程`)
+        for (let course of courses){
+            course.username = userName
+            course = await Course.create(course)
+            logger.info(`用户 ${userName} 通过上传课表文件创建了课程 ${course.id}`)
+        }
+    })
+    
+    pyshell.end(async function (err,code,signal) {
+        if (err) throw err
+        logger.info(`文件 ${ req.file.filename } 已经解析为json格式，python子进程退出`)
+        logger.info({ 'code': code, 'signal':signal })
+        await fs.unlink(fileURL)
+        logger.info(`文件 ${ req.file.filename } 已被删除`)
+    })
+
+    res.sendStatus(200)
+})
 
 
 /**
