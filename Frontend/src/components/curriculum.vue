@@ -174,6 +174,8 @@
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+                  {{ scope.row.row }}
+                  {{ scope.column.property }}
                 </div>
               </template>
               <template #reference>
@@ -210,6 +212,8 @@
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+
+                  {{ scope.column.property }}
                 </div>
               </template>
               <template #reference>
@@ -297,7 +301,14 @@
       :offset="40"
       style="float: right; margin-right: 15px"
     >
-      <el-upload action="" accept=".pdf" :on-success="handleSuccess">
+      <el-upload
+        id="fileUpload"
+        name="curriculum"
+        action="/api/curriculum/upload"
+        :data="myHeaders"
+        accept=".pdf"
+        :on-success="handleSuccess"
+      >
         <el-popover trigger="hover" placement="left" content="上传课表文件">
           <template #reference>
             <el-button type="primary" circle size="large"
@@ -497,6 +508,7 @@ export default {
       courseData: [],
       isDialogShow: false,
       weekQuery: null,
+      myHeaders: null,
       modalContent: {
         teacher: "", //教师
         courseName: "", //课程名称
@@ -515,6 +527,8 @@ export default {
   },
   created() {
     //先初始化
+    this.myHeaders = { token: localStorage.getItem("token") };
+    console.log(this.myHeaders.token);
     for (var i = 0; i < 12; i++) {
       this.tableData.push({
         id: "第" + (i + 1) + "节",
@@ -538,37 +552,60 @@ export default {
         sun: null,
       });
     }
+    // this.courseData[6]['thu'] = {
+    //     teacher: "1", //教师
+    //     courseName: "1", //课程名称
+    //     courseId: "1", //课号
+    //     startWeek: 1, //开始周次
+    //     endWeek: 17, //结束周次
+    //     weekType: '全部', //单双周
+    //     weeks: [], //上课的周
+    //     place: "1", //地点
+    //     startTime: 7, //开始节次
+    //     endTime:8, //结束节次
+    //     weekday: 'thu', //周几
+    //     score: "1", //学分
+    // }
+    // for (var i = 0; i < 12; i++) {
+    //     for (var j = 0; j < 7; j++) {
+    //       this.tableData[i][week[j]] = this.showInfo(
+    //         this.courseData[i][week[j]]
+    //       );
+    //     }
+    //   }
     this.doQuery();
   },
   mounted() {
-    console.log(`the component is now mounted.`);
+    // const fileUpload = this.$refs['fileUpload']
+    // fileUpload.addEventListener('change',this.handleFileChange)
+    // console.log(`the component is now mounted.`);
   },
   methods: {
     async doQuery() {
       //向后端索要信息，每次dom更新都调用
       for (var i = 0; i < 12; i++) {
-      this.tableData[i] = {
-        id: "第" + (i + 1) + "节",
-        row: i,
-        mon: null,
-        tue: null,
-        wed: null,
-        thu: null,
-        fri: null,
-        sat: null,
-        sun: null,
-      };
-      this.courseData[i] = {
-        id: "第" + (i + 1) + "节",
-        mon: null,
-        tue: null,
-        wed: null,
-        thu: null,
-        fri: null,
-        sat: null,
-        sun: null,
-      };
-    }
+        this.tableData[i] = {
+          id: "第" + (i + 1) + "节",
+          row: i,
+          mon: null,
+          tue: null,
+          wed: null,
+          thu: null,
+          fri: null,
+          sat: null,
+          sun: null,
+        };
+        this.courseData[i] = {
+          id: "第" + (i + 1) + "节",
+          mon: null,
+          tue: null,
+          wed: null,
+          thu: null,
+          fri: null,
+          sat: null,
+          sun: null,
+        };
+      }
       if (!this.weekQuery) {
         var today = new Date();
         var startDate = Date.parse("2023-02-20");
@@ -593,11 +630,16 @@ export default {
       console.log(response.data);
       for (var i = 0; i < response.data.courses.length; i++) {
         var temp = response.data.courses[i];
-        console.log(temp.startTime);
-        this.courseData[temp.startTime-1][temp.weekday] = temp;
-        this.courseData[temp.startTime-1][temp.weekday].startWeek = temp.weeks[0];
-        this.courseData[temp.startTime-1][temp.weekday].endWeek =
+        // console.log(temp.startTime,temp.endTime,temp.weekday,temp.teacher);
+        this.courseData[temp.startTime - 1][temp.weekday] = temp;
+        this.courseData[temp.startTime - 1][temp.weekday].startWeek =
+          temp.weeks[0];
+        this.courseData[temp.startTime - 1][temp.weekday].endWeek =
           temp.weeks[temp.weeks.length - 1];
+        console.log(
+          this.courseData[temp.startTime - 1][temp.weekday],
+          this.courseData[temp.startTime - 1][temp.weekday].weekday
+        );
       }
       for (var i = 0; i < 12; i++) {
         for (var j = 0; j < 7; j++) {
@@ -619,6 +661,7 @@ export default {
       return s;
     },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      // console.log(row,column)
       if (
         columnIndex !== 0 &&
         this.courseData[rowIndex][week[columnIndex - 1]]
@@ -635,14 +678,39 @@ export default {
             colspan: 1,
           };
         }
+      } else if (columnIndex !== 0) {
+        for (var i = 0; i < rowIndex; i++) {
+          if (this.courseData[i][week[columnIndex - 1]]) {
+            if (
+              this.courseData[i][week[columnIndex - 1]].endTime - 1 >=
+              rowIndex
+            ) {
+              return {
+                rowspan: 0, //清除就是这俩属性设置为0
+                colspan: 0, //清除就是这俩属性设置为0
+              };
+            }
+          }
+        }
       }
     },
     cellStyle({ row, column, rowIndex, columnIndex }) {
+      // console.log(this.tableData[rowIndex][week[columnIndex - 1]])
+      // console.log(week[columnIndex - 1],column.property)
       if (
         columnIndex !== 0 &&
         this.courseData[rowIndex][week[columnIndex - 1]]
       ) {
-        console.log(this.courseData[rowIndex][week[columnIndex - 1]].startTime,rowIndex)
+        console.log(
+          week[columnIndex - 1],
+          column.property,
+          this.courseData[rowIndex][week[columnIndex - 1]].teacher
+        );
+        // console.log(
+        //   this.tableData[rowIndex][week[columnIndex - 1]],
+        //   rowIndex,
+        //   columnIndex
+        // );
         if (
           rowIndex ===
           this.courseData[rowIndex][week[columnIndex - 1]].startTime - 1
@@ -657,6 +725,22 @@ export default {
         }
       }
       return { textAlign: "center" };
+    },
+    clearModal() {
+      this.modalContent = {
+        teacher: "", //教师
+        courseName: "", //课程名称
+        courseId: "", //课号
+        startWeek: null, //开始周次
+        endWeek: null, //结束周次
+        weekType: null, //单双周
+        weeks: [], //上课的周
+        place: "", //地点
+        startTime: null, //开始节次
+        endTime: null, //结束节次
+        weekday: null, //周几
+        score: "", //学分
+      };
     },
     async confirm() {
       this.$refs.form.validate(async (valid) => {
@@ -686,7 +770,6 @@ export default {
               token: localStorage.getItem("token"),
               course: this.modalContent,
             });
-           
           } catch (err) {
             console.log(err);
             this.$message({
@@ -697,11 +780,12 @@ export default {
             return;
           }
           console.log(response);
+          this.clearModal();
           this.$message({
             message: "上传成功!",
             type: "success",
           });
-          this.isDialogShow = false
+          this.isDialogShow = false;
         } else {
           this.$message({
             message: "请填写必要信息",
@@ -714,20 +798,7 @@ export default {
     },
     cancel() {
       this.isDialogShow = false;
-      this.modalContent = {
-        teacher: "", //教师
-        courseName: "", //课程名称
-        courseId: "", //课号
-        startWeek: null, //开始周次
-        endWeek: null, //结束周次
-        weekType: null, //单双周
-        weeks: [], //上课的周
-        place: "", //地点
-        startTime: null, //开始节次
-        endTime: null, //结束节次
-        weekday: null, //周几
-        score: "", //学分
-      };
+      this.clearModal();
     },
     subWeek() {
       if (this.weekQuery >= 2) this.weekQuery -= 1;
@@ -738,8 +809,10 @@ export default {
       this.doQuery();
     },
     deleteCourse(row, column) {
+      console.log(this.courseData[row.row][column.property]);
+      // console.log(this.courseData[row.row][column.property].startTime,this.courseData[row.row][column.property].endTime,this.courseData[row.row][column.property].weekday)
       if (this.courseData[row.row][column.property]) {
-        var response
+        var response;
         ElMessageBox.confirm("删除后不可恢复，是否继续？", "提示", {
           type: "warning",
           icon: markRaw(Delete),
@@ -749,7 +822,6 @@ export default {
               token: localStorage.getItem("token"),
               id: this.courseData[row.row][column.property].id,
             });
-           
           } catch (err) {
             console.log(err);
             this.$message({
@@ -763,7 +835,7 @@ export default {
             type: "success",
             message: "删除成功!",
           });
-          this.doQuery()
+          this.doQuery();
         });
       }
 
