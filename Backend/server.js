@@ -896,6 +896,7 @@ app.post('/api/curriculum/getweekcourses', async (req, res) => {
  *  用户上传课程表
  */
 app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res) => {
+    console.log(req.body)
     if (!req.body.token) {
         res.status(400).send({ msg: 'invalid_token', detail: '缺少 token' })
         logger.info({ msg: '已拒绝上传课表请求', '原因': '缺少 token' })
@@ -918,32 +919,84 @@ app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res)
     }
 
     let fileURL = './uploads/' + req.file.filename
-  
+
     let pyshell = new PythonShell('parseCurriculum.py')
 
     // 向python发送文件url
     pyshell.send(fileURL)
-    
-    pyshell.on('message', async function (message) {
-        let courses = JSON.parse(message).courses
-        
-        logger.info(`用户 ${userName} 上传的课表文件解析出 ${courses.length} 节课程`)
-        for (let course of courses){
-            course.username = userName
-            course = await Course.create(course)
-            logger.info(`用户 ${userName} 通过上传课表文件创建了课程 ${course.id}`)
-        }
-    })
-    
-    pyshell.end(async function (err,code,signal) {
-        if (err) throw err
-        logger.info(`文件 ${ req.file.filename } 已经解析为json格式，python子进程退出`)
-        logger.info({ 'code': code, 'signal':signal })
-        await fs.unlink(fileURL)
-        logger.info(`文件 ${ req.file.filename } 已被删除`)
-    })
 
-    res.sendStatus(200)
+    // pyshell.on('message', async function (message) {
+    //     let courses = JSON.parse(message).courses
+
+    //     logger.info(`用户 ${userName} 上传的课表文件解析出 ${courses.length} 节课程`)
+    //     for (let course of courses){
+    //         course.username = userName
+    //         course = await Course.create(course)
+    //         logger.info(`用户 ${userName} 通过上传课表文件创建了课程 ${course.id}`)
+    //     }
+    // })
+
+    // pyshell.end(async function (err,code,signal) {
+    //     if (err) throw err
+    //     logger.info(`文件 ${ req.file.filename } 已经解析为json格式，python子进程退出`)
+    //     logger.info({ 'code': code, 'signal':signal })
+    //     await fs.unlink(fileURL)
+    //     logger.info(`文件 ${ req.file.filename } 已被删除`)
+    // })
+
+    // res.sendStatus(200)
+    async function executePyshell() {
+        return new Promise((resolve, reject) => {
+            pyshell.on('message', function (message) {
+                let courses = JSON.parse(message).courses
+                logger.info(`用户 ${userName} 上传的课表文件解析出 ${courses.length} 节课程`)
+
+                Promise.all(courses.map(async (course) => {
+                    course.username = userName
+                    const createdCourse = await Course.create(course)
+                    logger.info(`用户 ${userName} 通过上传课表文件创建了课程 ${createdCourse.id}`)
+                }))
+                    .then(() => {
+                        resolve() // 解析完成后解决 Promise
+                    })
+                    .catch((error) => {
+                        reject(error) // 如果创建课程时出现错误，拒绝 Promise
+                    })
+            })
+
+            pyshell.end(async function (err, code, signal) {
+                if (err) {
+                    reject(err) // 如果 pyshell.end 出现错误，拒绝 Promise
+                } else {
+                    logger.info(`文件 ${req.file.filename} 已经解析为 json 格式，python 子进程退出`)
+                    logger.info({ 'code': code, 'signal': signal })
+
+                    try {
+                        await fs.unlink(fileURL)
+                        logger.info(`文件 ${req.file.filename} 已被删除`)
+                        // resolve() // pyshell.end 完成后解决 Promise
+                    } catch (error) {
+                        reject(error) // 如果 fs.unlink 出现错误，拒绝 Promise
+                    }
+                }
+            })
+        })
+    }
+
+    // 使用方法：
+    executePyshell()
+        .then(() => {
+            res.sendStatus(200) // Promise 解决后返回状态码 200
+        })
+        .catch((error) => {
+            // 处理执行过程中出现的错误
+            console.error(error)
+            res.sendStatus(500) // 如果出现错误，返回状态码 500
+        })
+
+
+
+
 })
 
 
