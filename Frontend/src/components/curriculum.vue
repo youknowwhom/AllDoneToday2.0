@@ -538,24 +538,6 @@ export default {
         sun: null,
       });
     }
-    //在这里添加对后端的数据进行解析的函数
-    // this.courseData[1].tue = {
-    //   id: 1,
-    //   teacher: "魏巍",
-    //   courseName: "体育(4)",
-    //   courseId: "32000407",
-    //   startWeek: 1,
-    //   endWeek: 17,
-    //   place: "体育中心健身房",
-    //   startTime: 2,
-    //   endTime: 3,
-    //   score: "1.0",
-    // };
-    // for (var i = 0; i < 12; i++) {
-    //   for (var j = 0; j < 7; j++) {
-    //     this.tableData[i][week[j]] = this.showInfo(this.courseData[i][week[j]]);
-    //   }
-    // }
     this.doQuery();
   },
   mounted() {
