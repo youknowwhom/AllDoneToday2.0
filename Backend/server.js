@@ -29,30 +29,6 @@ app.use(cors())
  */
 import logger from './logger.js'
 
-// import pinoHttp from 'pino-http'
-
-// app.use(pinoHttp({
-//     logger: logger,
-//     useLevel: 'info',
-//     serializers: {
-//         req(req) {
-//             if (req.url.startsWith('/api')) {
-//                 return {
-//                     API: req.url,
-//                     body: req.raw.body
-//                 }
-//             } else {
-//                 return req
-//             }
-//         },
-//         res(res) {
-//             return {
-//                 statusCode: res.statusCode
-//             }
-//         }
-//     },
-// }))
-
 import fs from 'fs/promises'
 let serverConfig
 try {
@@ -800,6 +776,57 @@ app.post('/api/curriculum/create', async (req, res) => {
     res.sendStatus(200)
 })
 
+
+/**
+ *  删除已有课程
+ */
+app.post('/api/curriculum/delete', async (req, res) => {
+    if (!req.body.token) {
+        res.status(400).send({ msg: 'invalid_token', detail: '缺少 token' })
+        logger.info({ msg: '已拒绝删除课程请求', '原因': '缺少 token' })
+        return
+    }
+
+    let userName, id
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+        id = req.body.id
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({ msg: 'invalid_token', detail: 'token 过期' })
+            logger.info({ msg: '已拒绝删除课程请求', '原因': 'token 过期' })
+        } else {
+            logger.info(err)
+            res.status(400).send({ msg: 'invalid_token', detail: '其他错误' })
+            logger.info({ msg: '已拒绝删除课程请求', '原因': '其他错误' })
+        }
+        return
+    }
+
+    if(!id){
+        res.status(400).send({ msg: 'missing_filed', detail: '缺少id字段' })
+        logger.info({ msg: '已拒绝删除课程请求', '原因': '缺少id字段' })
+        return
+    }
+
+    if (!await User.findOne({ where: { username: userName } })) {
+        res.status(400).send({ msg: 'invalid_token', detail: '用户名错误' })
+        logger.info({ msg: '已拒绝删除课程请求', '原因': '用户名错误' })
+        return
+    }
+
+    if (!await Course.findOne({ where: { username: userName, id: id } })) {
+        res.status(400).send({ msg: 'invalid_token', detail: '课程id错误' })
+        logger.info({ msg: '已拒绝删除课程请求', '原因': '课程id错误' })
+        return
+    }
+    
+    Course.destroy({ where: { username: userName, id: id } })
+
+    logger.info(`用户 ${userName} 删除了课程 ${id}`)
+
+    res.sendStatus(200)
+})
 
 
 /**
