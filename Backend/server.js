@@ -875,8 +875,9 @@ app.post('/api/curriculum/getweekcourses', async (req, res) => {
         logger.info({ msg: '已拒绝查询课程请求', '原因': '缺少course字段' })
     }
     
+    
     courseList = courseList.filter(item => {
-        return weekId in item.weeks
+        return item.weeks.includes(weekId)
     })
 
     logger.info(`用户 ${userName} 查询了第 ${weekId} 周的课程`)
