@@ -539,23 +539,23 @@ export default {
       });
     }
     //在这里添加对后端的数据进行解析的函数
-    this.courseData[1].tue = {
-      id: 1,
-      teacher: "魏巍",
-      courseName: "体育(4)",
-      courseId: "32000407",
-      startWeek: 1,
-      endWeek: 17,
-      place: "体育中心健身房",
-      startTime: 2,
-      endTime: 3,
-      score: "1.0",
-    };
-    for (var i = 0; i < 12; i++) {
-      for (var j = 0; j < 7; j++) {
-        this.tableData[i][week[j]] = this.showInfo(this.courseData[i][week[j]]);
-      }
-    }
+    // this.courseData[1].tue = {
+    //   id: 1,
+    //   teacher: "魏巍",
+    //   courseName: "体育(4)",
+    //   courseId: "32000407",
+    //   startWeek: 1,
+    //   endWeek: 17,
+    //   place: "体育中心健身房",
+    //   startTime: 2,
+    //   endTime: 3,
+    //   score: "1.0",
+    // };
+    // for (var i = 0; i < 12; i++) {
+    //   for (var j = 0; j < 7; j++) {
+    //     this.tableData[i][week[j]] = this.showInfo(this.courseData[i][week[j]]);
+    //   }
+    // }
     this.doQuery();
   },
   mounted() {
@@ -564,20 +564,43 @@ export default {
   methods: {
     async doQuery() {
       //向后端索要信息，每次dom更新都调用
+      for (var i = 0; i < 12; i++) {
+      this.tableData[i] = {
+        id: "第" + (i + 1) + "节",
+        row: i,
+        mon: null,
+        tue: null,
+        wed: null,
+        thu: null,
+        fri: null,
+        sat: null,
+        sun: null,
+      };
+      this.courseData[i] = {
+        id: "第" + (i + 1) + "节",
+        mon: null,
+        tue: null,
+        wed: null,
+        thu: null,
+        fri: null,
+        sat: null,
+        sun: null,
+      };
+    }
       if (!this.weekQuery) {
         var today = new Date();
         var startDate = Date.parse("2023-02-20");
         var days = (today - startDate) / (1 * 24 * 60 * 60 * 1000);
         this.weekQuery = parseInt(days / 7 + 1);
       }
-      var response
+      var response;
       try {
         response = await axios.post("/api/curriculum/getweekcourses", {
           token: localStorage.getItem("token"),
           weekId: this.weekQuery,
         });
       } catch (err) {
-        console.log(err)
+        console.log(err);
         // this.$message({
         //   message: err.response.data.msg,
         //   grouping: false,
@@ -585,16 +608,22 @@ export default {
         // });
         return;
       }
-      console.log(response);
+      console.log(response.data);
       for (var i = 0; i < response.data.courses.length; i++) {
-        var temp = response.courses[i];
-        this.courseData[temp.startWeek][temp.weekday] = temp;
-        this.tableData[temp.startWeek][temp.weekday] = this.showInfo(temp);
+        var temp = response.data.courses[i];
+        console.log(temp.startTime);
+        this.courseData[temp.startTime-1][temp.weekday] = temp;
+        this.courseData[temp.startTime-1][temp.weekday].startWeek = temp.weeks[0];
+        this.courseData[temp.startTime-1][temp.weekday].endWeek =
+          temp.weeks[temp.weeks.length - 1];
       }
-      this.$message({
-        message: "上传成功!",
-        type: "success",
-      });
+      for (var i = 0; i < 12; i++) {
+        for (var j = 0; j < 7; j++) {
+          this.tableData[i][week[j]] = this.showInfo(
+            this.courseData[i][week[j]]
+          );
+        }
+      }
     },
     showInfo(data) {
       var s = "";
@@ -631,6 +660,7 @@ export default {
         columnIndex !== 0 &&
         this.courseData[rowIndex][week[columnIndex - 1]]
       ) {
+        console.log(this.courseData[rowIndex][week[columnIndex - 1]].startTime,rowIndex)
         if (
           rowIndex ===
           this.courseData[rowIndex][week[columnIndex - 1]].startTime - 1
@@ -668,26 +698,28 @@ export default {
               this.modalContent.weeks.push(i);
             }
           }
-          var response
+          var response;
           try {
             response = await axios.post("/api/curriculum/create", {
               token: localStorage.getItem("token"),
               course: this.modalContent,
             });
-            console.log(response);
-            this.$message({
-              message: "上传成功!",
-              type: "success",
-            });
+           
           } catch (err) {
             console.log(err);
-            // this.$message({
-            //   message: err.response.data.msg,
-            //   grouping: false,
-            //   type: "error",
-            // });
+            this.$message({
+              message: err.response.data.msg,
+              grouping: false,
+              type: "error",
+            });
             return;
           }
+          console.log(response);
+          this.$message({
+            message: "上传成功!",
+            type: "success",
+          });
+          this.isDialogShow = false
         } else {
           this.$message({
             message: "请填写必要信息",
@@ -725,14 +757,31 @@ export default {
     },
     deleteCourse(row, column) {
       if (this.courseData[row.row][column.property]) {
+        var response
         ElMessageBox.confirm("删除后不可恢复，是否继续？", "提示", {
           type: "warning",
           icon: markRaw(Delete),
-        }).then(() => {
+        }).then(async () => {
+          try {
+            response = await axios.post("/api/curriculum/delete", {
+              token: localStorage.getItem("token"),
+              id: this.courseData[row.row][column.property].id,
+            });
+           
+          } catch (err) {
+            console.log(err);
+            this.$message({
+              message: err.response.data.msg,
+              grouping: false,
+              type: "error",
+            });
+            return;
+          }
           this.$message({
             type: "success",
             message: "删除成功!",
           });
+          this.doQuery()
         });
       }
 
