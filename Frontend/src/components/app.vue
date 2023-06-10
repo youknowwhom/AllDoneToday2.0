@@ -45,7 +45,7 @@ export default {
                 type: 'error',
                 grouping: true,
             })
-            this.$router.replace('/welcome')
+            this.$router.replace('/signin')
         }
     }
 }

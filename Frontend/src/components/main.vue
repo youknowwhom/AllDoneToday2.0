@@ -68,6 +68,9 @@ const NavbarAuth = defineAsyncComponent(() => import('./navbarAuth.vue'))
 <style scoped>
 @import "/assets/css/navbar.css";
 
+.navbar{
+    user-select: none;
+}
 .mainframe-container {
     width: 100%;
     height: 100%;

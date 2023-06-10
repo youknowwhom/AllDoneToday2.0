@@ -354,7 +354,7 @@
           <el-form-item label="上课时间" prop="weekday">
             <el-select v-model="modalContent.weekday" placeholder="星期">
               <el-option
-                v-for="item in week"
+                v-for="item in weekChi"
                 :value="item"
                 :key="item"
                 :label="item"
@@ -446,6 +446,7 @@ import axios from "axios";
 import { ElMessageBox } from "element-plus";
 import { Delete } from "@element-plus/icons-vue";
 const week = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+const weekChi = ["星期一","星期二","星期三","星期四","星期五","星期六","星期日"]
 const weekNum = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 const classTime = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const weekType = ["单周", "双周", "全部"];
@@ -496,6 +497,7 @@ export default {
   data() {
     return {
       week,
+      weekChi,
       weekNum,
       classTime,
       weekType,
@@ -548,33 +550,9 @@ export default {
         sun: null,
       });
     }
-    // this.courseData[6]['thu'] = {
-    //     teacher: "1", //教师
-    //     courseName: "1", //课程名称
-    //     courseId: "1", //课号
-    //     startWeek: 1, //开始周次
-    //     endWeek: 17, //结束周次
-    //     weekType: '全部', //单双周
-    //     weeks: [], //上课的周
-    //     place: "1", //地点
-    //     startTime: 7, //开始节次
-    //     endTime:8, //结束节次
-    //     weekday: 'thu', //周几
-    //     score: "1", //学分
-    // }
-    // for (var i = 0; i < 12; i++) {
-    //     for (var j = 0; j < 7; j++) {
-    //       this.tableData[i][week[j]] = this.showInfo(
-    //         this.courseData[i][week[j]]
-    //       );
-    //     }
-    //   }
     this.doQuery();
   },
   mounted() {
-    // const fileUpload = this.$refs['fileUpload']
-    // fileUpload.addEventListener('change',this.handleFileChange)
-    // console.log(`the component is now mounted.`);
   },
   methods: {
     async doQuery() {
@@ -616,11 +594,6 @@ export default {
         });
       } catch (err) {
         console.log(err);
-        // this.$message({
-        //   message: err.response.data.msg,
-        //   grouping: false,
-        //   type: "error",
-        // });
         return;
       }
       console.log(response.data);
@@ -741,7 +714,6 @@ export default {
     async confirm() {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
-          // /api/curriculum/create
           console.log(
             this.modalContent.startWeek,
             this.modalContent.endWeek,
@@ -760,6 +732,7 @@ export default {
               this.modalContent.weeks.push(i);
             }
           }
+          this.modalContent.weekday = week[weekChi.findIndex(element => (element === this.modalContent.weekday))]
           var response;
           try {
             response = await axios.post("/api/curriculum/create", {
@@ -806,7 +779,6 @@ export default {
     },
     deleteCourse(row, column) {
       console.log(this.courseData[row.row][column.property]);
-      // console.log(this.courseData[row.row][column.property].startTime,this.courseData[row.row][column.property].endTime,this.courseData[row.row][column.property].weekday)
       if (this.courseData[row.row][column.property]) {
         var response;
         ElMessageBox.confirm("删除后不可恢复，是否继续？", "提示", {

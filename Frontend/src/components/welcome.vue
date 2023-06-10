@@ -60,7 +60,7 @@ export default {
                 </el-container>
                 <el-container>
                     <el-button type="primary" @click="this.$router.push('/signup')">注册新用户</el-button>
-                    <el-button @click="this.$router.push('/signin')">进入今日毕 </el-button>
+                    <el-button @click="this.$router.push('/app')">进入今日毕 </el-button>
                 </el-container>
             </el-container>
             <img src="/assets/image/homepage-demonstration.jpg" class="demon-pic" />
@@ -107,15 +107,14 @@ export default {
         <el-footer class="bottom-div">
             <el-container class="text-div-bottom" direction="vertical">
                 <el-container direction="vertical">
-                    <h2 class="welcome-function-headline">今日毕贡献者</h2>
+                    <h2 class="welcome-function-headline">联系我们</h2>
                 </el-container>
                 <el-container direction="vertical" class="maintext">
-                    <p class="welcome-text"><span class="bottom-text-bold">蔡一锴</span> 环境搭建 后端 清单模式 个人信息界面 </p>
-                    <p class="welcome-text"><span class="bottom-text-bold">郭桉齐</span> 注册界面 个人信息界面 </p>
-                    <p class="welcome-text"><span class="bottom-text-bold">王颢瑾</span> 登录界面 后端 邮箱验证码 </p>
-                    <p class="welcome-text"><span class="bottom-text-bold">郑博远</span> UI设计 专注模式 清单模式 欢迎页 </p>
+                    
+                    <p class="welcome-text"><span class="bottom-text-bold">郭桉齐</span>  2152496@tongji.edu.cn</p>
+                    <p class="welcome-text"><span class="bottom-text-bold">郑博远</span>  2154312@tongji.edu.cn</p>
                     <div>
-                        <el-link href="https://github.com/VVsxmja/ToDoList" type="primary" class="welcome-link" :underline="false">
+                        <el-link href="https://github.com/youknowwhom/AllDoneToday2.0" type="primary" class="welcome-link" :underline="false">
                             <el-icon size="35" style="margin: 5px;">
                                 <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24" width="1.2em"
                                     height="1.2em" data-v-6c8d2bba="">
