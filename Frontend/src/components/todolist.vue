@@ -692,11 +692,11 @@ export default {
           return;
         }
       }
-      await this.getAll()
+      await this.getAll();
 
-    //   this.EventList.push(newEvent);
+      //   this.EventList.push(newEvent);
       this.chosenEventID = newEvent.id;
-      console.log(this.chosenEventID)
+      console.log(this.chosenEventID);
     },
     async updateEvent(eventToUpdate, immediate) {
       // 在用户频繁修改事件时，延迟一段时间再同步数据
@@ -793,26 +793,68 @@ export default {
     // 开始录制
     start() {
       console.log("start");
+      navigator.getUserMedia(
+        { audio: true },
+        function onSuccess(stream) {
+          console.log("已点击允许,开启成功");
+        },
+        function onError(error) {
+          console.log("错误：", error);
+        }
+
+      );
       recording.get((rec) => {
         // 当首次按下时，要获取浏览器的麦克风权限，所以这时要做一个判断处理
         if (rec) {
           this.recorder = rec;
+          this.recorder.start(); // 开始录音
+        } else {
+          this.recorder.start();
         }
       });
     },
     // 停止录制
-    end() {
+    async end() {
       console.log("end");
       if (this.recorder) {
         this.recorder.stop(); // 重置说话时间
         let bold = this.recorder.getBlob(); // 将获取的二进制对象转为二进制文件流
+        console.log(bold);
         let files = new File([bold], "test.mp3", {
           type: "audio/mp3",
-          lastModified: Date.now(),
         });
-        //   let fileurl = URL.createObjectURL(files);
-        //   this.fileurl = fileurl;
-        console.log(files);
+
+        let formdata = new FormData();
+        formdata.append("voice", files);
+        formdata.append("token", localStorage.getItem("token"));
+        var response;
+        try {
+          response = await axios.post("/api/event/voice2text", formdata);
+        } catch (err) {
+          console.log(err.response.data.msg);
+          if (err.response.data.msg === "invalid_token") {
+            this.$router.replace("/welcome");
+            localStorage.removeItem("token");
+            ElMessage({
+              message: "登录信息无效",
+              type: "error",
+              grouping: true,
+            });
+          }
+          return;
+        }
+        window.navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then((stream) => {
+            /*
+             * 关闭元数据与音轨的连接,就可以去掉这个烦人的红点,但是也就意味着,
+             * 现在已经失去了录音的能力
+             */
+            stream.getTracks().forEach((track) => track.stop());
+          });
+        console.log(response.data.text);
+        this.newEventBriefInput = response.data.text;
+        this.CreateEventFromBrief();
       }
     },
   },
@@ -864,7 +906,6 @@ export default {
         return "日期";
       }
     },
-    
   },
   created() {
     this.openedGroups = this.eventGrouped.map((group) => group.groupName); // 默认展开所有事件组
