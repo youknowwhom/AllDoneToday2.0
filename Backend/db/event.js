@@ -69,6 +69,7 @@ Event.init({
  */
 await Event.sync({
     alter: true,
+    force: true,
     match: /_dev$/
 })
 

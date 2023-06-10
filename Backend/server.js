@@ -644,6 +644,8 @@ app.post('/api/event/getAll', async (req, res) => {
     res.status(200).send(eventList)
 })
 
+
+
 app.post('/api/event/create', async (req, res) => {
     if (!req.body.token) {
         res.status(400).send({ msg: 'invalid_token', detail: '缺少 token' })
@@ -680,11 +682,52 @@ app.post('/api/event/create', async (req, res) => {
     }
 
     event.username = userName
-    await Event.create(event)
 
-    logger.info(`用户 ${userName} 创建了事件 ${event.id}`)
+    // 分析是否有可用的时间
+    let pyshell = new PythonShell('parseTime.py')
 
-    res.sendStatus(200)
+    // 向python发送文件url
+    pyshell.send(event.brief)
+    
+    async function executePyshell() {
+        return new Promise((resolve, reject) => {
+            pyshell.on('message', async function (message) {
+                event.brief = await JSON.parse(message).brief
+                event.time = await JSON.parse(message).time
+                try{
+                    await Event.create(event)
+                    logger.info(`用户 ${userName} 创建了事件 ${event.id}`)
+                } catch(error){
+                    logger.info(`用户 ${userName} 创建事件 ${event.id} 失败`)
+                    logger.info(error)
+                    reject(error)
+                }
+                resolve()
+            })
+
+            pyshell.end(async function (err, code, signal) {
+                if (err) {
+                    logger.info('调用日期解析python子进程出错')
+                    reject(err) // 如果 pyshell.end 出现错误，拒绝 Promise
+                } else {
+                    logger.info('日期解析完毕，python 子进程退出')
+                    logger.info({ 'code': code, 'signal': signal })
+                }
+            })
+        })
+    }
+
+    executePyshell()
+        .then(() => {
+            res.sendStatus(200) // Promise 解决后返回状态码 200
+        })
+        .catch((error) => {
+            // 处理执行过程中出现的错误
+            logger.info(error)
+            res.status(400).send({ msg: 'unknown_error', detail: '未知错误' })
+            logger.info({ msg: '解析课表文件失败', '原因': '未知错误' })
+        })
+
 })
 
 app.post('/api/event/delete', async (req, res) => {
@@ -925,26 +968,6 @@ app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res)
     // 向python发送文件url
     pyshell.send(fileURL)
 
-    // pyshell.on('message', async function (message) {
-    //     let courses = JSON.parse(message).courses
-
-    //     logger.info(`用户 ${userName} 上传的课表文件解析出 ${courses.length} 节课程`)
-    //     for (let course of courses){
-    //         course.username = userName
-    //         course = await Course.create(course)
-    //         logger.info(`用户 ${userName} 通过上传课表文件创建了课程 ${course.id}`)
-    //     }
-    // })
-
-    // pyshell.end(async function (err,code,signal) {
-    //     if (err) throw err
-    //     logger.info(`文件 ${ req.file.filename } 已经解析为json格式，python子进程退出`)
-    //     logger.info({ 'code': code, 'signal':signal })
-    //     await fs.unlink(fileURL)
-    //     logger.info(`文件 ${ req.file.filename } 已被删除`)
-    // })
-
-    // res.sendStatus(200)
     async function executePyshell() {
         return new Promise((resolve, reject) => {
             pyshell.on('message', function (message) {
@@ -974,7 +997,6 @@ app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res)
                     try {
                         await fs.unlink(fileURL)
                         logger.info(`文件 ${req.file.filename} 已被删除`)
-                        // resolve() // pyshell.end 完成后解决 Promise
                     } catch (error) {
                         reject(error) // 如果 fs.unlink 出现错误，拒绝 Promise
                     }
@@ -983,15 +1005,16 @@ app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res)
         })
     }
 
-    // 使用方法：
+    
     executePyshell()
         .then(() => {
             res.sendStatus(200) // Promise 解决后返回状态码 200
         })
         .catch((error) => {
             // 处理执行过程中出现的错误
-            console.error(error)
-            res.sendStatus(500) // 如果出现错误，返回状态码 500
+            logger.info(error)
+            res.status(400).send({ msg: 'unknown_error', detail: '未知错误' })
+            logger.info({ msg: '解析课表文件失败', '原因': '未知错误' })
         })
 
 
