@@ -610,6 +610,34 @@ export default {
     },
   },
   methods: {
+    async getAll() {
+      let response;
+      try {
+        response = await axios.post("/api/event/getAll", {
+          token: localStorage.getItem("token"),
+        });
+      } catch (err) {
+        if (err.response.data.msg === "invalid_token") {
+          this.$router.replace("/welcome");
+          localStorage.removeItem("token");
+          ElMessage({
+            message: "登录信息无效",
+            type: "error",
+            grouping: true,
+          });
+        } else {
+          ElMessage({
+            message: "保存失败",
+            type: "error",
+            grouping: true,
+          });
+        }
+
+        return;
+      }
+
+      this.EventList = response.data;
+    },
     async CreateEventFromBrief() {
       let GetUniqueUUID = () => {
         let id = uuid();
@@ -664,10 +692,11 @@ export default {
           return;
         }
       }
-      this.getAll()
+      await this.getAll()
 
     //   this.EventList.push(newEvent);
       this.chosenEventID = newEvent.id;
+      console.log(this.chosenEventID)
     },
     async updateEvent(eventToUpdate, immediate) {
       // 在用户频繁修改事件时，延迟一段时间再同步数据
@@ -835,34 +864,7 @@ export default {
         return "日期";
       }
     },
-    async getAll() {
-      let response;
-      try {
-        response = await axios.post("/api/event/getAll", {
-          token: localStorage.getItem("token"),
-        });
-      } catch (err) {
-        if (err.response.data.msg === "invalid_token") {
-          this.$router.replace("/welcome");
-          localStorage.removeItem("token");
-          ElMessage({
-            message: "登录信息无效",
-            type: "error",
-            grouping: true,
-          });
-        } else {
-          ElMessage({
-            message: "保存失败",
-            type: "error",
-            grouping: true,
-          });
-        }
-
-        return;
-      }
-
-      this.EventList = response.data;
-    },
+    
   },
   created() {
     this.openedGroups = this.eventGrouped.map((group) => group.groupName); // 默认展开所有事件组
