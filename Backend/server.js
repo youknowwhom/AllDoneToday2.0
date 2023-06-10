@@ -1,5 +1,6 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
+import fetch from 'node-fetch'
 let jwtKey = 'ToDoList_Backend_JSONWebToken_Key_JustForTesting_20221121'
 const port = 8000
 const app = express()
@@ -697,12 +698,12 @@ app.post('/api/event/create', async (req, res) => {
                 try{
                     await Event.create(event)
                     logger.info(`用户 ${userName} 创建了事件 ${event.id}`)
+                    resolve()
                 } catch(error){
                     logger.info(`用户 ${userName} 创建事件 ${event.id} 失败`)
                     logger.info(error)
                     reject(error)
                 }
-                resolve()
             })
 
             pyshell.end(async function (err, code, signal) {
@@ -772,6 +773,71 @@ app.post('/api/event/delete', async (req, res) => {
     res.sendStatus(200)
 })
 
+
+/**
+ *  事件brief语音转文字
+ */
+app.post('/api/event/voice2text', upload.single('voice'), async (req, res) => {
+    if (!req.body.token) {
+        res.status(400).send({ msg: 'invalid_token', detail: '缺少 token' })
+        logger.info({ msg: '已拒绝语音解析请求', '原因': '缺少 token' })
+        return
+    }
+
+    let userName
+    try {
+        userName = jwt.verify(req.body.token, jwtKey).username
+    } catch (err) {
+        if (err instanceof jwt.TokenExpiredError) {
+            res.status(400).send({ msg: 'invalid_token', detail: 'token 过期' })
+            logger.info({ msg: '已拒绝语音解析请求', '原因': 'token 过期' })
+        } else {
+            logger.info(err)
+            res.status(400).send({ msg: 'invalid_token', detail: '其他错误' })
+            logger.info({ msg: '已拒绝语音解析请求', '原因': '其他错误' })
+        }
+        return
+    }
+
+    if (!await User.findOne({ where: { username: userName } })) {
+        res.status(400).send({ msg: 'invalid_token', detail: '用户名错误' })
+        logger.info({ msg: '已拒绝语音解析请求', '原因': '用户名错误' })
+        return
+    }
+    console.log(req.file)
+    let fileURL = './uploads/' + req.file.filename
+
+    async function query(filename) {
+        const data = await fs.readFile(filename)
+        const response = await fetch(
+            'https://api-inference.huggingface.co/models/wbbbbb/wav2vec2-large-chinese-zh-cn',
+            {
+                headers: { Authorization: 'Bearer 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' },
+                method: 'POST',
+                body: data,
+            }
+        )
+        console.log(response)
+        const result = await response.json()
+        return result
+    }
+    query(fileURL).then(async (response) => {
+        if(response.text){
+            logger.info(`用户 ${userName} 语音解析成功，内容为 ${JSON.stringify(response.text)}`)
+            res.status(200).send(response)
+        }
+        else{
+            logger.info(`用户 ${userName} 语音解析失败`)
+            logger.info(response.error)
+            res.status(400).send({ msg: '已拒绝语音解析请求', '原因': '语音解析失败' })
+        }
+        await fs.unlink(fileURL)
+        logger.info(`文件 ${req.file.filename} 已被删除`)
+    })
+    
+})
+
+
 /**
  *  添加新课程
  */
@@ -811,7 +877,7 @@ app.post('/api/curriculum/create', async (req, res) => {
         if (err instanceof jwt.TokenExpiredError) {
             logger.info(err)
             res.status(400).send({ msg: 'missing_field', detail: '缺少应有字段' })
-            logger.info({ msg: '已拒绝添加课程请求', '原因': '用户名错误' })
+            logger.info({ msg: '已拒绝添加课程请求', '原因': '缺少应有字段' })
         } else {
             logger.info(err)
             res.status(400).send({ msg: 'unknown_error', detail: '其他错误' })
@@ -939,7 +1005,6 @@ app.post('/api/curriculum/getweekcourses', async (req, res) => {
  *  用户上传课程表
  */
 app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res) => {
-    console.log(req.body)
     if (!req.body.token) {
         res.status(400).send({ msg: 'invalid_token', detail: '缺少 token' })
         logger.info({ msg: '已拒绝上传课表请求', '原因': '缺少 token' })
@@ -1004,7 +1069,6 @@ app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res)
             })
         })
     }
-
     
     executePyshell()
         .then(() => {
@@ -1017,10 +1081,9 @@ app.post('/api/curriculum/upload', upload.single('curriculum'), async (req, res)
             logger.info({ msg: '解析课表文件失败', '原因': '未知错误' })
         })
 
-
-
-
 })
+
+
 
 
 /**
