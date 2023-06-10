@@ -174,8 +174,6 @@
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
-                  {{ scope.row.row }}
-                  {{ scope.column.property }}
                 </div>
               </template>
               <template #reference>
@@ -212,8 +210,6 @@
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
-
-                  {{ scope.column.property }}
                 </div>
               </template>
               <template #reference>

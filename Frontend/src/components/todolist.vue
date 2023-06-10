@@ -664,8 +664,9 @@ export default {
           return;
         }
       }
+      this.getAll()
 
-      this.EventList.push(newEvent);
+    //   this.EventList.push(newEvent);
       this.chosenEventID = newEvent.id;
     },
     async updateEvent(eventToUpdate, immediate) {
@@ -753,7 +754,6 @@ export default {
       }
     },
     myRecording() {
-        
       if (!this.recordSwitch) {
         this.start();
       } else {
@@ -763,7 +763,7 @@ export default {
     },
     // 开始录制
     start() {
-      console.log('start')
+      console.log("start");
       recording.get((rec) => {
         // 当首次按下时，要获取浏览器的麦克风权限，所以这时要做一个判断处理
         if (rec) {
@@ -773,7 +773,7 @@ export default {
     },
     // 停止录制
     end() {
-        console.log('end')
+      console.log("end");
       if (this.recorder) {
         this.recorder.stop(); // 重置说话时间
         let bold = this.recorder.getBlob(); // 将获取的二进制对象转为二进制文件流
@@ -834,6 +834,34 @@ export default {
       } catch (err) {
         return "日期";
       }
+    },
+    async getAll() {
+      let response;
+      try {
+        response = await axios.post("/api/event/getAll", {
+          token: localStorage.getItem("token"),
+        });
+      } catch (err) {
+        if (err.response.data.msg === "invalid_token") {
+          this.$router.replace("/welcome");
+          localStorage.removeItem("token");
+          ElMessage({
+            message: "登录信息无效",
+            type: "error",
+            grouping: true,
+          });
+        } else {
+          ElMessage({
+            message: "保存失败",
+            type: "error",
+            grouping: true,
+          });
+        }
+
+        return;
+      }
+
+      this.EventList = response.data;
     },
   },
   created() {
