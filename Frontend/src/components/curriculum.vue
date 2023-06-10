@@ -48,24 +48,22 @@
             >
               <template #default v-if="scope.row[scope.column.property]">
                 <div>
-                  课程名称:
+                  课号:
                   {{
-                    courseData[scope.row.row][scope.column.property].courseName
+                    courseData[scope.row.row][scope.column.property].courseId
                   }}
-                </div>
-                <div>
-                  教师姓名:
-                  {{ courseData[scope.row.row][scope.column.property].teacher }}
-                </div>
-                <div
-                  v-if="courseData[scope.row.row][scope.column.property].place"
-                >
-                  上课地点:
-                  {{ courseData[scope.row.row][scope.column.property].place }}
                 </div>
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+                </div>
+                <div>
+                  周次:
+                  {{  courseData[scope.row.row][scope.column.property].startWeek + ' - ' + courseData[scope.row.row][scope.column.property].endWeek  }}
+                </div>
+                <div>
+                  节次:
+                  {{  courseData[scope.row.row][scope.column.property].startTime + ' - ' + courseData[scope.row.row][scope.column.property].endTime  }}
                 </div>
               </template>
               <template #reference>
@@ -84,24 +82,22 @@
             >
               <template #default v-if="scope.row[scope.column.property]">
                 <div>
-                  课程名称:
+                  课号:
                   {{
-                    courseData[scope.row.row][scope.column.property].courseName
+                    courseData[scope.row.row][scope.column.property].courseId
                   }}
-                </div>
-                <div>
-                  教师姓名:
-                  {{ courseData[scope.row.row][scope.column.property].teacher }}
-                </div>
-                <div
-                  v-if="courseData[scope.row.row][scope.column.property].place"
-                >
-                  上课地点:
-                  {{ courseData[scope.row.row][scope.column.property].place }}
                 </div>
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+                </div>
+                <div>
+                  周次:
+                  {{  courseData[scope.row.row][scope.column.property].startWeek + ' - ' + courseData[scope.row.row][scope.column.property].endWeek  }}
+                </div>
+                <div>
+                  节次:
+                  {{  courseData[scope.row.row][scope.column.property].startTime + ' - ' + courseData[scope.row.row][scope.column.property].endTime  }}
                 </div>
               </template>
               <template #reference>
@@ -120,24 +116,22 @@
             >
               <template #default v-if="scope.row[scope.column.property]">
                 <div>
-                  课程名称:
+                  课号:
                   {{
-                    courseData[scope.row.row][scope.column.property].courseName
+                    courseData[scope.row.row][scope.column.property].courseId
                   }}
-                </div>
-                <div>
-                  教师姓名:
-                  {{ courseData[scope.row.row][scope.column.property].teacher }}
-                </div>
-                <div
-                  v-if="courseData[scope.row.row][scope.column.property].place"
-                >
-                  上课地点:
-                  {{ courseData[scope.row.row][scope.column.property].place }}
                 </div>
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+                </div>
+                <div>
+                  周次:
+                  {{  courseData[scope.row.row][scope.column.property].startWeek + ' - ' + courseData[scope.row.row][scope.column.property].endWeek  }}
+                </div>
+                <div>
+                  节次:
+                  {{  courseData[scope.row.row][scope.column.property].startTime + ' - ' + courseData[scope.row.row][scope.column.property].endTime  }}
                 </div>
               </template>
               <template #reference>
@@ -156,24 +150,22 @@
             >
               <template #default v-if="scope.row[scope.column.property]">
                 <div>
-                  课程名称:
+                  课号:
                   {{
-                    courseData[scope.row.row][scope.column.property].courseName
+                    courseData[scope.row.row][scope.column.property].courseId
                   }}
-                </div>
-                <div>
-                  教师姓名:
-                  {{ courseData[scope.row.row][scope.column.property].teacher }}
-                </div>
-                <div
-                  v-if="courseData[scope.row.row][scope.column.property].place"
-                >
-                  上课地点:
-                  {{ courseData[scope.row.row][scope.column.property].place }}
                 </div>
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+                </div>
+                <div>
+                  周次:
+                  {{  courseData[scope.row.row][scope.column.property].startWeek + ' - ' + courseData[scope.row.row][scope.column.property].endWeek  }}
+                </div>
+                <div>
+                  节次:
+                  {{  courseData[scope.row.row][scope.column.property].startTime + ' - ' + courseData[scope.row.row][scope.column.property].endTime  }}
                 </div>
               </template>
               <template #reference>
@@ -192,24 +184,22 @@
             >
               <template #default v-if="scope.row[scope.column.property]">
                 <div>
-                  课程名称:
+                  课号:
                   {{
-                    courseData[scope.row.row][scope.column.property].courseName
+                    courseData[scope.row.row][scope.column.property].courseId
                   }}
-                </div>
-                <div>
-                  教师姓名:
-                  {{ courseData[scope.row.row][scope.column.property].teacher }}
-                </div>
-                <div
-                  v-if="courseData[scope.row.row][scope.column.property].place"
-                >
-                  上课地点:
-                  {{ courseData[scope.row.row][scope.column.property].place }}
                 </div>
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+                </div>
+                <div>
+                  周次:
+                  {{  courseData[scope.row.row][scope.column.property].startWeek + ' - ' + courseData[scope.row.row][scope.column.property].endWeek  }}
+                </div>
+                <div>
+                  节次:
+                  {{  courseData[scope.row.row][scope.column.property].startTime + ' - ' + courseData[scope.row.row][scope.column.property].endTime  }}
                 </div>
               </template>
               <template #reference>
@@ -228,24 +218,22 @@
             >
               <template #default v-if="scope.row[scope.column.property]">
                 <div>
-                  课程名称:
+                  课号:
                   {{
-                    courseData[scope.row.row][scope.column.property].courseName
+                    courseData[scope.row.row][scope.column.property].courseId
                   }}
-                </div>
-                <div>
-                  教师姓名:
-                  {{ courseData[scope.row.row][scope.column.property].teacher }}
-                </div>
-                <div
-                  v-if="courseData[scope.row.row][scope.column.property].place"
-                >
-                  上课地点:
-                  {{ courseData[scope.row.row][scope.column.property].place }}
                 </div>
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+                </div>
+                <div>
+                  周次:
+                  {{  courseData[scope.row.row][scope.column.property].startWeek + ' - ' + courseData[scope.row.row][scope.column.property].endWeek  }}
+                </div>
+                <div>
+                  节次:
+                  {{  courseData[scope.row.row][scope.column.property].startTime + ' - ' + courseData[scope.row.row][scope.column.property].endTime  }}
                 </div>
               </template>
               <template #reference>
@@ -264,24 +252,22 @@
             >
               <template #default v-if="scope.row[scope.column.property]">
                 <div>
-                  课程名称:
+                  课号:
                   {{
-                    courseData[scope.row.row][scope.column.property].courseName
+                    courseData[scope.row.row][scope.column.property].courseId
                   }}
-                </div>
-                <div>
-                  教师姓名:
-                  {{ courseData[scope.row.row][scope.column.property].teacher }}
-                </div>
-                <div
-                  v-if="courseData[scope.row.row][scope.column.property].place"
-                >
-                  上课地点:
-                  {{ courseData[scope.row.row][scope.column.property].place }}
                 </div>
                 <div>
                   学分:
                   {{ courseData[scope.row.row][scope.column.property].score }}
+                </div>
+                <div>
+                  周次:
+                  {{  courseData[scope.row.row][scope.column.property].startWeek + ' - ' + courseData[scope.row.row][scope.column.property].endWeek  }}
+                </div>
+                <div>
+                  节次:
+                  {{  courseData[scope.row.row][scope.column.property].startTime + ' - ' + courseData[scope.row.row][scope.column.property].endTime  }}
                 </div>
               </template>
               <template #reference>
@@ -621,10 +607,8 @@ export default {
     showInfo(data) {
       var s = "";
       if (data) {
-        s += data.teacher + " ";
-        s += data.courseName + " ";
-        s += "(" + data.courseId + ") ";
-        s += "[" + data.startWeek + "-" + data.endWeek + "] ";
+        s += data.courseName + "\n\n";
+        s += data.teacher + "\n";
         s += data.place;
       }
       return s;
@@ -845,5 +829,9 @@ export default {
   --el-messagebox-color: rgb(122, 122, 249);
   color: var(--el-messagebox-color);
 }
+
+.el-table .cell{
+    white-space: pre-line;
+  }
 </style>
   
